@@ -7,4 +7,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Nafea_DefaultButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">#03A9F4</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
 </resources>

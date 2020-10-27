@@ -1,5 +1,7 @@
 package com.ksu.nafea.logic;
 
+import android.util.Patterns;
+
 public class User
 {
     private String email;
@@ -20,20 +22,62 @@ public class User
     }
 
 
-    public static boolean isValidInfo(String email, String pass, String rePass)
+    public static String isValidEmail(String email)
     {
-        if(!email.equals(null) && !pass.equals(null) && !rePass.equals(null))
-        {
-            if(pass.equals(rePass))
-                return true;
-        }
-        return false;
+        if(Patterns.EMAIL_ADDRESS.matcher(email).matches())
+            return "";
+        else
+            return "Email:\n the email is incorrect!";
     }
-    public static boolean isValidName(String firstName, String lastName)
+    public static String isValidPassword(String password)
     {
-        if(!firstName.equals(null) && !lastName.equals(null))
-            return true;
-        return false;
+        String errorMsg = "";
+        int minLength = 4;
+
+        if(password.isEmpty())
+            errorMsg += "- password field is empty.\n";
+        else
+        {
+            if(password.length() <= minLength)
+                errorMsg += "- password must be more than " + minLength + " characters.\n";
+        }
+
+
+        if(errorMsg.isEmpty())
+            return "";
+        else
+            return "Password:\n" + errorMsg;
+    }
+    public static String isValidRePassword(String password, String rePassword)
+    {
+        String errorMsg = "";
+        if(rePassword.isEmpty())
+            errorMsg += "- re-password field is empty.\n";
+        else
+        {
+            if(!rePassword.equals(password))
+                errorMsg += "- re-password doesn't match the password.\n";
+        }
+
+        if(errorMsg.isEmpty())
+            return "";
+        else
+            return "Re-Password:\n" + errorMsg;
+    }
+
+    public static String isWithoutSymbols(String labelName, String text)
+    {
+        String errorMsg = "";
+        String lowerName = labelName.toLowerCase();
+
+        if(text.isEmpty())
+            errorMsg += "- " + lowerName + " field is empty.";
+
+
+        if(errorMsg.isEmpty())
+            return "";
+        else
+            return labelName + "\n" + errorMsg;
     }
 
     public String getEmail() {

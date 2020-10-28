@@ -2,6 +2,8 @@ package com.ksu.nafea.logic;
 
 import android.util.Patterns;
 
+import java.util.regex.Pattern;
+
 public class User
 {
     private String email;
@@ -27,7 +29,7 @@ public class User
         if(Patterns.EMAIL_ADDRESS.matcher(email).matches())
             return "";
         else
-            return "Email:\n the email is incorrect!";
+            return "Email:\n- the email is incorrect!";
     }
     public static String isValidPassword(String password)
     {
@@ -65,13 +67,23 @@ public class User
             return "Re-Password:\n" + errorMsg;
     }
 
-    public static String isWithoutSymbols(String labelName, String text)
+    public static String isValidInput(String labelName, String text, boolean allowNumbers, boolean allowSymbols)
     {
         String errorMsg = "";
-        String lowerName = labelName.toLowerCase();
 
         if(text.isEmpty())
-            errorMsg += "- " + lowerName + " field is empty.";
+            errorMsg += "- field is empty.\n";
+        else
+        {
+            String allowedChars = allowNumbers ? "[a-zA-Z0-9]*" : "[a-zA-Z]*";
+
+
+            if(!allowNumbers && !Pattern.compile(allowedChars).matcher(text).matches())
+                errorMsg += "- this field must haven't any number.\n";
+
+            if(!allowSymbols && !Pattern.compile(allowedChars).matcher(text).matches())
+                errorMsg += "- this field must haven't special characters (@, #, &, ...).\n";
+        }
 
 
         if(errorMsg.isEmpty())

@@ -2,12 +2,15 @@ package com.ksu.nafea.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.MultiTapKeyListener;
+import android.text.method.PasswordTransformationMethod;
+import android.text.method.TransformationMethod;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -122,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }
         else if(step == 2)
-            errorMsg = User.isWithoutSymbols(label.get(fieldIndex).getText().toString(), fieldText);
+            errorMsg = User.isValidInput(label.get(fieldIndex).getText().toString(), fieldText, false, false);
 
 
         return updateField(inputField, errorMsg);
@@ -147,7 +150,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void setStep(int step)
     {
-        clearFields();
+        //clearFields();
 
         switch (step)
         {
@@ -155,6 +158,9 @@ public class RegisterActivity extends AppCompatActivity {
                 label.get(0).setText("Email:");
                 label.get(1).setText("Password:");
                 label.get(2).setText("Re-Password:");
+
+                field.get(0).setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                field.get(1).setTransformationMethod(PasswordTransformationMethod.getInstance());
 
                 for(int i = 0; i < field.size(); i++)
                 {
@@ -167,12 +173,17 @@ public class RegisterActivity extends AppCompatActivity {
                 label.get(0).setText("First Name:");
                 label.get(1).setText("Last Name:");
 
+                field.get(0).setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS);
+                field.get(1).setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS);
+                //field.get(1).setTransformationMethod();
+
                 label.get(2).setVisibility(View.INVISIBLE);
                 field.get(2).setVisibility(View.INVISIBLE);
 
                 break;
         }
 
+        clearFields();
         this.step = step;
     }
 
@@ -181,6 +192,7 @@ public class RegisterActivity extends AppCompatActivity {
         for(int i = 0; i < field.size(); i++)
         {
             field.get(i).setText("");
+            field.get(i).setError(null);
             field.get(i).setTextColor(Color.BLACK);
         }
     }

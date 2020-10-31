@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class UserPool extends DatabasePool {
     public boolean insert(String s_email, String password, String firstName, String lastName) {
-        String ins = "(" + email + "," + password + "," + firstName + "," + lastName + ")";
+        String ins = "(" + s_email + "," + password + "," + firstName + "," + lastName + ")";
         return insert("Student", ins);
     }
 

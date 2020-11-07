@@ -1,12 +1,16 @@
 <resources>
     <string name="app_name">Nafea</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+
+
+    <!-- Views Strings -->
+    <string name="label_email">Email:</string>
+    <string name="label_confirmEmail">Confirm Email:</string>
+    <string name="label_password">Password:</string>
+    <string name="label_rePassword">Re-Password:</string>
+    <string name="buttonText_next">Next</string>
+    <string name="buttonText_cancel">Cancel</string>
+    <string name="checkboxLabel_remember_me">Remember Me</string>
+    <string name="clickableText_createAccount"><u>Create an account</u></string>
+    <string name="buttonText_login">Login</string>
+
 </resources>

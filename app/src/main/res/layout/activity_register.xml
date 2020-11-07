@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/fields_verBox"
         android:layout_width="0dp"
-        android:layout_height="266dp"
+        android:layout_height="359dp"
         android:gravity="start"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,43 +20,60 @@
         app:layout_constraintVertical_bias="0.298">
 
         <TextView
-            android:id="@+id/txt_email"
+            android:id="@+id/txt_regEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Email:" />
+            android:text="@string/label_email" />
 
         <EditText
-            android:id="@+id/et_email"
+            android:id="@+id/et_regEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autofillHints=""
             android:ems="10"
-            android:inputType="textAutoComplete|textEmailAddress" />
+            android:inputType="textEmailAddress"/>
 
         <TextView
-            android:id="@+id/txt_pass"
+            android:id="@+id/txt_regConfirmEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Password:" />
+            android:text="@string/label_confirmEmail" />
 
         <EditText
-            android:id="@+id/et_pass"
+            android:id="@+id/et_regConfirmEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:inputType="textEmailAddress"
+            android:importantForAutofill="no" />
+
+        <TextView
+            android:id="@+id/txt_regPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_password" />
+
+        <EditText
+            android:id="@+id/et_regPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:importantForAutofill="no"
             android:inputType="textPassword" />
 
         <TextView
             android:id="@+id/txt_rePass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Re-Password:" />
+            android:text="@string/label_rePassword" />
 
         <EditText
             android:id="@+id/et_rePass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:importantForAutofill="no" />
 
     </LinearLayout>
 
@@ -74,20 +91,20 @@
         app:layout_constraintVertical_bias="0.994">
 
         <Button
-            android:id="@+id/b_next"
+            android:id="@+id/b_regNext"
             style="@style/Nafea_DefaultButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#03A9F4"
-            android:text="Next"
+            android:text="@string/buttonText_next"
             android:textColor="#FFFFFF" />
 
         <Button
-            android:id="@+id/b_cancel"
+            android:id="@+id/b_regCancel"
             style="@style/Nafea_DefaultButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cancel" />
+            android:text="@string/buttonText_cancel" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

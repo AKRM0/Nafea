@@ -1,4 +1,4 @@
-package com.ksu.nafea.Database;
+package com.ksu.nafea.data;
 
 public class NafeaDatabase
 {

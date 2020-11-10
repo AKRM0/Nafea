@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ksu.nafea">
 
+
+    
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,8 +11,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.TestAc"></activity>
-        <activity android:name=".ui.BrowseActivity" />
+        <activity android:name=".ui.CourseManagementActivity"></activity>
+        <activity
+            android:name=".ui.MajorActivity"
+            android:parentActivityName=".ui.LoginActivity" />
+        <activity
+            android:name=".ui.DepartmentPlanActivity"
+            android:parentActivityName=".ui.MajorActivity" />
+        <activity android:name=".ui.TestActiv" />
+        <activity
+            android:name=".ui.BrowseActivity"
+            android:parentActivityName=".ui.RegisterActivity" />
         <activity
             android:name=".ui.RegisterActivity"
             android:parentActivityName=".ui.LoginActivity" />

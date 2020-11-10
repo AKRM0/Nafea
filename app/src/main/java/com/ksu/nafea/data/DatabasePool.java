@@ -9,7 +9,7 @@ public class DatabasePool
 
 {
 
-    private boolean executeUpdateCommand(String command) throws DatabaseException
+    private static boolean executeUpdateCommand(String command) throws DatabaseException
     {
         NafeaDatabase.startConnection();
 
@@ -24,26 +24,62 @@ public class DatabasePool
             return false;
     }
 
-    public boolean Update(String tableName, String Condition) throws DatabaseException
+    protected static boolean Update(String tableName, String Condition) throws DatabaseException
     {
         String command="UPDATE"+" "+tableName+" "+Condition;
         return executeUpdateCommand(command);
     }
 
-    public boolean insert(String TableName,String att) throws DatabaseException
+    protected static boolean insert(String TableName,String att) throws DatabaseException
     {
         String command="INSERT INTO"+" "+ TableName+" " +att;
         return executeUpdateCommand(command);
     }
 
-    public boolean delete(String tableName,String condition) throws DatabaseException
+    protected static boolean delete(String tableName,String condition) throws DatabaseException
     {
         String  command = "DELETE FROM"+""+tableName+""+condition;
         return executeUpdateCommand(command);
     }
 
 
-    public ResultSet retrieve(String attribute, String tableName, String condition) throws DatabaseException
+
+
+
+    protected static ResultSet retrieve(String attribute, String tableName) throws DatabaseException
+    {
+        NafeaDatabase.startConnection();
+
+        String command = "SELECT " + attribute;
+        command += "FROM " + tableName;
+
+        ResultSet rows = NafeaDatabase.executeQuery(command);
+
+        NafeaDatabase.closeConnection();
+        return rows;
+    }
+
+    protected static ResultSet retrieve(ArrayList<String> attributes, String tableName) throws DatabaseException
+    {
+        NafeaDatabase.startConnection();
+
+        String command = "SELECT ";
+        for(int i = 0; i < attributes.size(); i++)
+        {
+            if(i == (attributes.size() -1) )
+                command += attributes.get(i);
+            else
+                command += attributes.get(i) + ",";
+        }
+        command += "FROM " + tableName;
+
+        ResultSet rows = NafeaDatabase.executeQuery(command);
+
+        NafeaDatabase.closeConnection();
+        return rows;
+    }
+
+    protected static ResultSet retrieve(String attribute, String tableName, String condition) throws DatabaseException
     {
         NafeaDatabase.startConnection();
 
@@ -57,7 +93,7 @@ public class DatabasePool
         return rows;
     }
 
-    public ResultSet retrieve(ArrayList<String> attributes, String tableName, String condition) throws DatabaseException
+    protected static ResultSet retrieve(ArrayList<String> attributes, String tableName, String condition) throws DatabaseException
     {
         NafeaDatabase.startConnection();
 
@@ -78,7 +114,7 @@ public class DatabasePool
         return rows;
     }
 
-    public ResultSet retrieve(String command) throws DatabaseException
+    protected static ResultSet retrieve(String command) throws DatabaseException
     {
         NafeaDatabase.startConnection();
 

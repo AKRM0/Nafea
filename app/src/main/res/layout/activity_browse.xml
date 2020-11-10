@@ -6,54 +6,193 @@
     android:layout_height="match_parent"
     tools:context=".ui.BrowseActivity">
 
-    <LinearLayout
-        android:id="@+id/options_verBox"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="189dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/buttons_verBox"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/b_brsNext"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.595">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <Spinner
-            android:id="@+id/dropDown_spi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <HorizontalScrollView
-            android:id="@+id/iconGallery_horScroll"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:id="@+id/iconGallery_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal"/>
-        </HorizontalScrollView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/buttons_verBox"
-        android:layout_width="413dp"
-        android:layout_height="123dp"
-        android:gravity="bottom"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.473"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/b_brsNext"
-            style="@style/Nafea_DefaultButton"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/buttonText_next" />
-    </LinearLayout>
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/univ_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+
+                <TextView
+                    android:id="@+id/txt_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="@string/label_city"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <com.ksu.nafea.ui.nviews.NSpinner
+                    android:id="@+id/dropDown_cities"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+
+                <TextView
+                    android:id="@+id/txt_univ"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="@string/label_university"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="125dp">
+
+                    <com.ksu.nafea.ui.nviews.SliderGallery
+                        android:id="@+id/gallery_univ"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        app:icon_corners_radius="0"
+                        app:icon_form="text_form">
+
+                    </com.ksu.nafea.ui.nviews.SliderGallery>
+                </HorizontalScrollView>
+
+                <TextView
+                    android:id="@+id/txt_univResult"
+                    style="@style/SelectIconResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/coll_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+
+                <TextView
+                    android:id="@+id/txt_collCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="@string/label_collegeCategory"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <com.ksu.nafea.ui.nviews.NSpinner
+                    android:id="@+id/dropDown_categories"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+
+                <TextView
+                    android:id="@+id/txt_coll"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="@string/label_college"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="125dp">
+
+                    <com.ksu.nafea.ui.nviews.SliderGallery
+                        android:id="@+id/gallery_coll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+
+                    </com.ksu.nafea.ui.nviews.SliderGallery>
+                </HorizontalScrollView>
+
+                <TextView
+                    android:id="@+id/txt_collegeResult"
+                    style="@style/SelectIconResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/major_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+
+                <TextView
+                    android:id="@+id/txt_major"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="@string/label_major"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="125dp">
+
+                    <com.ksu.nafea.ui.nviews.SliderGallery
+                        android:id="@+id/gallery_major"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+
+                    </com.ksu.nafea.ui.nviews.SliderGallery>
+                </HorizontalScrollView>
+
+                <TextView
+                    android:id="@+id/txt_majorResult"
+                    style="@style/SelectIconResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/b_brsNext"
+        style="@style/Nafea_DefaultButton"
+        android:layout_width="0dp"
+        android:layout_height="43dp"
+        android:text="@string/buttonText_next"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

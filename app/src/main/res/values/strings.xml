@@ -12,5 +12,18 @@
     <string name="checkboxLabel_remember_me">Remember Me</string>
     <string name="clickableText_createAccount"><u>Create an account</u></string>
     <string name="buttonText_login">Login</string>
+    <string name="label_city">المدينة</string>
+    <string name="label_university">الجامعة</string>
+    <string name="label_collegeCategory">تصنيف الكلية (المسار)</string>
+    <string name="label_college">الكلية</string>
+    <string name="label_major">التخصص</string>
+    <string name="clickableText_downloadDepPlan">Download Plan</string>
+    <string name="clickableText_showDepPlan">Show Department Plan</string>
+    <string name="buttonText_addCourse">Add Course</string>
+    <string name="buttonText_removeCourse">Remove Course</string>
+    <string name="label_courseName">اسم المقرر:</string>
+    <string name="label_courseSymbol">رمز المقرر:</string>
+    <string name="label_courseLevel">مستوى المقرر:</string>
+    <string name="label_courseDesc">وصف المقرر:</string>
 
 </resources>

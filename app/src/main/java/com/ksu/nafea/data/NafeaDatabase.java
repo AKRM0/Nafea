@@ -1,5 +1,7 @@
 package com.ksu.nafea.data;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import com.ksu.nafea.utilities.DatabaseException;
 
 import java.sql.Connection;

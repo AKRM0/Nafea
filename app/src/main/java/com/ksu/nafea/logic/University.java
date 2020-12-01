@@ -1,8 +1,7 @@
 package com.ksu.nafea.logic;
 
-import com.ksu.nafea.data.UniversityPool;
 import com.ksu.nafea.ui.nviews.IconData;
-import com.ksu.nafea.utilities.DatabaseException;
+import com.ksu.nafea.data.DatabaseException;
 
 import java.util.ArrayList;
 
@@ -23,7 +22,7 @@ public class University implements IconData
 
     public static ArrayList<String> retrieveAllCities() throws DatabaseException
     {
-        return UniversityPool.retrieveAllCities();
+        return null;
     }
 
 }

@@ -2,19 +2,11 @@ package com.ksu.nafea.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,11 +17,10 @@ import com.ksu.nafea.logic.University;
 import com.ksu.nafea.ui.nviews.NSpinner;
 import com.ksu.nafea.ui.nviews.SliderGallery;
 import com.ksu.nafea.ui.nviews.TextImage;
-import com.ksu.nafea.utilities.DatabaseException;
+import com.ksu.nafea.data.DatabaseException;
 import com.ksu.nafea.utilities.NafeaUtil;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class BrowseActivity extends AppCompatActivity
 {

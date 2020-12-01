@@ -1,23 +1,47 @@
 package com.ksu.nafea.logic;
 
 
+import android.content.Context;
+import android.util.Log;
 import android.util.Patterns;
+import android.widget.Toast;
 
+import com.ksu.nafea.data.QueryRequestFlag;
+import com.ksu.nafea.data.DatabaseException;
+import com.ksu.nafea.data.QueryResult;
+import com.ksu.nafea.data.QueryResultFlag;
+import com.ksu.nafea.data.UserPool;
 import com.ksu.nafea.utilities.InvalidFieldException;
 
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class User
 {
+    public static String TAG = "User";
+
     private String email;
     private String pass;
     private String fullname;
     private boolean hasAuthority = false;
 
+
+    public User()
+    {
+        email = "";
+        pass = "";
+        fullname = "";
+    }
     public User(String email, String pass)
     {
         this.email = email;
         this.pass = pass;
+    }
+    public User(String email, String pass, String firstName, String lastName)
+    {
+        this.email = email;
+        this.pass = pass;
+        this.setFullname(firstName, lastName);
     }
 
 
@@ -29,8 +53,60 @@ public class User
     }
 
     // login user with current data.
-    public boolean login()
+    public boolean login(final Context context)
     {
+        ArrayList<User> students = null;
+        UserPool.retrieveStudent(email, new QueryResultFlag()
+        {
+            @Override
+            public void onQuerySuccess(Object queryResult)
+            {
+                if(queryResult != null)
+                {
+                    User student = (User) queryResult;
+                    if(student != null)
+                    {
+                        if(student.pass == pass)
+                            Toast.makeText(context, "Login successfully.", Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(context, "Wrong password", Toast.LENGTH_LONG).show();
+                    }
+                }
+                else
+                    Toast.makeText(context, "Wrong email", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onQueryFailure()
+            {
+                Toast.makeText(context, "query failed", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        //String msg = "";
+        //Log.d(TAG, msg);
+
+        /*
+        UserPool.insertStudent(email, pass, "Ahmed", "Saad", 1, new QueryRequestFlag()
+        {
+            @Override
+            public void onSuccess(QueryResult result)
+            {
+                String msg = "Login Success: " + result.getQueryStatus().getInt("affectedRows");
+                Log.d("Nafea", msg);
+                Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(DatabaseException error)
+            {
+                Log.d("Nafea", "Error: " + error.getMessage());
+                Toast.makeText(context, "Login Failed!", Toast.LENGTH_LONG).show();
+            }
+        });
+
+         */
+
         return true;
     }
 
@@ -218,6 +294,19 @@ public class User
     }
 
 
+
+    @Override
+    public String toString()
+    {
+        return "User{" +
+                "email='" + email + '\'' +
+                ", pass='" + pass + '\'' +
+                ", fullname='" + fullname + '\'' +
+                ", hasAuthority=" + hasAuthority +
+                '}';
+    }
+
+
     //-----------------------[Getters & Setters]-----------------------
 
     public String getEmail() {
@@ -243,6 +332,18 @@ public class User
     public void setFullname(String fullname) {
         this.fullname = fullname;
     }
+
+    public void setFullname(String firstName, String lastName)
+    {
+        fullname = "";
+
+        if(firstName != null)
+            fullname = firstName + " ";
+
+        if(lastName != null)
+            fullname += lastName;
+    }
+
 
 }
 

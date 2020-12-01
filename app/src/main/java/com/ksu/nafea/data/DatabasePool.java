@@ -179,5 +179,7 @@ public class DatabasePool
         return urlRequest;
     }
 
-
+    protected static String converString(String s){
+        return "\""+s+"\"";
+    }
 }

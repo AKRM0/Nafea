@@ -38,8 +38,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Intent intent = new Intent(this, BrowseActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, BrowseActivity.class);
+        //startActivity(intent);
 
         loginActivInit();
 
@@ -125,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
             String pass = field.get(1).getText().toString();
             user = new User(email, pass);
 
-            if(user.login())
+            if(user.login(this))
             {
                 if(rememberMe.isChecked())
                 {
@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(this, "Logging in successfully.", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(this, "Logging in successfully.", Toast.LENGTH_LONG).show();
                 }
             }
         }

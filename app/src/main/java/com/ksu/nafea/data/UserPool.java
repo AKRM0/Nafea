@@ -1,57 +1,121 @@
 package com.ksu.nafea.data;
 
+import android.util.Log;
+
 import com.ksu.nafea.logic.User;
-import com.ksu.nafea.utilities.DatabaseException;
+
+import java.util.ArrayList;
 
 public class UserPool extends DatabasePool
 {
-    public boolean insertStudent(String s_email, String password, String firstName, String lastName)  throws DatabaseException
+    public static String TAG = "UserPool";
+
+    public static void insertStudent(String email, String password, String firstName, String lastName, Integer majorID, final QueryResultFlag resultFlag)
     {
-        String ins = "(" + s_email + "," + password + "," + firstName + "," + lastName + ")";
-        return insert("Student", ins);
-    }
-    public boolean insertadmin(String a_email, String password, String firstName, String lastName) throws DatabaseException
-    {
-        String ins = "(" + a_email + "," + password + "," + firstName + "," + lastName + ")";
-        return insert("Admin", ins);
+        ArrayList<Object> values = new ArrayList<Object>();
+
+        values.add(email);
+        values.add(password);
+        values.add(firstName);
+        values.add(lastName);
+        values.add(majorID);
+
+        insert("student", values, new QueryRequestFlag()
+        {
+            @Override
+            public void onRequestSuccess(QueryResult result)
+            {
+                resultFlag.onQuerySuccess(null);
+            }
+
+            @Override
+            public void onRequestFailure(DatabaseException error)
+            {
+                Log.e(TAG, error.getQueryErrorFormat());
+                resultFlag.onQueryFailure();
+            }
+        });
     }
 
-    public boolean updateStudent(String new_value, String position, String s_email) throws DatabaseException
+
+
+    public static void retrieveStudent(String email, final QueryResultFlag resultFlag)
     {
-        String condition = "SET" + " " + position + " " + "=" + " " + new_value + " " + "WHERE s_email = " + s_email;
-        return Update( "Student", condition);
-    }
-    public boolean updateAdmin(String new_value, String position, String a_email) throws DatabaseException
-    {
-        String condition = "SET" + " " + position + " " + "=" + " " + new_value + " " + "WHERE e_email = " + a_email;
-        return Update( "Admin", condition);
+        final User student = new User();
+
+        ArrayList<String> attrs = new ArrayList<String>();
+        attrs.add("s_email");
+        attrs.add("password");
+        String condition = "s_email =  \"" + email + "\"";
+
+        retrieve("student", attrs, condition, new QueryRequestFlag()
+        {
+            @Override
+            public void onRequestSuccess(QueryResult result)
+            {
+                QueryRow row = result.getRow(0);
+                if(row != null)
+                {
+                    String email = row.getString("s_email");
+                    String pass = row.getString("password");
+                    String firstName = row.getString("first_name");
+                    String lastName = row.getString("last_name");
+
+                    student.setEmail(email);
+                    student.setPass(pass);
+                    student.setFullname(firstName, lastName);
+
+                    resultFlag.onQuerySuccess(student);
+                }
+                else
+                    resultFlag.onQuerySuccess(null);
+            }
+
+            @Override
+            public void onRequestFailure(DatabaseException error)
+            {
+                Log.e(TAG, error.getQueryErrorFormat());
+                resultFlag.onQueryFailure();
+            }
+        });
     }
 
-    public boolean deleteStudent(String condition) throws DatabaseException
+    public static void retrieveAllStudents(final QueryResultFlag resultFlag)
     {
-        String cond = "WHERE"+ ""+condition;
-        return delete("Student",cond);
-    }
-    public boolean deleteAdmin(String condition) throws DatabaseException
-    {
-        String cond = "WHERE"+ ""+condition;
-        return delete("Admin",cond);
+        final ArrayList<User> students = new ArrayList<User>();
+
+        retrieve("student", new ArrayList<String>(), "", new QueryRequestFlag()
+        {
+            @Override
+            public void onRequestSuccess(QueryResult result)
+            {
+                for(int i = 0; i < result.length(); i++)
+                {
+                    QueryRow row = result.getRow(i);
+                    if(row != null)
+                    {
+                        String email = row.getString("s_email");
+                        String pass = row.getString("password");
+                        String firstName = row.getString("first_name");
+                        String lastName = row.getString("last_name");
+
+                        students.add(new User(email, pass, firstName, lastName));
+                    }
+                }
+
+                if(!students.isEmpty())
+                    resultFlag.onQuerySuccess(students);
+                else
+                    resultFlag.onQuerySuccess(null);
+            }
+
+            @Override
+            public void onRequestFailure(DatabaseException error)
+            {
+                Log.e(TAG, error.getQueryErrorFormat());
+                resultFlag.onQueryFailure();
+            }
+        });
     }
 
-    public User retrieveStudent(String condition, String attribute) {
-        String command =  " " + "WHERE" + " " + condition;
-        //To-Do retrieve result Student as object,
-        //retrieve(attribute,"Admin",command);
-        User st = new User("","");
-        //assign attributes to st object
-        return st;
-    }
-    public User retrieveAdmin(String condition,String attribute){
-        String command =  " " + "WHERE" + " " + condition;
-        //To-Do retrieve result admin as object,
-        // retrieve(attribute,"Admin",command);
-        User ad = new User("","");
-        //assign attributes to ad object
-        return ad;
-    }
 }

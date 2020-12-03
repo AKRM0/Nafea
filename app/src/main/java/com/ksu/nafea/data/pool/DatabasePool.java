@@ -1,8 +1,11 @@
-package com.ksu.nafea.data;
+package com.ksu.nafea.data.pool;
 
 import android.util.Log;
 
 import com.ksu.nafea.api.NafeaApiRequest;
+import com.ksu.nafea.data.DatabaseException;
+import com.ksu.nafea.data.QueryRequestFlag;
+import com.ksu.nafea.data.QueryResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +20,8 @@ public class DatabasePool
 
 {
     private static Retrofit retrofit = null;
-    private static String BASE_URL = "http://10.0.2.2:5002";
+    private static final String BASE_URL = "http://10.0.2.2:5002";
+    protected static final String QUERY_FAILURE_MSG = "/Failed Request";
 
     protected static NafeaApiRequest getDatabaseAPI()
     {
@@ -179,7 +183,8 @@ public class DatabasePool
         return urlRequest;
     }
 
-    protected static String converString(String s){
+    protected static String convertString(String s)
+    {
         return "\""+s+"\"";
     }
 }

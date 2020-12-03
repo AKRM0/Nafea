@@ -3,6 +3,7 @@ package com.ksu.nafea.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -11,9 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ksu.nafea.R;
+import com.ksu.nafea.data.QueryResultFlag;
 import com.ksu.nafea.logic.College;
 import com.ksu.nafea.logic.Major;
 import com.ksu.nafea.logic.University;
+import com.ksu.nafea.logic.User;
 import com.ksu.nafea.ui.nviews.NSpinner;
 import com.ksu.nafea.ui.nviews.SliderGallery;
 import com.ksu.nafea.ui.nviews.TextImage;
@@ -21,18 +24,21 @@ import com.ksu.nafea.data.DatabaseException;
 import com.ksu.nafea.utilities.NafeaUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BrowseActivity extends AppCompatActivity
 {
+    public static final String TAG = "BrowseActivity";
+
     private ArrayList<LinearLayout> layouts;
     private ArrayList<NSpinner> dropDown;
     private ArrayList<SliderGallery> galleries;
     private ArrayList<TextView> results;
     private Button next;
 
-    private University selectedUniversity = null;
-    private College selectedCollege = null;
-    private Major selectedMajor = null;
+    private ArrayList<University> universities = null;
+    private ArrayList<College> colleges = null;
+    private ArrayList<Major> majors = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,19 +48,6 @@ public class BrowseActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         browseActivInit();
-
-
-        // Testing
-        for(int i = 0; i < 10; i++)
-        {
-            dropDown.get(0).addOption("city " + i);
-            galleries.get(0).insert(new University("KSU " + i));
-
-            dropDown.get(1).addOption("category " + i);
-            galleries.get(1).insert(new University("Coll " + i));
-
-            galleries.get(2).insert(new University("Major " + i));
-        }
 
         onNextClicked();
         onSelectGalleryOption();
@@ -66,6 +59,10 @@ public class BrowseActivity extends AppCompatActivity
 
     private void browseActivInit()
     {
+        universities = new ArrayList<University>();
+        colleges = new ArrayList<College>();
+        majors = new ArrayList<Major>();
+
         layouts = new ArrayList<LinearLayout>();
         dropDown = new ArrayList<NSpinner>();
         galleries = new ArrayList<SliderGallery>();
@@ -105,26 +102,37 @@ public class BrowseActivity extends AppCompatActivity
 
 
         initCities();
-        retrieveData(0);
     }
 
     private void initCities()
     {
-        NSpinner cityDropDown = dropDown.get(0);
-        ArrayList<String> cities = new  ArrayList<String>();
-        try
-        {
-            cities = University.retrieveAllCities();
-        }
-        catch (DatabaseException e)
-        {
-            NafeaUtil.showToastMsg(this, e.getMessage(), Toast.LENGTH_LONG);
-        }
+        final NSpinner cityDropDown = dropDown.get(0);
 
-        for(int i = 0; i < cities.size(); i++)
+        University.retrieveAllCities(new QueryResultFlag()
         {
-            cityDropDown.addOption(cities.get(i));
-        }
+            @Override
+            public void onQuerySuccess(Object queryResult)
+            {
+                if(queryResult != null)
+                {
+                    ArrayList<String> cities = (ArrayList<String>) queryResult;
+                    for(int i = 0; i < cities.size(); i++)
+                    {
+                        cityDropDown.addOption(cities.get(i));
+                    }
+
+
+                    retrieveGalleryData(0);
+                }
+            }
+
+            @Override
+            public void onQueryFailure(String failureMsg)
+            {
+                Log.e(TAG, failureMsg + "/Init Cities");
+                Toast.makeText(BrowseActivity.this, "Couldn't retrieve cities.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 
@@ -142,7 +150,44 @@ public class BrowseActivity extends AppCompatActivity
 
     private void executeNext()
     {
-        // To-Do
+        String emailKey = "email";
+        String passKey = "pass";
+        String fullnameKey = "fullname";
+
+        final String email = getIntent().getStringExtra(emailKey);
+        String pass = getIntent().getStringExtra(passKey);
+        ArrayList<String> fullname = new ArrayList<String>(Arrays.asList(getIntent().getStringExtra(fullnameKey).split(" ")));
+
+        String firstName = fullname.get(0);
+        String lastName = fullname.get(1);
+
+        Integer majorID = galleries.get(2).getSelectedElement().getIconID();
+        User.register(email, pass, firstName, lastName, majorID, new QueryResultFlag()
+        {
+            @Override
+            public void onQuerySuccess(Object queryResult)
+            {
+                if(queryResult != null)
+                {
+                    Integer affectedRows = (Integer)queryResult;
+                    if(affectedRows != null)
+                    {
+                        if(affectedRows >= 1)
+                        {
+                            Toast.makeText(BrowseActivity.this, "User with email "  + email + " register successfully.", Toast.LENGTH_LONG).show();
+
+                            finish();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onQueryFailure(String failureMsg)
+            {
+                Toast.makeText(BrowseActivity.this, "Failed to register.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 
@@ -164,7 +209,12 @@ public class BrowseActivity extends AppCompatActivity
 
                     if(gallery.isSelectedElement())
                     {
+                        int nextStep = currentStep + 1;
+                        if(nextStep <= 2)
+                            galleries.get(currentStep+1).removeAll();
+
                         results.get(currentStep).setText(clickedElement.getText());
+                        retrieveDropdownData(nextStep);
                         showNextStep(currentStep);
                     }
                 }
@@ -191,7 +241,7 @@ public class BrowseActivity extends AppCompatActivity
                         clearSelection(currentStep);
                         dropDownList.setPreviousSelectedPosition(position);
 
-                        retrieveData(currentStep);
+                        retrieveGalleryData(currentStep);
                     }
 
                 }
@@ -205,6 +255,12 @@ public class BrowseActivity extends AppCompatActivity
         }
     }
 
+    private void onRetrieveData()
+    {
+        onSelectGalleryOption();
+        onSelectDropdownOption();
+    }
+
 
     private void showNextStep(int currentStepIndex)
     {
@@ -214,8 +270,6 @@ public class BrowseActivity extends AppCompatActivity
             layouts.get(nextStepIndex).setVisibility(View.VISIBLE);
         else if(nextStepIndex == layouts.size())
             next.setVisibility(View.VISIBLE);
-
-        retrieveData(nextStepIndex);
     }
 
     private void clearSelection(int galleryIndex)
@@ -239,23 +293,160 @@ public class BrowseActivity extends AppCompatActivity
     }
 
 
-    private void retrieveData(int galleryIndex)
+    private void retrieveDropdownData(int dropdownIndex)
+    {
+        switch (dropdownIndex)
+        {
+            case 0:
+                break;
+            case 1:
+                getCategoriesFromDB();
+                break;
+            case 2:
+                retrieveGalleryData(2);
+                break;
+        }
+    }
+
+    private void retrieveGalleryData(int galleryIndex)
     {
         switch (galleryIndex)
         {
             case 0:
-                // To-Do retrieve Universities.
-                //galleries.get(galleryIndex).insert();
-
-
+                getUniversitiesFromDB();
                 break;
             case 1:
-                // To-Do retrieve Colleges.
+                getCollegesFromDB();
                 break;
             case 2:
-                // To-Do retrieve Majors.
+                getMajorsFromDB();
                 break;
         }
+    }
+
+    private void getUniversitiesFromDB()
+    {
+        University.retrieveUniversitiesOnCity(dropDown.get(0).getSelectedOption(), new QueryResultFlag()
+        {
+            @Override
+            public void onQuerySuccess(Object queryResult)
+            {
+                if(queryResult != null)
+                {
+                    universities = (ArrayList<University>) queryResult;
+                    SliderGallery gallery = galleries.get(0);
+                    gallery.removeAll();
+                    for(int i = 0; i < universities.size(); i++)
+                    {
+                        gallery.insert(universities.get(i));
+                    }
+
+                    onRetrieveData();
+                }
+            }
+
+            @Override
+            public void onQueryFailure(String failureMsg)
+            {
+                Toast.makeText(BrowseActivity.this, "Failed to retrieve Universities.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void getCategoriesFromDB()
+    {
+        Integer univID = galleries.get(0).getSelectedElement().getIconID();
+        final NSpinner categoriesDropdown = dropDown.get(1);
+
+        College.retrieveAllCategories(univID, new QueryResultFlag()
+        {
+            @Override
+            public void onQuerySuccess(Object queryResult)
+            {
+                if(queryResult != null)
+                {
+                    ArrayList<String> categories = (ArrayList<String>) queryResult;
+                    categoriesDropdown.removeAllOptions();
+                    for(int i = 0; i < categories.size(); i++)
+                    {
+                        categoriesDropdown.addOption(categories.get(i));
+                    }
+
+                    retrieveGalleryData(1);
+                    onRetrieveData();
+                }
+            }
+
+            @Override
+            public void onQueryFailure(String failureMsg)
+            {
+                Toast.makeText(BrowseActivity.this, "Failed to retrieve College Categories.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void getCollegesFromDB()
+    {
+        Integer univID = galleries.get(0).getSelectedElement().getIconID();
+        String collCategory = dropDown.get(1).getSelectedOption();
+        if(univID == null || collCategory == null)
+            return;
+
+        College.retrieveCollegeOnCategory(univID, collCategory, new QueryResultFlag()
+        {
+            @Override
+            public void onQuerySuccess(Object queryResult)
+            {
+                if(queryResult != null)
+                {
+                    colleges = (ArrayList<College>) queryResult;
+                    SliderGallery gallery = galleries.get(1);
+                    gallery.removeAll();
+                    for(int i = 0; i < colleges.size(); i++)
+                    {
+                        gallery.insert(colleges.get(i));
+                    }
+
+                    onRetrieveData();
+                }
+            }
+
+            @Override
+            public void onQueryFailure(String failureMsg)
+            {
+                Toast.makeText(BrowseActivity.this, "Failed to retrieve Colleges.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void getMajorsFromDB()
+    {
+        Integer collID = galleries.get(1).getSelectedElement().getIconID();
+        Major.retrieveMajorsOnCollege(collID, new QueryResultFlag()
+        {
+            @Override
+            public void onQuerySuccess(Object queryResult)
+            {
+                if(queryResult != null)
+                {
+                    majors = (ArrayList<Major>) queryResult;
+                    SliderGallery gallery = galleries.get(2);
+                    gallery.removeAll();
+                    for(int i = 0; i < majors.size(); i++)
+                    {
+                        gallery.insert(majors.get(i));
+                    }
+
+                    onRetrieveData();
+                }
+            }
+
+            @Override
+            public void onQueryFailure(String failureMsg)
+            {
+                Toast.makeText(BrowseActivity.this, "Failed to retrieve Majors.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 }

@@ -44,6 +44,8 @@ public class TextImage extends RelativeLayout
     private int backgroundColor;
     private Drawable imgDrawable = null;
 
+    private Integer iconID = 0;
+
     private TextView textView = null;
     private ImageView coverView = null;
     private ImageView imageView = null;
@@ -500,6 +502,17 @@ public class TextImage extends RelativeLayout
     public void setForm(int form)
     {
         this.form = form;
+    }
+
+
+    public Integer getIconID()
+    {
+        return iconID;
+    }
+
+    public void setIconID(Integer iconID)
+    {
+        this.iconID = iconID;
     }
 
 }

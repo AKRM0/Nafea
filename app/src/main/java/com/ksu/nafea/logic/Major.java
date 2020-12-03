@@ -1,11 +1,16 @@
 package com.ksu.nafea.logic;
 
+import com.ksu.nafea.data.QueryResultFlag;
+import com.ksu.nafea.data.pool.MajorPool;
 import com.ksu.nafea.ui.nviews.IconData;
+
+import java.util.ArrayList;
 
 public class Major implements IconData
 {
     private Integer id,coll_id;
     private String name,plan;
+    private ArrayList<Course> courses;
 
     public Major(Integer id, String name, String plan, Integer coll_id) {
         this.id = id;
@@ -15,6 +20,11 @@ public class Major implements IconData
     }
 
     public Integer getId() {
+        return id;
+    }
+
+    public Integer getIconID()
+    {
         return id;
     }
 
@@ -56,4 +66,35 @@ public class Major implements IconData
     {
         return name;
     }
+
+
+
+    public static void retrieveMajorsOnCollege(Integer coll_id, final QueryResultFlag resultFlag)
+    {
+        MajorPool.retrieveMajorsOnCollege(coll_id, new QueryResultFlag()
+        {
+            @Override
+            public void onQuerySuccess(Object queryResult)
+            {
+                if(queryResult != null)
+                {
+                    ArrayList<Major> majors = (ArrayList<Major>) queryResult;
+                    if(majors != null)
+                    {
+                        resultFlag.onQuerySuccess(majors);
+                        return;
+                    }
+                }
+
+                resultFlag.onQuerySuccess(null);
+            }
+
+            @Override
+            public void onQueryFailure(String failureMsg)
+            {
+                resultFlag.onQueryFailure(failureMsg + "/Retrieve Majors On College");
+            }
+        });
+    }
+
 }

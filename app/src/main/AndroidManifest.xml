@@ -22,7 +22,7 @@
         <activity android:name=".ui.TestActiv" />
         <activity
             android:name=".ui.BrowseActivity"
-            android:parentActivityName=".ui.RegisterActivity" />
+            android:parentActivityName=".ui.LoginActivity" />
         <activity
             android:name=".ui.RegisterActivity"
             android:parentActivityName=".ui.LoginActivity" />

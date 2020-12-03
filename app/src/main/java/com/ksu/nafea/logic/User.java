@@ -6,11 +6,9 @@ import android.util.Log;
 import android.util.Patterns;
 import android.widget.Toast;
 
-import com.ksu.nafea.data.QueryRequestFlag;
-import com.ksu.nafea.data.DatabaseException;
 import com.ksu.nafea.data.QueryResult;
 import com.ksu.nafea.data.QueryResultFlag;
-import com.ksu.nafea.data.UserPool;
+import com.ksu.nafea.data.pool.UserPool;
 import com.ksu.nafea.utilities.InvalidFieldException;
 
 import java.util.ArrayList;
@@ -46,16 +44,15 @@ public class User
 
 
 
-    // register user with current data.
-    public boolean register()
+
+    public static void register(String email, String password, String firstName, String lastName, Integer majorID, final QueryResultFlag resultFlag)
     {
-        return true;
+        UserPool.insertStudent(email, password, firstName, lastName, majorID, resultFlag);
     }
 
-    // login user with current data.
-    public boolean login(final Context context)
+
+    public static void login(String email, final String password, final QueryResultFlag resultFlag)
     {
-        ArrayList<User> students = null;
         UserPool.retrieveStudent(email, new QueryResultFlag()
         {
             @Override
@@ -63,51 +60,28 @@ public class User
             {
                 if(queryResult != null)
                 {
-                    User student = (User) queryResult;
-                    if(student != null)
+                    ArrayList<User> students = (ArrayList<User>) queryResult;
+                    if(students != null)
                     {
-                        if(student.pass == pass)
-                            Toast.makeText(context, "Login successfully.", Toast.LENGTH_LONG).show();
-                        else
-                            Toast.makeText(context, "Wrong password", Toast.LENGTH_LONG).show();
+                        User student = students.get(0);
+                        if(!student.getPass().equals(password))
+                            student.setPass(null);
+
+                        resultFlag.onQuerySuccess(student);
+                        return;
                     }
                 }
-                else
-                    Toast.makeText(context, "Wrong email", Toast.LENGTH_LONG).show();
+
+                resultFlag.onQuerySuccess(new User(null, null));
             }
 
             @Override
-            public void onQueryFailure()
+            public void onQueryFailure(String failureMsg)
             {
-                Toast.makeText(context, "query failed", Toast.LENGTH_LONG).show();
+                resultFlag.onQueryFailure(failureMsg + "/Retrieve Student");
             }
         });
 
-        //String msg = "";
-        //Log.d(TAG, msg);
-
-        /*
-        UserPool.insertStudent(email, pass, "Ahmed", "Saad", 1, new QueryRequestFlag()
-        {
-            @Override
-            public void onSuccess(QueryResult result)
-            {
-                String msg = "Login Success: " + result.getQueryStatus().getInt("affectedRows");
-                Log.d("Nafea", msg);
-                Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFailure(DatabaseException error)
-            {
-                Log.d("Nafea", "Error: " + error.getMessage());
-                Toast.makeText(context, "Login Failed!", Toast.LENGTH_LONG).show();
-            }
-        });
-
-         */
-
-        return true;
     }
 
 

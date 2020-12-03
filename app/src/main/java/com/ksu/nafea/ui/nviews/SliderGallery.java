@@ -104,12 +104,13 @@ public class SliderGallery extends LinearLayout
         return layoutParams;
     }
 
-    private  TextImage createTextImage(String text, int width, int height, int form, int cornersRadius, int edgesThickness, int backgroundAlpha, int edgesAlpha)
+    private  TextImage createTextImage(Integer iconID, String text, int width, int height, int form, int cornersRadius, int edgesThickness, int backgroundAlpha, int edgesAlpha)
     {
         final float dp = getResources().getDisplayMetrics().density;
 
         TextImage textImage = new TextImage(getContext());
 
+        textImage.setIconID(iconID);
         textImage.setText(text);
         textImage.setTextSize(textSize);
         textImage.setForm(form);
@@ -190,9 +191,14 @@ public class SliderGallery extends LinearLayout
     }
 
 
+    public int length()
+    {
+        return icon.size();
+    }
+
     public boolean insert(IconData data)
     {
-        TextImage textImage = createTextImage(data.getText(), iconWidth, iconHeight, iconForm, iconCornersRadius, iconEdgesThickness, backgroundAlpha, edgesAlpha);
+        TextImage textImage = createTextImage(data.getIconID(), data.getText(), iconWidth, iconHeight, iconForm, iconCornersRadius, iconEdgesThickness, backgroundAlpha, edgesAlpha);
         addView(textImage);
 
         return this.icon.add(textImage);
@@ -213,11 +219,13 @@ public class SliderGallery extends LinearLayout
         if(this.icon.isEmpty())
             return true;
 
+        //removeView(icon);
         return this.icon.remove(icon);
     }
 
     public void removeAll()
     {
+        removeAllViews();
         for(int i = 0; i < icon.size(); i++)
         {
             remove(icon.get(i));

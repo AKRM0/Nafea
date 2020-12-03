@@ -56,7 +56,12 @@ public class NSpinner extends androidx.appcompat.widget.AppCompatSpinner
 
     public String getSelectedOption()
     {
-        return (String) getSelectedItem();
+        String option = (String) getSelectedItem();
+        if(option == null && !spinnerAdapter.isEmpty())
+            return spinnerAdapter.getItem(0);
+
+
+        return option;
     }
 
     public int getPreviousSelectedPosition() {

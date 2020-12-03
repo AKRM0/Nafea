@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,13 +15,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ksu.nafea.R;
+import com.ksu.nafea.data.QueryResultFlag;
 import com.ksu.nafea.logic.User;
 import com.ksu.nafea.utilities.InvalidFieldException;
 import com.ksu.nafea.utilities.NafeaUtil;
 
 import java.util.ArrayList;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity
+{
+    public static final String TAG = "LoginActivity";
 
     private ArrayList<TextView> label;
     private ArrayList<EditText> field;
@@ -119,23 +123,54 @@ public class LoginActivity extends AppCompatActivity {
 
     private void executeLogin()
     {
+        NafeaUtil.updateField(field.get(0), "");
+        NafeaUtil.updateField(field.get(1), "");
+
         if(validateFields())
         {
             String email = field.get(0).getText().toString();
             String pass = field.get(1).getText().toString();
             user = new User(email, pass);
 
-            if(user.login(this))
+            user.login(email, pass, new QueryResultFlag()
             {
-                if(rememberMe.isChecked())
+                @Override
+                public void onQuerySuccess(Object queryResult)
                 {
+                    user = (User) queryResult;
+                    if(user.getEmail() != null)
+                    {
+                        if(user.getPass() != null)
+                            Toast.makeText(LoginActivity.this, "Login Successfully.", Toast.LENGTH_LONG).show();
+                        else
+                        {
+                            NafeaUtil.updateField(field.get(1), "Wrong Password");
+                        }
+                    }
+                    else
+                    {
+                        NafeaUtil.updateField(field.get(0), "Wrong Email");
+                    }
 
+
+                    if(rememberMe.isChecked())
+                    {
+
+                    }
+                    else
+                    {
+                        //Toast.makeText(this, "Logging in successfully.", Toast.LENGTH_LONG).show();
+                    }
                 }
-                else
+
+                @Override
+                public void onQueryFailure(String failureMsg)
                 {
-                    //Toast.makeText(this, "Logging in successfully.", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, failureMsg + "/Login");
+                    Toast.makeText(LoginActivity.this, "Failed to login", Toast.LENGTH_LONG).show();
                 }
-            }
+            });
+
         }
     }
 

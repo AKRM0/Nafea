@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ksu.nafea.R;
 import com.ksu.nafea.logic.User;
@@ -19,7 +21,9 @@ import com.ksu.nafea.utilities.NafeaUtil;
 
 import java.util.ArrayList;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity
+{
+    public static final String TAG = "RegisterActivity";
 
     private ArrayList<TextView> label;
     private ArrayList<EditText> field;
@@ -28,7 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
     private User user = null; // To-Do
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // shows back button on up-left corner.
@@ -61,6 +66,15 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
     }
+
+
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+        finish();
+    }
+
 
     private void regActivInit()
     {
@@ -123,7 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
         {
             String firstName = field.get(0).getText().toString();
             String lastName = field.get(1).getText().toString();
-            user.setFullname(firstName + " " + lastName);
+            user.setFullname(firstName, lastName);
 
             setStep(3);
         }
@@ -131,10 +145,11 @@ public class RegisterActivity extends AppCompatActivity {
         {
             //To-Do add university, college, major.
 
-            if(user.register())
-            {
-                //To-Do end activity.
-            }
+            //user.register()
+           // if()
+           // {
+           //     //To-Do end activity.
+           // }
         }
     }
 
@@ -201,7 +216,8 @@ public class RegisterActivity extends AppCompatActivity {
             }
             else if(step == 2)
             {
-                User.isValidInput(fieldLabel, fieldText, false, false);
+                if(inputField.getVisibility() == View.VISIBLE)
+                    User.isValidInput(fieldLabel, fieldText, false, false);
             }
         }
         catch (InvalidFieldException e)
@@ -273,6 +289,14 @@ public class RegisterActivity extends AppCompatActivity {
                 break;
             case 3:
                 Intent intent = new Intent(this, BrowseActivity.class);
+
+                String emailKey = "email";
+                String passKey = "pass";
+                String fullnameKey = "fullname";
+                intent.putExtra(emailKey, user.getEmail());
+                intent.putExtra(passKey, user.getPass());
+                intent.putExtra(fullnameKey, user.getFullname());
+
                 startActivity(intent);
                 break;
         }

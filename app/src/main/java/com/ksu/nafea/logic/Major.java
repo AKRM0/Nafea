@@ -1,7 +1,6 @@
 package com.ksu.nafea.logic;
 
-import com.ksu.nafea.data.QueryResultFlag;
-import com.ksu.nafea.data.pool.MajorPool;
+import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.ui.nviews.IconData;
 
 import java.util.ArrayList;
@@ -69,32 +68,32 @@ public class Major implements IconData
 
 
 
-    public static void retrieveMajorsOnCollege(Integer coll_id, final QueryResultFlag resultFlag)
+    public static void retrieveMajorsOnCollege(Integer coll_id, final QueryRequestFlag resultFlag)
     {
-        MajorPool.retrieveMajorsOnCollege(coll_id, new QueryResultFlag()
-        {
-            @Override
-            public void onQuerySuccess(Object queryResult)
-            {
-                if(queryResult != null)
-                {
-                    ArrayList<Major> majors = (ArrayList<Major>) queryResult;
-                    if(majors != null)
-                    {
-                        resultFlag.onQuerySuccess(majors);
-                        return;
-                    }
-                }
-
-                resultFlag.onQuerySuccess(null);
-            }
-
-            @Override
-            public void onQueryFailure(String failureMsg)
-            {
-                resultFlag.onQueryFailure(failureMsg + "/Retrieve Majors On College");
-            }
-        });
+        //MajorPool.retrieveMajorsOnCollege(coll_id, new QueryRequestFlag()
+        //{
+        //    @Override
+        //    public void onQuerySuccess(Object queryResult)
+        //    {
+        //        if(queryResult != null)
+        //        {
+        //            ArrayList<Major> majors = (ArrayList<Major>) queryResult;
+        //            if(majors != null)
+        //            {
+        //                resultFlag.onQuerySuccess(majors);
+        //                return;
+        //            }
+        //        }
+//
+        //        resultFlag.onQuerySuccess(null);
+        //    }
+//
+        //    @Override
+        //    public void onQueryFailure(String failureMsg)
+        //    {
+        //        resultFlag.onQueryFailure(failureMsg + "/Retrieve Majors On College");
+        //    }
+        //});
     }
 
 }

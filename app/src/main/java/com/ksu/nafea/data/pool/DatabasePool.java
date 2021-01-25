@@ -1,190 +1,187 @@
 package com.ksu.nafea.data.pool;
 
-import android.util.Log;
-
-import com.ksu.nafea.api.NafeaApiRequest;
-import com.ksu.nafea.data.DatabaseException;
-import com.ksu.nafea.data.QueryRequestFlag;
-import com.ksu.nafea.data.QueryResult;
+import com.ksu.nafea.data.request.QueryRequest;
+import com.ksu.nafea.data.request.QueryRequestFlag;
+import com.ksu.nafea.data.sql.Attribute;
+import com.ksu.nafea.data.sql.EAttributeConstraint;
+import com.ksu.nafea.data.sql.EntityObject;
+import com.ksu.nafea.logic.Entity;
+import com.ksu.nafea.logic.QueryPostStatus;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DatabasePool
-
 {
-    private static Retrofit retrofit = null;
-    private static final String BASE_URL = "http://10.0.2.2:5002";
-    protected static final String QUERY_FAILURE_MSG = "/Failed Request";
 
-    protected static NafeaApiRequest getDatabaseAPI()
+    //-----------------------------------------------------------[Update Queries]-----------------------------------------------------------
+    public <EntityType extends Entity<EntityType>> void
+    insert(Entity<EntityType> entity, QueryRequestFlag<QueryPostStatus> requestFlag) throws InstantiationException, IllegalAccessException
     {
-        if(retrofit == null)
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
 
+        //Input: Queries
+        EntityObject entityObject = entity.toEntity();
+        Attribute primaryKey = entityObject.getFirstAttribute(EAttributeConstraint.PRIMARY_KEY);
+        request.addQuery(entityObject.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
+        request.attachQuery(entityObject.createSelectQuery("MAX(" + primaryKey.getName() + ") + 1 as result"));
 
-        NafeaApiRequest api = retrofit.create(NafeaApiRequest.class);
-
-        return api;
+        NafeaAPIPool.executePostQuery(request);
     }
 
 
-    private static void sendPostRequest(Call<Object> request, String operation, final QueryRequestFlag requestFlag)
+    public <EntityType extends Entity<EntityType>> void
+    update(Entity<EntityType> entity, QueryRequestFlag<QueryPostStatus> requestFlag, Integer targetID) throws InstantiationException, IllegalAccessException
     {
-        final String failedOperation = "Failed Operation:[" + operation + "]";
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
 
-        request.enqueue(new Callback<Object>()
-        {
-            @Override
-            public void onResponse(Call<Object> call, Response<Object> response)
-            {
-                if(response.isSuccessful())
-                {
-                    QueryResult result = new QueryResult(response.body(), false);
-                    requestFlag.onRequestSuccess(result);
-                }
-                else
-                    requestFlag.onRequestFailure(new DatabaseException(response.message(), failedOperation));
-            }
+        //Input: Queries
+        EntityObject entityObject = entity.toEntity();
+        Attribute primaryKey = entityObject.getFirstAttribute(EAttributeConstraint.PRIMARY_KEY);
+        String condition = primaryKey.getName() + " = " + targetID;
+        request.addQuery(entityObject.createUpdateQuery(condition, EAttributeConstraint.PRIMARY_KEY, ""));
 
-            @Override
-            public void onFailure(Call<Object> call, Throwable t)
-            {
-                requestFlag.onRequestFailure(new DatabaseException(t.getMessage(), failedOperation));
-            }
-        });
+        NafeaAPIPool.executePostQuery(request);
     }
 
-    private static void sendGetRequest(Call<List<Object>> request, String operation, final QueryRequestFlag requestFlag)
+    public <EntityType extends Entity<EntityType>> void
+    update(Entity<EntityType> entity, QueryRequestFlag<QueryPostStatus> requestFlag, String condition) throws InstantiationException, IllegalAccessException
     {
-        final String failedOperation = "Failed Operation:[" + operation + "]";
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
 
-        request.enqueue(new Callback<List<Object>>()
-        {
-            @Override
-            public void onResponse(Call<List<Object>> call, Response<List<Object>> response)
-            {
-                if(response.isSuccessful())
-                {
-                    QueryResult result = new QueryResult(response.body(), true);
-                    requestFlag.onRequestSuccess(result);
-                }
-                else
-                    requestFlag.onRequestFailure(new DatabaseException(response.message(), failedOperation));
-            }
+        //Input: Queries
+        EntityObject entityObject = entity.toEntity();
+        request.addQuery(entityObject.createUpdateQuery(condition, EAttributeConstraint.PRIMARY_KEY, ""));
 
-            @Override
-            public void onFailure(Call<List<Object>> call, Throwable t)
-            {
-                requestFlag.onRequestFailure(new DatabaseException(t.getMessage(), failedOperation));
-            }
-        });
+        NafeaAPIPool.executePostQuery(request);
     }
 
-    protected static void insert(String table, ArrayList<Object> values, final QueryRequestFlag requestFlag)
+    public <EntityType extends Entity<EntityType>> void
+    update(Class<EntityType> entityClass, QueryRequestFlag<QueryPostStatus> requestFlag, String updateSet, String condition) throws InstantiationException, IllegalAccessException
     {
-        String valuesSet = getValuesSet(values);
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
 
-        Call<Object> insertRequest = getDatabaseAPI().insertData(table, valuesSet);
-        String operation = "insert to " + table + " with values:{" + valuesSet + "}";
+        //Input: Queries
+        EntityObject entityObject = entityClass.newInstance().toEntity();
+        request.addQuery(entityObject.createUpdateQuery(updateSet, condition));
 
-        sendPostRequest(insertRequest, operation, requestFlag);
-
-    }
-
-    protected static void Update(String table, String valuesSet, String condition, final QueryRequestFlag requestFlag)
-    {
-        Call<Object> updateRequest = getDatabaseAPI().updateData(table, valuesSet, condition);
-        String operation = "update " + table + " where " + condition + " with new values:{" + valuesSet + "}";
-
-        sendPostRequest(updateRequest, operation, requestFlag);
-    }
-
-    protected static void delete(String table, String condition, final QueryRequestFlag requestFlag)
-    {
-        Call<Object> deleteRequest = getDatabaseAPI().deleteData(table, condition);
-        String operation = "delete from " + table + " where " + condition;
-
-        sendPostRequest(deleteRequest, operation, requestFlag);
+        NafeaAPIPool.executePostQuery(request);
     }
 
 
-    protected static void retrieve(String table, ArrayList<String> attrs, String condition, final QueryRequestFlag requestFlag)
+    public <EntityType extends Entity<EntityType>> void
+    delete(Class<EntityType> entityClass, QueryRequestFlag<QueryPostStatus> requestFlag, Integer targetID) throws InstantiationException, IllegalAccessException
     {
-        String urlRequest = makeRetrieveUrlRequest(table, attrs, condition);
-        Log.d("Nafea", "API Command: " + urlRequest);
-        Call<List<Object>> retrieveRequest = getDatabaseAPI().retrieveData(urlRequest);
-        final String operation = "retrieve " + table + " where " + condition;
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
 
-        sendGetRequest(retrieveRequest, operation, requestFlag);
+        //Input: Queries
+        EntityObject entityObject = entityClass.newInstance().toEntity();
+        Attribute primaryKey = entityObject.getFirstAttribute(EAttributeConstraint.PRIMARY_KEY);
+        String condition = primaryKey.getName() + " = " + targetID;
+        request.addQuery(entityObject.createDeleteQuery(condition));
 
+        NafeaAPIPool.executePostQuery(request);
+    }
+
+    public <EntityType extends Entity<EntityType>> void
+    delete(Class<EntityType> entityClass, QueryRequestFlag<QueryPostStatus> requestFlag, String condition) throws InstantiationException, IllegalAccessException
+    {
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
+
+        //Input: Queries
+        EntityObject entityObject = entityClass.newInstance().toEntity();
+        request.addQuery(entityObject.createDeleteQuery(condition));
+
+        NafeaAPIPool.executePostQuery(request);
     }
 
 
-    private static String getValuesSet(ArrayList<Object> values)
+
+
+    //-----------------------------------------------------------[Retrieve Queries]-----------------------------------------------------------
+    public <EntityType extends Entity<EntityType>, ReturnType> void
+    retrieveAll(Class<EntityType> entityClass, QueryRequestFlag<ReturnType> requestFlag) throws InstantiationException, IllegalAccessException
     {
-        String valuesSet = "";
-        for(int i = 0; i < values.size(); i++)
-        {
-            String currentValue = "";
+        //Output: Return type
+        QueryRequest<EntityType, ReturnType> request = new QueryRequest<>(entityClass);
+        request.setRequestFlag(requestFlag);
 
-            if(values.get(i) == null)
-                currentValue = "null";
-            else if(values.get(i) instanceof String)
-                currentValue = "\"" + values.get(i) + "\"";
-            else
-                currentValue = values.get(i).toString();
+        //Input: Queries
+        EntityObject entityObject = entityClass.newInstance().toEntity();
+        request.addQuery(entityObject.createSelectQuery("*"));
 
-            if(i == (values.size() - 1))
-                valuesSet += currentValue;
-            else
-                valuesSet += currentValue + ",";
-        }
-
-        return valuesSet;
+        NafeaAPIPool.executeGetQuery(request);
     }
 
-    private static String getAttributesSet(ArrayList<String> attrs)
+    public <EntityType extends Entity<EntityType>, ReturnType> void
+    retrieve(Class<EntityType> entityClass, QueryRequestFlag<ReturnType> requestFlag, Integer targetID) throws InstantiationException, IllegalAccessException
     {
-        String attrsSet = "";
-        for(int i = 0; i < attrs.size(); i++)
-        {
-            if(i == (attrs.size() - 1))
-                attrsSet += attrs.get(i);
-            else
-                attrsSet += attrs.get(i) + ",";
-        }
+        //Output: Return type
+        QueryRequest<EntityType, ReturnType> request = new QueryRequest<>(entityClass);
+        request.setRequestFlag(requestFlag);
 
-        return attrsSet;
+        //Input: Queries
+        EntityObject entityObject = entityClass.newInstance().toEntity();
+        Attribute primaryKey = entityObject.getFirstAttribute(EAttributeConstraint.PRIMARY_KEY);
+        String condition = primaryKey.getName() + " = " + targetID;
+        request.addQuery(entityObject.createSelectQuery("*", condition));
+
+        NafeaAPIPool.executeGetQuery(request);
+    }
+
+    public <EntityType extends Entity<EntityType>, ReturnType> void
+    retrieve(Class<EntityType> entityClass, QueryRequestFlag<ReturnType> requestFlag, String selectClause, String condition) throws InstantiationException, IllegalAccessException
+    {
+        //Output: Return type
+        QueryRequest<EntityType, ReturnType> request = new QueryRequest<>(entityClass);
+        request.setRequestFlag(requestFlag);
+
+        //Input: Queries
+        EntityObject entityObject = entityClass.newInstance().toEntity();
+        request.addQuery(entityObject.createSelectQuery(selectClause, condition));
+
+        NafeaAPIPool.executeGetQuery(request);
+    }
+
+    public <EntityType extends Entity<EntityType>, ReturnType> void
+    retrieve(Class<EntityType> entityClass, QueryRequestFlag<ReturnType> requestFlag, String selectClause, String whereClause, String groupByClause, String orderByClause) throws InstantiationException, IllegalAccessException
+    {
+        //Output: Return type
+        QueryRequest<EntityType, ReturnType> request = new QueryRequest<>(entityClass);
+        request.setRequestFlag(requestFlag);
+
+        //Input: Queries
+        EntityObject entityObject = entityClass.newInstance().toEntity();
+        request.addQuery(entityObject.createCustomSelectQuery(selectClause, whereClause, groupByClause, orderByClause));
+
+        NafeaAPIPool.executeGetQuery(request);
     }
 
 
-    protected static String makeRetrieveUrlRequest(String table, ArrayList<String> attrs, String condition)
+
+    //-----------------------------------------------------------[Custom Queries]-----------------------------------------------------------
+    public void
+    executeUpdateQuery(QueryRequest<QueryPostStatus, QueryPostStatus> queryRequest)
     {
-        String urlRequest = "/get/" + table + "?";
-
-        if(!attrs.isEmpty())
-        {
-            String attrsSet = getAttributesSet(attrs);
-            urlRequest += "attrs=[" + attrsSet + "]&";
-        }
-        if(!condition.isEmpty())
-            urlRequest += "cond=[" + condition + "]";
-
-        return urlRequest;
+        NafeaAPIPool.executePostQuery(queryRequest);
     }
 
-    protected static String convertString(String s)
+    public <EntityType extends Entity<EntityType>, ReturnType> void
+    executeRetrieveQuery(QueryRequest<EntityType, ReturnType> queryRequest)
     {
-        return "\""+s+"\"";
+        NafeaAPIPool.executeGetQuery(queryRequest);
     }
+
+
 }

@@ -1,9 +1,7 @@
 package com.ksu.nafea.logic;
 
-import com.ksu.nafea.data.QueryResultFlag;
-import com.ksu.nafea.data.pool.UniversityPool;
+import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.ui.nviews.IconData;
-import com.ksu.nafea.data.DatabaseException;
 
 import java.util.ArrayList;
 
@@ -27,67 +25,67 @@ public class University implements IconData
     }
 
 
-    public static void retrieveAllCities(final QueryResultFlag resultFlag)
+    public static void retrieveAllCities(final QueryRequestFlag resultFlag)
     {
-        UniversityPool.retrieveAllCities(new QueryResultFlag()
-        {
-            @Override
-            public void onQuerySuccess(Object queryResult)
-            {
-                if(queryResult != null)
-                {
-                    ArrayList<University> univs = (ArrayList<University>) queryResult;
-                    if(univs != null)
-                    {
-                        ArrayList<String> cities = new ArrayList<String>();
-                        for(int i = 0; i < univs.size(); i++)
-                        {
-                            University university = univs.get(i);
-                            cities.add(university.getCity());
-                        }
-
-                        resultFlag.onQuerySuccess(cities);
-                        return;
-                    }
-                }
-
-                resultFlag.onQuerySuccess(null);
-            }
-
-            @Override
-            public void onQueryFailure(String failureMsg)
-            {
-                resultFlag.onQueryFailure(failureMsg + "/Retrieve All Cities");
-            }
-        });
+        //UniversityPool.retrieveAllCities(new QueryRequestFlag()
+        //{
+        //    @Override
+        //    public void onQuerySuccess(Object queryResult)
+        //    {
+        //        if(queryResult != null)
+        //        {
+        //            ArrayList<University> univs = (ArrayList<University>) queryResult;
+        //            if(univs != null)
+        //            {
+        //                ArrayList<String> cities = new ArrayList<String>();
+        //                for(int i = 0; i < univs.size(); i++)
+        //                {
+        //                    University university = univs.get(i);
+        //                    cities.add(university.getCity());
+        //                }
+//
+        //                resultFlag.onQuerySuccess(cities);
+        //                return;
+        //            }
+        //        }
+//
+        //        resultFlag.onQuerySuccess(null);
+        //    }
+//
+        //    @Override
+        //    public void onQueryFailure(String failureMsg)
+        //    {
+        //        resultFlag.onQueryFailure(failureMsg + "/Retrieve All Cities");
+        //    }
+        //});
     }
 
-    public static void retrieveUniversitiesOnCity(String city, final  QueryResultFlag resultFlag)
+    public static void retrieveUniversitiesOnCity(String city, final QueryRequestFlag resultFlag)
     {
-        UniversityPool.retrieveOnCity(city, new QueryResultFlag()
-        {
-            @Override
-            public void onQuerySuccess(Object queryResult)
-            {
-                if(queryResult != null)
-                {
-                    ArrayList<University> univs = (ArrayList<University>) queryResult;
-                    if(univs != null)
-                    {
-                        resultFlag.onQuerySuccess(univs);
-                        return;
-                    }
-                }
-
-                resultFlag.onQuerySuccess(null);
-            }
-
-            @Override
-            public void onQueryFailure(String failureMsg)
-            {
-                resultFlag.onQueryFailure(failureMsg + "/Retrieve Universities On City");
-            }
-        });
+        //UniversityPool.retrieveOnCity(city, new QueryRequestFlag()
+        //{
+        //    @Override
+        //    public void onQuerySuccess(Object queryResult)
+        //    {
+        //        if(queryResult != null)
+        //        {
+        //            ArrayList<University> univs = (ArrayList<University>) queryResult;
+        //            if(univs != null)
+        //            {
+        //                resultFlag.onQuerySuccess(univs);
+        //                return;
+        //            }
+        //        }
+//
+        //        resultFlag.onQuerySuccess(null);
+        //    }
+//
+        //    @Override
+        //    public void onQueryFailure(String failureMsg)
+        //    {
+        //        resultFlag.onQueryFailure(failureMsg + "/Retrieve Universities On City");
+        //    }
+        //});
     }
 
 

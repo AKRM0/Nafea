@@ -12,17 +12,11 @@ import retrofit2.http.Url;
 public interface NafeaApiRequest
 {
     @GET
-    Call<List<Object>> retrieveData(@Url String requestPath);
+    Call<List<Object>> executeGetQuery(@Url String requestPath);
 
     @FormUrlEncoded
-    @POST("/insert")
-    Call<Object> insertData(@Field("table") String table, @Field("values") String values);
+    @POST("/post/execute")
+    Call<Object> executePostQuery(@Field("command") String command, @Field("attach") String attach);
 
-    @FormUrlEncoded
-    @POST("/update")
-    Call<Object> updateData(@Field("table") String table, @Field("valuesSet") String valuesSet, @Field("condition") String condition);
 
-    @FormUrlEncoded
-    @POST("/delete")
-    Call<Object> deleteData(@Field("table") String table, @Field("condition") String condition);
 }

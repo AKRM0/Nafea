@@ -1,7 +1,6 @@
 package com.ksu.nafea.logic;
 
-import com.ksu.nafea.data.QueryResultFlag;
-import com.ksu.nafea.data.pool.CollegePool;
+import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.ui.nviews.IconData;
 
 import java.util.ArrayList;
@@ -72,67 +71,67 @@ public class College implements IconData
 
 
 
-    public static void retrieveCollegeOnCategory(Integer univ_id, String coll_category, final QueryResultFlag resultFlag)
+    public static void retrieveCollegeOnCategory(Integer univ_id, String coll_category, final QueryRequestFlag resultFlag)
     {
-        CollegePool.retrieveOnCategory(univ_id, coll_category, new QueryResultFlag()
-        {
-            @Override
-            public void onQuerySuccess(Object queryResult)
-            {
-                if(queryResult != null)
-                {
-                    ArrayList<College> colleges = (ArrayList<College>) queryResult;
-                    if(colleges != null)
-                    {
-                        resultFlag.onQuerySuccess(colleges);
-                        return;
-                    }
-                }
-
-                resultFlag.onQuerySuccess(null);
-            }
-
-            @Override
-            public void onQueryFailure(String failureMsg)
-            {
-                resultFlag.onQueryFailure(failureMsg + "/Retrieve College On Category");
-            }
-        });
+        //CollegePool.retrieveOnCategory(univ_id, coll_category, new QueryRequestFlag()
+        //{
+        //    @Override
+        //    public void onQuerySuccess(Object queryResult)
+        //    {
+        //        if(queryResult != null)
+        //        {
+        //            ArrayList<College> colleges = (ArrayList<College>) queryResult;
+        //            if(colleges != null)
+        //            {
+        //                resultFlag.onQuerySuccess(colleges);
+        //                return;
+        //            }
+        //        }
+//
+        //        resultFlag.onQuerySuccess(null);
+        //    }
+//
+        //    @Override
+        //    public void onQueryFailure(String failureMsg)
+        //    {
+        //        resultFlag.onQueryFailure(failureMsg + "/Retrieve College On Category");
+        //    }
+        //});
     }
 
-    public static void retrieveAllCategories(Integer univ_id, final QueryResultFlag resultFlag)
+    public static void retrieveAllCategories(Integer univ_id, final QueryRequestFlag resultFlag)
     {
-        CollegePool.retrieveAllCategories(univ_id, new QueryResultFlag()
-        {
-            @Override
-            public void onQuerySuccess(Object queryResult)
-            {
-                if(queryResult != null)
-                {
-                    ArrayList<College> colleges = (ArrayList<College>) queryResult;
-                    if(colleges != null)
-                    {
-                        ArrayList<String> categories = new ArrayList<String>();
-                        for(int i = 0; i < colleges.size(); i++)
-                        {
-                            College college = colleges.get(i);
-                            categories.add(college.getCategory());
-                        }
-
-                        resultFlag.onQuerySuccess(categories);
-                        return;
-                    }
-                }
-
-                resultFlag.onQuerySuccess(null);
-            }
-
-            @Override
-            public void onQueryFailure(String failureMsg)
-            {
-                resultFlag.onQueryFailure(failureMsg + "/Retrieve All Categories");
-            }
-        });
+        //CollegePool.retrieveAllCategories(univ_id, new QueryRequestFlag()
+        //{
+        //    @Override
+        //    public void onQuerySuccess(Object queryResult)
+        //    {
+        //        if(queryResult != null)
+        //        {
+        //            ArrayList<College> colleges = (ArrayList<College>) queryResult;
+        //            if(colleges != null)
+        //            {
+        //                ArrayList<String> categories = new ArrayList<String>();
+        //                for(int i = 0; i < colleges.size(); i++)
+        //                {
+        //                    College college = colleges.get(i);
+        //                    categories.add(college.getCategory());
+        //                }
+//
+        //                resultFlag.onQuerySuccess(categories);
+        //                return;
+        //            }
+        //        }
+//
+        //        resultFlag.onQuerySuccess(null);
+        //    }
+//
+        //    @Override
+        //    public void onQueryFailure(String failureMsg)
+        //    {
+        //        resultFlag.onQueryFailure(failureMsg + "/Retrieve All Categories");
+        //    }
+        //});
     }
 
 }

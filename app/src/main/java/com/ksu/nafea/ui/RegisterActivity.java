@@ -6,16 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ksu.nafea.R;
-import com.ksu.nafea.logic.User;
+import com.ksu.nafea.logic.account.UserAccount;
 import com.ksu.nafea.utilities.InvalidFieldException;
 import com.ksu.nafea.utilities.NafeaUtil;
 
@@ -29,7 +27,7 @@ public class RegisterActivity extends AppCompatActivity
     private ArrayList<EditText> field;
     private ArrayList<Button> button;
     private int step = 1;
-    private User user = null; // To-Do
+    private UserAccount user = null; // To-Do
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -129,7 +127,7 @@ public class RegisterActivity extends AppCompatActivity
         {
             String email = field.get(0).getText().toString();
             String password = field.get(2).getText().toString();
-            user = new User(email, password);
+            user = new UserAccount(email, password);
 
             setStep(2);
         }
@@ -200,24 +198,24 @@ public class RegisterActivity extends AppCompatActivity
                 switch (fieldIndex)
                 {
                     case 0: // 0 for email
-                        User.isValidEmail(fieldLabel, fieldText);
+                        UserAccount.isValidEmail(fieldLabel, fieldText);
                         break;
                     case 2: //2 for password
-                        User.isValidPassword(fieldLabel, fieldText);
+                        UserAccount.isValidPassword(fieldLabel, fieldText);
                         break;
                     case 1: // 1 for confirm email\
                     case 3: // 3 for re-password
                         String originalLabel = label.get(fieldIndex - 1).getText().toString();
                         String originalfield = field.get(fieldIndex - 1).getText().toString();
 
-                        User.isValidConfirmField(originalfield, fieldText, originalLabel, fieldLabel);
+                        UserAccount.isValidConfirmField(originalfield, fieldText, originalLabel, fieldLabel);
                         break;
                 }
             }
             else if(step == 2)
             {
                 if(inputField.getVisibility() == View.VISIBLE)
-                    User.isValidInput(fieldLabel, fieldText, false, false);
+                    UserAccount.isValidInput(fieldLabel, fieldText, false, false);
             }
         }
         catch (InvalidFieldException e)
@@ -239,7 +237,7 @@ public class RegisterActivity extends AppCompatActivity
             if(step == 1)
             {
                 String emailLabel = label.get(fieldIndex).getText().toString();
-                User.isEmailExist(fieldText, emailLabel);
+                UserAccount.isEmailExist(fieldText, emailLabel);
             }
         }
         catch (InvalidFieldException e)

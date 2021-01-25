@@ -6,17 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ksu.nafea.R;
-import com.ksu.nafea.data.QueryResultFlag;
-import com.ksu.nafea.logic.User;
+import com.ksu.nafea.logic.account.UserAccount;
 import com.ksu.nafea.utilities.InvalidFieldException;
 import com.ksu.nafea.utilities.NafeaUtil;
 
@@ -31,19 +28,20 @@ public class LoginActivity extends AppCompatActivity
     private ArrayList<Button> button;
     private CheckBox rememberMe;
     private TextView createAccount;
-    private User user = null;
+    private UserAccount user = null;
 
     /* To-Do:
     * Add forget password feature.
     * */
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //Intent intent = new Intent(this, BrowseActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, TestActiv.class);
+        startActivity(intent);
 
         loginActivInit();
 
@@ -56,7 +54,7 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                startRegisterActicity();
+                startRegisterActivity();
             }
         });
 
@@ -115,7 +113,7 @@ public class LoginActivity extends AppCompatActivity
         });
     }
 
-    private void startRegisterActicity()
+    private void startRegisterActivity()
     {
         Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(intent);
@@ -130,46 +128,46 @@ public class LoginActivity extends AppCompatActivity
         {
             String email = field.get(0).getText().toString();
             String pass = field.get(1).getText().toString();
-            user = new User(email, pass);
+            user = new UserAccount(email, pass);
 
-            user.login(email, pass, new QueryResultFlag()
-            {
-                @Override
-                public void onQuerySuccess(Object queryResult)
-                {
-                    user = (User) queryResult;
-                    if(user.getEmail() != null)
-                    {
-                        if(user.getPass() != null)
-                            Toast.makeText(LoginActivity.this, "Login Successfully.", Toast.LENGTH_LONG).show();
-                        else
-                        {
-                            NafeaUtil.updateField(field.get(1), "Wrong Password");
-                        }
-                    }
-                    else
-                    {
-                        NafeaUtil.updateField(field.get(0), "Wrong Email");
-                    }
-
-
-                    if(rememberMe.isChecked())
-                    {
-
-                    }
-                    else
-                    {
-                        //Toast.makeText(this, "Logging in successfully.", Toast.LENGTH_LONG).show();
-                    }
-                }
-
-                @Override
-                public void onQueryFailure(String failureMsg)
-                {
-                    Log.e(TAG, failureMsg + "/Login");
-                    Toast.makeText(LoginActivity.this, "Failed to login", Toast.LENGTH_LONG).show();
-                }
-            });
+            //user.login(email, pass, new QueryRequestFlag()
+            //{
+            //    @Override
+            //    public void onQuerySuccess(Object queryResult)
+            //    {
+            //        user = (UserAccount) queryResult;
+            //        if(user.getEmail() != null)
+            //        {
+            //            if(user.getPass() != null)
+            //                Toast.makeText(LoginActivity.this, "Login Successfully.", Toast.LENGTH_LONG).show();
+            //            else
+            //            {
+            //                NafeaUtil.updateField(field.get(1), "Wrong Password");
+            //            }
+            //        }
+            //        else
+            //        {
+            //            NafeaUtil.updateField(field.get(0), "Wrong Email");
+            //        }
+//
+//
+            //        if(rememberMe.isChecked())
+            //        {
+//
+            //        }
+            //        else
+            //        {
+            //            //Toast.makeText(this, "Logging in successfully.", Toast.LENGTH_LONG).show();
+            //        }
+            //    }
+//
+            //    @Override
+            //    public void onQueryFailure(String failureMsg)
+            //    {
+            //        Log.e(TAG, failureMsg + "/Login");
+            //        Toast.makeText(LoginActivity.this, "Failed to login", Toast.LENGTH_LONG).show();
+            //    }
+            //});
 
         }
     }
@@ -186,10 +184,10 @@ public class LoginActivity extends AppCompatActivity
 
         try
         {
-            if(User.isEmailExist(email, emailLabel))
+            if(UserAccount.isEmailExist(email, emailLabel))
             {
                 inputField = field.get(1);
-                User.isPassMatch(email, pass, passLabel);
+                UserAccount.isPassMatch(email, pass, passLabel);
             }
         }
         catch (InvalidFieldException e)

@@ -43,30 +43,30 @@ public class LoginActivity extends AppCompatActivity
         Intent intent = new Intent(this, TestActiv.class);
         startActivity(intent);
 
-        loginActivInit();
-
-        for(int i = 0; i < field.size(); i++)
-            addFieldListener(i);
-
-        // when create an account is pressed.
-        createAccount.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startRegisterActivity();
-            }
-        });
-
-        // when login Button is pressed.
-        button.get(0).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                executeLogin();
-            }
-        });
+        //loginActivInit();
+//
+        //for(int i = 0; i < field.size(); i++)
+        //    addFieldListener(i);
+//
+        //// when create an account is pressed.
+        //createAccount.setOnClickListener(new View.OnClickListener()
+        //{
+        //    @Override
+        //    public void onClick(View v)
+        //    {
+        //        startRegisterActivity();
+        //    }
+        //});
+//
+        //// when login Button is pressed.
+        //button.get(0).setOnClickListener(new View.OnClickListener()
+        //{
+        //    @Override
+        //    public void onClick(View v)
+        //    {
+        //        executeLogin();
+        //    }
+        //});
     }
 
     private void loginActivInit()
@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity
         {
             String email = field.get(0).getText().toString();
             String pass = field.get(1).getText().toString();
-            user = new UserAccount(email, pass);
+            //user = new UserAccount(email, pass);
 
             //user.login(email, pass, new QueryRequestFlag()
             //{

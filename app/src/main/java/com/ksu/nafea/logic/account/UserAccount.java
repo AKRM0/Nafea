@@ -3,103 +3,109 @@ package com.ksu.nafea.logic.account;
 
 import android.util.Patterns;
 
+import com.ksu.nafea.data.request.FailureResponse;
 import com.ksu.nafea.data.request.QueryRequestFlag;
-import com.ksu.nafea.data.sql.EntityObject;
 import com.ksu.nafea.logic.Entity;
+import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.utilities.InvalidFieldException;
 
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-public class UserAccount extends Entity<UserAccount>
+public abstract class UserAccount<AccountType> extends Entity<AccountType>
 {
-    public static String TAG = "UserAccount";
-
-    private String email;
-    private String pass;
-    private String fullname;
-    private boolean hasAuthority = false;
-
+    public static final String TAG = "UserAccount";
+    protected String email;
+    protected String password;
+    protected String firstName;
+    protected String lastName;
 
 
     public UserAccount()
     {
         email = "";
-        pass = "";
-        fullname = "";
+        password = "";
+        firstName = "";
+        lastName = "";
     }
-    public UserAccount(String email, String pass)
+    public UserAccount(String email, String password, String firstName, String lastName)
     {
         this.email = email;
-        this.pass = pass;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
-    public UserAccount(String email, String pass, String firstName, String lastName)
-    {
-        this.email = email;
-        this.pass = pass;
-        this.setFullname(firstName, lastName);
-    }
-
 
 
     @Override
-    public EntityObject toEntity()
+    public String toString()
     {
-        return null;
-    }
-
-    @Override
-    public UserAccount toObject(EntityObject entityObject) throws ClassCastException
-    {
-        return null;
-    }
-
-    @Override
-    public Class<UserAccount> getEntityClass()
-    {
-        return UserAccount.class;
+        return "UserAccount{" + "email='" + email + '\'' + ", password='" + password + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + '}';
     }
 
 
-
-    public static void register(String email, String password, String firstName, String lastName, Integer majorID, final QueryRequestFlag resultFlag)
+    //-------------------------------------------------------[Queries]-------------------------------------------------------
+    public static <UserAccountType extends UserAccount<UserAccountType>> void register(UserAccount<UserAccountType> userAccount, final QueryRequestFlag<QueryPostStatus> requestFlag)
     {
-        //UserPool.insertStudent(email, password, firstName, lastName, majorID, resultFlag);
+        try
+        {
+            getPool().insert(userAccount, requestFlag);
+        }
+        catch (Exception e)
+        {
+            String msg = "Failed to register: " + e.getMessage();
+            Entity.sendFailureResponse(requestFlag, TAG, msg);
+        }
     }
 
 
-    public static void login(String email, final String password, final QueryRequestFlag resultFlag)
+    public static <UserAccountType extends UserAccount<UserAccountType>> void login(UserAccount<UserAccountType> userAccount, final QueryRequestFlag<UserAccountType> requestFlag)
     {
-        //UserPool.retrieveStudent(email, new QueryRequestFlag()
-        //{
-        //    @Override
-        //    public void onQuerySuccess(Object queryResult)
-        //    {
-        //        if(queryResult != null)
-        //        {
-        //            ArrayList<UserAccount> students = (ArrayList<UserAccount>) queryResult;
-        //            if(students != null)
-        //            {
-        //                UserAccount student = students.get(0);
-        //                if(!student.getPass().equals(password))
-        //                    student.setPass(null);
-//
-        //                resultFlag.onQuerySuccess(student);
-        //                return;
-        //            }
-        //        }
-//
-        //        resultFlag.onQuerySuccess(new UserAccount(null, null));
-        //    }
-//
-        //    @Override
-        //    public void onQueryFailure(String failureMsg)
-        //    {
-        //        resultFlag.onQueryFailure(failureMsg + "/Retrieve Student");
-        //    }
-        //});
+        String selectData = userAccount.getLoginSelectData();
+        String joinData = userAccount.getLoginJoinData();
+        String condition = userAccount.getLoginCondition();
+
+        try
+        {
+            getPool().retrieve(userAccount.getEntityClass(), new QueryRequestFlag<ArrayList<UserAccountType>>()
+            {
+                @Override
+                public void onQuerySuccess(ArrayList<UserAccountType> resultObject)
+                {
+                    if(resultObject != null)
+                    {
+                        UserAccountType account = resultObject.get(0);
+                        requestFlag.onQuerySuccess(account);
+                    }
+                    else
+                        requestFlag.onQuerySuccess(null);
+                }
+
+                @Override
+                public void onQueryFailure(FailureResponse failure)
+                {
+                    failure.addNode(TAG);
+                    requestFlag.onQueryFailure(failure);
+                }
+            }, selectData, joinData, condition);
+        }
+        catch (Exception e)
+        {
+            String msg = "Failed to login: " + e.getMessage();
+            Entity.sendFailureResponse(requestFlag, TAG, msg);
+        }
 
     }
 
+
+    //-------------------------------------------------------[abstracted Methods]-------------------------------------------------------
+
+    protected abstract String getLoginSelectData();
+    protected abstract String getLoginJoinData();
+    protected abstract String getLoginCondition();
+
+
+    //-------------------------------------------------------[Checking Methods]-------------------------------------------------------
 
     /*
     checks if the email is already in the database,
@@ -285,53 +291,29 @@ public class UserAccount extends Entity<UserAccount>
 
 
 
-    @Override
-    public String toString()
-    {
-        return "UserAccount{" +
-                "email='" + email + '\'' +
-                ", pass='" + pass + '\'' +
-                ", fullname='" + fullname + '\'' +
-                ", hasAuthority=" + hasAuthority +
-                '}';
-    }
-
-
-    //-----------------------[Getters & Setters]-----------------------
+    //-------------------------------------------------------[Getters & Setters]-------------------------------------------------------
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getPassword() {
+        return password;
     }
 
-    public String getPass() {
-        return pass;
-    }
-
-    public void setPass(String pass) {
-        this.pass = pass;
-    }
-
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
-    public void setFullname(String firstName, String lastName)
+    public String getFirstName()
     {
-        fullname = "";
+        return firstName;
+    }
 
-        if(firstName != null)
-            fullname = firstName + " ";
+    public String getLastName()
+    {
+        return lastName;
+    }
 
-        if(lastName != null)
-            fullname += lastName;
+    public String getFullName()
+    {
+        return firstName + " " + lastName;
     }
 
 

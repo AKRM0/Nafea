@@ -1,8 +1,5 @@
 package com.ksu.nafea.logic;
 
-import android.util.Log;
-
-import com.ksu.nafea.data.pool.DatabasePool;
 import com.ksu.nafea.data.request.QueryRequest;
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.data.sql.Attribute;
@@ -35,17 +32,83 @@ public class Course extends Entity<Course>
 
 
 
+    public static EntityObject getContainEntity(Integer courseID, Integer majorID, String level)
+    {
+        EntityObject entityObject = new EntityObject("contain");
+
+        entityObject.addAttribute("level", ESQLDataType.STRING, level);
+        entityObject.addAttribute("major_id", ESQLDataType.INT, majorID, EAttributeConstraint.FOREIGN_KEY);
+        entityObject.addAttribute("crs_id", ESQLDataType.INT, courseID, EAttributeConstraint.PRIMARY_KEY);
+
+        return entityObject;
+    }
+
+
     @Override
     public String toString()
     {
-        return "Course{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", symbol='" + symbol + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return "Course{" + "id=" + id + ", name='" + name + '\'' + ", symbol='" + symbol + '\'' + ", description='" + description + '\'' + '}';
     }
 
+
+    //-----------------------------------------------[Queries]-----------------------------------------------
+    public static void insert(Major major, String level, Course course, QueryRequestFlag<QueryPostStatus> requestFlag)
+    {
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
+
+
+        //Input: Queries
+        EntityObject courseEntity = course.toEntity();
+        EntityObject containEntity = getContainEntity(0, major.getId(), level);
+        Attribute coursePrimaryKey = courseEntity.getFirstAttribute(EAttributeConstraint.PRIMARY_KEY);
+
+        request.addQuery(courseEntity.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
+        request.addQuery(containEntity.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
+
+        request.attachQuery(courseEntity.createSelectQuery("MAX(" + coursePrimaryKey.getName() + ") + 1 as result"));
+
+
+        getPool().executeUpdateQuery(request);
+    }
+
+    public static void delete(Major major, String level, Course course, QueryRequestFlag<QueryPostStatus> requestFlag)
+    {
+        ////Output: Return type
+        //QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        //request.setRequestFlag(requestFlag);
+//
+//
+        ////Input: Queries
+        //EntityObject courseEntity = course.toEntity();
+        //EntityObject containEntity = getContainEntity(0, majorID, level);
+        //Attribute coursePrimaryKey = courseEntity.getFirstAttribute(EAttributeConstraint.PRIMARY_KEY);
+//
+        //request.addQuery(courseEntity.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
+        //request.addQuery(containEntity.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
+//
+        //request.attachQuery(courseEntity.createSelectQuery("MAX(" + coursePrimaryKey.getName() + ") + 1 as result"));
+//
+//
+        //getPool().executeUpdateQuery(request);
+    }
+
+
+    public static void retrieveCoursesInMajor(Major major, final QueryRequestFlag<ArrayList<Course>> requestFlag)
+    {
+        String condition = "crs_id IN (SELECT crs_id FROM contain WHERE major_id = " + major.getId() + ")";
+
+        try
+        {
+            getPool().retrieve(Course.class, requestFlag, "*", condition);
+        }
+        catch (Exception e)
+        {
+            String msg = "Failed to retrieve courses in \"" + major.getName() + "\" major: " + e.getMessage();
+            Entity.sendFailureResponse(requestFlag, TAG, msg);
+        }
+    }
 
 
     //-----------------------------------------------[Entity Override Methods]-----------------------------------------------
@@ -82,97 +145,21 @@ public class Course extends Entity<Course>
     }
 
 
-
-    public static EntityObject getContainEntity(Integer courseID, Integer majorID, String level)
-    {
-        EntityObject entityObject = new EntityObject("contain");
-
-        entityObject.addAttribute("level", ESQLDataType.STRING, level);
-        entityObject.addAttribute("major_id", ESQLDataType.INT, majorID, EAttributeConstraint.FOREIGN_KEY);
-        entityObject.addAttribute("crs_id", ESQLDataType.INT, courseID, EAttributeConstraint.PRIMARY_KEY);
-
-        return entityObject;
-    }
-
-
-    //-----------------------------------------------[Queries]-----------------------------------------------
-    public static void insert(Integer majorID, String level, Course course, QueryRequestFlag<QueryPostStatus> requestFlag)
-    {
-        //Output: Return type
-        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
-        request.setRequestFlag(requestFlag);
-
-
-        //Input: Queries
-        EntityObject courseEntity = course.toEntity();
-        EntityObject containEntity = getContainEntity(0, majorID, level);
-        Attribute coursePrimaryKey = courseEntity.getFirstAttribute(EAttributeConstraint.PRIMARY_KEY);
-
-        request.addQuery(courseEntity.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
-        request.addQuery(containEntity.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
-
-        request.attachQuery(courseEntity.createSelectQuery("MAX(" + coursePrimaryKey.getName() + ") + 1 as result"));
-
-
-        getPool().executeUpdateQuery(request);
-    }
-
-    public static void delete(Integer majorID, String level, Course course, QueryRequestFlag<QueryPostStatus> requestFlag)
-    {
-        ////Output: Return type
-        //QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
-        //request.setRequestFlag(requestFlag);
-//
-//
-        ////Input: Queries
-        //EntityObject courseEntity = course.toEntity();
-        //EntityObject containEntity = getContainEntity(0, majorID, level);
-        //Attribute coursePrimaryKey = courseEntity.getFirstAttribute(EAttributeConstraint.PRIMARY_KEY);
-//
-        //request.addQuery(courseEntity.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
-        //request.addQuery(containEntity.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
-//
-        //request.attachQuery(courseEntity.createSelectQuery("MAX(" + coursePrimaryKey.getName() + ") + 1 as result"));
-//
-//
-        //getPool().executeUpdateQuery(request);
-    }
-
-
-
-
-
     //--------------------------------------------------[Getters & Setters]--------------------------------------------------
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getSymbol() {
         return symbol;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
 

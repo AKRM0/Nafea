@@ -20,7 +20,7 @@ public class GeneralPool
     {
         try
         {
-            Entity.getPool().insert(newRecord, requestFlag);
+            Entity.getPool().insertUnique(newRecord, requestFlag);
         }
         catch (Exception e)
         {

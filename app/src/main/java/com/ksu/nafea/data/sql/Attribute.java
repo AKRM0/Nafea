@@ -80,6 +80,26 @@ public class Attribute
 
 
 
+    public static String getSQLValue(Object value, ESQLDataType dataType)
+    {
+        if(value == null)
+            return "null";
+
+        String sqlValue = value.toString();
+        switch (dataType)
+        {
+            case NONE:
+            case DOUBLE:
+            case INT:
+                return sqlValue;
+            case STRING:
+                return "\"" + sqlValue + "\"";
+            default:
+                return "";
+        }
+    }
+
+
     //---------------------------------------------[Getters & Setters]---------------------------------------------
     public String getName()
     {

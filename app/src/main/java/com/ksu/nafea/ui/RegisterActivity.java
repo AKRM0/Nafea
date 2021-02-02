@@ -127,7 +127,7 @@ public class RegisterActivity extends AppCompatActivity
         {
             String email = field.get(0).getText().toString();
             String password = field.get(2).getText().toString();
-            user = new UserAccount(email, password);
+            //user = new UserAccount(email, password);
 
             setStep(2);
         }
@@ -135,7 +135,7 @@ public class RegisterActivity extends AppCompatActivity
         {
             String firstName = field.get(0).getText().toString();
             String lastName = field.get(1).getText().toString();
-            user.setFullname(firstName, lastName);
+            //user.setFullname(firstName, lastName);
 
             setStep(3);
         }
@@ -292,8 +292,8 @@ public class RegisterActivity extends AppCompatActivity
                 String passKey = "pass";
                 String fullnameKey = "fullname";
                 intent.putExtra(emailKey, user.getEmail());
-                intent.putExtra(passKey, user.getPass());
-                intent.putExtra(fullnameKey, user.getFullname());
+                intent.putExtra(passKey, user.getPassword());
+                //intent.putExtra(fullnameKey, user.getFullname());
 
                 startActivity(intent);
                 break;

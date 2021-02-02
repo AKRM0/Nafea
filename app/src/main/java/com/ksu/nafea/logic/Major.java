@@ -1,99 +1,137 @@
 package com.ksu.nafea.logic;
 
 import com.ksu.nafea.data.request.QueryRequestFlag;
+import com.ksu.nafea.data.sql.EAttributeConstraint;
+import com.ksu.nafea.data.sql.ESQLDataType;
+import com.ksu.nafea.data.sql.EntityObject;
 import com.ksu.nafea.ui.nviews.IconData;
 
 import java.util.ArrayList;
 
-public class Major implements IconData
+public class Major extends Entity<Major> implements IconData
 {
-    private Integer id,coll_id;
-    private String name,plan;
+    public static final String TAG = "Major";
+    private Integer id;
+    private String name;
     private ArrayList<Course> courses;
 
-    public Major(Integer id, String name, String plan, Integer coll_id) {
+
+    public Major()
+    {
+        this.id = 0;
+        this.name = "";
+        courses = new ArrayList<Course>();
+    }
+    public Major(Integer id, String name)
+    {
         this.id = id;
-        this.coll_id = coll_id;
         this.name = name;
-        this.plan = plan;
+        courses = new ArrayList<Course>();
     }
 
-    public Integer getId() {
-        return id;
+
+    @Override
+    public String toString()
+    {
+        return "Major{" + "id=" + id + ", name='" + name + '}';
     }
+
+
+    //-----------------------------------------------[Queries]-----------------------------------------------
+
+    public static void retrieveMajorsInCollege(College college, final QueryRequestFlag<ArrayList<Major>> requestFlag)
+    {
+        String condition = "coll_id = " + college.getId();
+
+        try
+        {
+            getPool().retrieve(Major.class, requestFlag, "*", condition);
+        }
+        catch (Exception e)
+        {
+            String msg = "Failed to retrieve majors in \"" + college.getName() + "\" college: " + e.getMessage();
+            Entity.sendFailureResponse(requestFlag, TAG, msg);
+        }
+    }
+
+    public static void retrieveAllMajorsHasCourse(Course course, final QueryRequestFlag<ArrayList<Major>> requestFlag)
+    {
+        String condition = "major_id IN (SELECT major_id FROM contain WHERE crs_id = " + course.getId() + ")";
+
+        try
+        {
+            getPool().retrieve(Major.class, requestFlag, "*", condition);
+        }
+        catch (Exception e)
+        {
+            String msg = "Failed to retrieve majors has \"" + course.getName() + "\" course: " + e.getMessage();
+            Entity.sendFailureResponse(requestFlag, TAG, msg);
+        }
+    }
+
+
+    //--------------------------------------------------[Entity Override Methods]--------------------------------------------------
+    @Override
+    public EntityObject toEntity()
+    {
+        EntityObject entityObject = new EntityObject("major");
+
+        entityObject.addAttribute("major_id", ESQLDataType.INT, id, EAttributeConstraint.PRIMARY_KEY);
+        entityObject.addAttribute("major_name", ESQLDataType.STRING, name);
+        //entityObject.addAttribute("major_plan", ESQLDataType.STRING, symbol);
+
+        return entityObject;
+    }
+
+    @Override
+    public Major toObject(EntityObject entityObject) throws ClassCastException
+    {
+        Major major = new Major();
+
+        major.id = entityObject.getAttributeValue("major_id", ESQLDataType.INT, Integer.class);
+        major.name = entityObject.getAttributeValue("major_name", ESQLDataType.STRING, String.class);
+        //major.plan = entityObject.getAttributeValue("major_plan", ESQLDataType.STRING, String.class);
+
+        return major;
+    }
+
+    @Override
+    public Class<Major> getEntityClass()
+    {
+        return Major.class;
+    }
+
+
+    //--------------------------------------------------[IconData Override Methods]--------------------------------------------------
 
     public Integer getIconID()
     {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public String getText()
+    {
+        return name;
     }
 
-    public Integer getColl_id() {
-        return coll_id;
-    }
-
-    public void setColl_id(Integer coll_id) {
-        this.coll_id = coll_id;
+    //--------------------------------------------------[Getters & Setters]--------------------------------------------------
+    public Integer getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPlan() {
-        return plan;
-    }
-
-    public void setPlan(String plan) {
-        this.plan = plan;
-    }
-
-    public Major(String name)
+    public ArrayList<Course> getCourses()
     {
-        this.name = name;
+        return courses;
     }
 
-
-    public String getText()
+    public void setCourses(ArrayList<Course> courses)
     {
-        return name;
+        this.courses = courses;
     }
 
-
-
-    public static void retrieveMajorsOnCollege(Integer coll_id, final QueryRequestFlag resultFlag)
-    {
-        //MajorPool.retrieveMajorsOnCollege(coll_id, new QueryRequestFlag()
-        //{
-        //    @Override
-        //    public void onQuerySuccess(Object queryResult)
-        //    {
-        //        if(queryResult != null)
-        //        {
-        //            ArrayList<Major> majors = (ArrayList<Major>) queryResult;
-        //            if(majors != null)
-        //            {
-        //                resultFlag.onQuerySuccess(majors);
-        //                return;
-        //            }
-        //        }
-//
-        //        resultFlag.onQuerySuccess(null);
-        //    }
-//
-        //    @Override
-        //    public void onQueryFailure(String failureMsg)
-        //    {
-        //        resultFlag.onQueryFailure(failureMsg + "/Retrieve Majors On College");
-        //    }
-        //});
-    }
 
 }

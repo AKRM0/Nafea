@@ -15,7 +15,7 @@ public class DatabasePool
 
     //-----------------------------------------------------------[Update Queries]-----------------------------------------------------------
     public <EntityType extends Entity<EntityType>> void
-    insert(Entity<EntityType> entity, QueryRequestFlag<QueryPostStatus> requestFlag) throws InstantiationException, IllegalAccessException
+    insertUnique(Entity<EntityType> entity, QueryRequestFlag<QueryPostStatus> requestFlag) throws InstantiationException, IllegalAccessException
     {
         //Output: Return type
         QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
@@ -26,6 +26,21 @@ public class DatabasePool
         Attribute primaryKey = entityObject.getFirstAttribute(EAttributeConstraint.PRIMARY_KEY);
         request.addQuery(entityObject.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
         request.attachQuery(entityObject.createSelectQuery("MAX(" + primaryKey.getName() + ") + 1 as result"));
+
+        NafeaAPIPool.executePostQuery(request);
+    }
+
+
+    public <EntityType extends Entity<EntityType>> void
+    insert(Entity<EntityType> entity, QueryRequestFlag<QueryPostStatus> requestFlag) throws InstantiationException, IllegalAccessException
+    {
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
+
+        //Input: Queries
+        EntityObject entityObject = entity.toEntity();
+        request.addQuery(entityObject.createInsertQuery());
 
         NafeaAPIPool.executePostQuery(request);
     }
@@ -141,6 +156,20 @@ public class DatabasePool
     }
 
     public <EntityType extends Entity<EntityType>, ReturnType> void
+    retrieve(Class<EntityType> entityClass, QueryRequestFlag<ReturnType> requestFlag, String selectClause) throws InstantiationException, IllegalAccessException
+    {
+        //Output: Return type
+        QueryRequest<EntityType, ReturnType> request = new QueryRequest<>(entityClass);
+        request.setRequestFlag(requestFlag);
+
+        //Input: Queries
+        EntityObject entityObject = entityClass.newInstance().toEntity();
+        request.addQuery(entityObject.createSelectQuery(selectClause));
+
+        NafeaAPIPool.executeGetQuery(request);
+    }
+
+    public <EntityType extends Entity<EntityType>, ReturnType> void
     retrieve(Class<EntityType> entityClass, QueryRequestFlag<ReturnType> requestFlag, String selectClause, String condition) throws InstantiationException, IllegalAccessException
     {
         //Output: Return type
@@ -150,6 +179,20 @@ public class DatabasePool
         //Input: Queries
         EntityObject entityObject = entityClass.newInstance().toEntity();
         request.addQuery(entityObject.createSelectQuery(selectClause, condition));
+
+        NafeaAPIPool.executeGetQuery(request);
+    }
+
+    public <EntityType extends Entity<EntityType>, ReturnType> void
+    retrieve(Class<EntityType> entityClass, QueryRequestFlag<ReturnType> requestFlag, String selectClause, String joinSection, String condition) throws InstantiationException, IllegalAccessException
+    {
+        //Output: Return type
+        QueryRequest<EntityType, ReturnType> request = new QueryRequest<>(entityClass);
+        request.setRequestFlag(requestFlag);
+
+        //Input: Queries
+        EntityObject entityObject = entityClass.newInstance().toEntity();
+        request.addQuery(entityObject.createSelectQuery(selectClause, joinSection, condition));
 
         NafeaAPIPool.executeGetQuery(request);
     }

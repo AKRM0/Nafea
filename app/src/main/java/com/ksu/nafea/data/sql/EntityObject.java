@@ -262,6 +262,12 @@ public class EntityObject
         return query;
     }
 
+    public String createSelectQuery(String selectClause, String joinSection, String condition)
+    {
+        String query = "SELECT " + selectClause + "\n FROM " + name + "\n " + joinSection + "\n WHERE " + condition;
+        return query;
+    }
+
     public String createNestedSelectWhereQuery(String selectClause, String whereClause, String innerWhereQuery)
     {
         String query = "SELECT " + selectClause + " FROM " + name + " WHERE " + whereClause + " " + innerWhereQuery;
@@ -292,6 +298,15 @@ public class EntityObject
     public static String createNestedSelectFromQuery(String selectClause, String innerTableQuery, String tableName, String condition)
     {
         String query = "SELECT " + selectClause + " FROM (" + innerTableQuery + ") AS " + tableName + " WHERE " + condition;
+        return query;
+    }
+
+    public static String createInnerJoinSection(String mainTable, String joinedTable, String foreignKey)
+    {
+        String mainForeignKey = mainTable + "." + foreignKey;
+        String joinedForeignKey = joinedTable + "." + foreignKey;
+
+        String query = "INNER JOIN " + joinedTable + " ON " + mainForeignKey + " = " + joinedForeignKey;
         return query;
     }
 

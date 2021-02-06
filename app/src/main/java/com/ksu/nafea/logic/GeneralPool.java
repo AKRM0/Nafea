@@ -16,7 +16,7 @@ public class GeneralPool
 
     //-----------------------------------------------------------[Update Queries]-----------------------------------------------------------
     public static <EntityType extends Entity<EntityType>> void
-    insertRecord(Entity<EntityType> newRecord, QueryRequestFlag<QueryPostStatus> requestFlag)
+    insert(Entity<EntityType> newRecord, QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         try
         {
@@ -31,7 +31,7 @@ public class GeneralPool
 
 
     public static <EntityType extends Entity<EntityType>> void
-    updateRecord(Integer targetID, Entity<EntityType> entity, QueryRequestFlag<QueryPostStatus> requestFlag)
+    update(Integer targetID, Entity<EntityType> entity, QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         try
         {
@@ -45,7 +45,7 @@ public class GeneralPool
     }
 
     public static <EntityType extends Entity<EntityType>> void
-    updateRecordsInRange(Integer minTargetID, Integer maxTargetID, Entity<EntityType> entity, QueryRequestFlag<QueryPostStatus> requestFlag)
+    updateInRange(Integer minTargetID, Integer maxTargetID, Entity<EntityType> entity, QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         try
         {
@@ -65,7 +65,7 @@ public class GeneralPool
 
 
     public static <EntityType extends Entity<EntityType>> void
-    deleteRecord(Class<EntityType> entityClass, Integer targetID, QueryRequestFlag<QueryPostStatus> requestFlag)
+    delete(Class<EntityType> entityClass, Integer targetID, QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         try
         {
@@ -79,7 +79,7 @@ public class GeneralPool
     }
 
     public static <EntityType extends Entity<EntityType>> void
-    deleteRecordsInRange(Class<EntityType> entityClass, Integer minTargetID, Integer maxTargetID, QueryRequestFlag<QueryPostStatus> requestFlag)
+    deleteInRange(Class<EntityType> entityClass, Integer minTargetID, Integer maxTargetID, QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         try
         {
@@ -101,7 +101,7 @@ public class GeneralPool
 
     //-----------------------------------------------------------[Retrieve Queries]-----------------------------------------------------------
     public static <EntityType extends Entity<EntityType>> void
-    retrieveAllRecords(Class<EntityType> entityClass, QueryRequestFlag<ArrayList<EntityType>> requestFlag)
+    retrieveAll(Class<EntityType> entityClass, QueryRequestFlag<ArrayList<EntityType>> requestFlag)
     {
         try
         {
@@ -115,7 +115,7 @@ public class GeneralPool
     }
 
     public static <EntityType extends Entity<EntityType>> void
-    retrieveRecord(Class<EntityType> entityClass, Integer targetID, final QueryRequestFlag<EntityType> requestFlag)
+    retrieve(Class<EntityType> entityClass, Integer targetID, final QueryRequestFlag<EntityType> requestFlag)
     {
         try
         {
@@ -147,7 +147,7 @@ public class GeneralPool
     }
 
     public static <EntityType extends Entity<EntityType>> void
-    retrieveRecordsInRange(Class<EntityType> entityClass, Integer minTargetID, Integer maxTargetID, QueryRequestFlag<ArrayList<EntityType>> requestFlag)
+    retrieveInRange(Class<EntityType> entityClass, Integer minTargetID, Integer maxTargetID, QueryRequestFlag<ArrayList<EntityType>> requestFlag)
     {
         try
         {

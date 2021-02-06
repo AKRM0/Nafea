@@ -21,9 +21,18 @@ public class Student extends UserAccount<Student>
         college = null;
         major = null;
     }
+    public Student(String email, String password)
+    {
+        super(email, password, "None", "None");
+        university = null;
+        college = null;
+        major = null;
+    }
     public Student(String email, String password, String firstName, String lastName, Integer majorID)
     {
         super(email, password, firstName, lastName);
+        university = null;
+        college = null;
         this.major = new Major(majorID, "");
     }
 

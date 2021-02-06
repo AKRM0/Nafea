@@ -18,6 +18,11 @@ public class EntityObject
     {
         attributes.add(attribute);
     }
+    public void addAttribute(int index, Attribute attribute)
+    {
+        attributes.add(index, attribute);
+    }
+
     public void addAttribute(String name, ESQLDataType type, Object value)
     {
         attributes.add(new Attribute(name, type, value));
@@ -26,7 +31,6 @@ public class EntityObject
     {
         attributes.add(new Attribute(name, type, value, constraint));
     }
-
     public Attribute getAttribute(String name)
     {
         for(int i = 0; i < attributes.size(); i++)
@@ -274,17 +278,19 @@ public class EntityObject
         return query;
     }
 
-    public String createCustomSelectQuery(String selectClause, String whereClause, String groupByClause, String orderByClause)
+    public String createCustomSelectQuery(String selectClause, String joinSection, String whereClause, String groupByClause, String orderByClause)
     {
-        String query = "SELECT " + selectClause + " ";
-        query += "FROM " + name + " ";
+        String query = "SELECT " + selectClause + "\n ";
+        query += "FROM " + name + "\n ";
 
+        if(!joinSection.isEmpty())
+            query += joinSection + "\n ";
         if(!whereClause.isEmpty())
-            query += "WHERE " + whereClause + " ";
+            query += "WHERE " + whereClause + "\n ";
         if(!groupByClause.isEmpty())
-            query += "GROUP BY " + groupByClause + " ";
+            query += "GROUP BY " + groupByClause + "\n ";
         if(!orderByClause.isEmpty())
-            query += "ORDER BY " + orderByClause + " ";
+            query += "ORDER BY " + orderByClause + "\n ";
 
         return query;
     }
@@ -310,17 +316,19 @@ public class EntityObject
         return query;
     }
 
-    public static String createCustomSelectQuery(String selectClause, String fromClause, String whereClause, String groupByClause, String orderByClause)
+    public static String createCustomSelectQuery(String selectClause, String fromClause, String joinSection, String whereClause, String groupByClause, String orderByClause)
     {
-        String query = "SELECT " + selectClause + " ";
-        query += "FROM " + fromClause + " ";
+        String query = "SELECT " + selectClause + "\n ";
+        query += "FROM " + fromClause + "\n ";
 
+        if(!joinSection.isEmpty())
+            query += joinSection + "\n ";
         if(!whereClause.isEmpty())
-            query += "WHERE " + whereClause + " ";
+            query += "WHERE " + whereClause + "\n ";
         if(!groupByClause.isEmpty())
-            query += "GROUP BY " + groupByClause + " ";
+            query += "GROUP BY " + groupByClause + "\n ";
         if(!orderByClause.isEmpty())
-            query += "ORDER BY " + orderByClause + " ";
+            query += "ORDER BY " + orderByClause + "\n ";
 
         return query;
     }

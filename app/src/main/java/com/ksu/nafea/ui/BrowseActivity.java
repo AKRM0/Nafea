@@ -1,7 +1,6 @@
 package com.ksu.nafea.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
@@ -11,13 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ksu.nafea.R;
-import com.ksu.nafea.data.request.FailureResponse;
-import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.logic.College;
-import com.ksu.nafea.logic.Course;
 import com.ksu.nafea.logic.Major;
 import com.ksu.nafea.logic.University;
-import com.ksu.nafea.logic.User;
 import com.ksu.nafea.ui.nviews.NSpinner;
 import com.ksu.nafea.ui.nviews.SliderGallery;
 import com.ksu.nafea.ui.nviews.TextImage;

@@ -1,4 +1,4 @@
-package com.ksu.nafea.logic;
+package com.ksu.nafea.logic.course;
 
 import com.ksu.nafea.data.request.QueryRequest;
 import com.ksu.nafea.data.request.QueryRequestFlag;
@@ -6,6 +6,9 @@ import com.ksu.nafea.data.sql.Attribute;
 import com.ksu.nafea.data.sql.EAttributeConstraint;
 import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.data.sql.EntityObject;
+import com.ksu.nafea.logic.Entity;
+import com.ksu.nafea.logic.Major;
+import com.ksu.nafea.logic.QueryPostStatus;
 
 import java.util.ArrayList;
 
@@ -14,6 +17,7 @@ public class Course extends Entity<Course>
     public final static String TAG = "Course";
     private Integer id;
     private String name,symbol,description;
+    private CourseEvaluation evaluation;
 
     public Course()
     {
@@ -21,6 +25,7 @@ public class Course extends Entity<Course>
         this.name = "None";
         this.symbol = "None";
         this.description = "None";
+        this.evaluation = null;
     }
     public Course(Integer id, String name, String symbol, String description)
     {
@@ -28,6 +33,7 @@ public class Course extends Entity<Course>
         this.name = name;
         this.symbol = symbol;
         this.description = description;
+        this.evaluation = null;
     }
 
 
@@ -47,9 +53,14 @@ public class Course extends Entity<Course>
     @Override
     public String toString()
     {
-        return "Course{" + "id=" + id + ", name='" + name + '\'' + ", symbol='" + symbol + '\'' + ", description='" + description + '\'' + '}';
+        return "Course{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", symbol='" + symbol + '\'' +
+                ", description='" + description + '\'' +
+                ", evaluation=" + evaluation.toString() +
+                '}';
     }
-
 
     //-----------------------------------------------[Queries]-----------------------------------------------
     public static void insert(Major major, String level, Course course, QueryRequestFlag<QueryPostStatus> requestFlag)
@@ -97,11 +108,18 @@ public class Course extends Entity<Course>
 
     public static void retrieveCoursesInMajor(Major major, final QueryRequestFlag<ArrayList<Course>> requestFlag)
     {
-        String condition = "crs_id IN (SELECT crs_id FROM contain WHERE major_id = " + major.getId() + ")";
+        String selectClause = "course.crs_id, crs_name, crs_symbol, crs_desc,\n" +
+                            "  avg(content_size) as content_size,\n" +
+                            "  avg(assignments_difficulty) as assignments_difficulty,\n" +
+                            "  avg(exams_difficulty) as exams_difficulty";
+        String joinSection = "LEFT JOIN evaluate_course ON evaluate_course.crs_id = course.crs_id";
+        String condition = "course.crs_id IN (SELECT crs_id FROM contain WHERE major_id = " + major.getId() + ")";
+        String groupBy = "course.crs_id";
+        String orderBy = "";
 
         try
         {
-            getPool().retrieve(Course.class, requestFlag, "*", condition);
+            getPool().retrieve(Course.class, requestFlag, selectClause, joinSection, condition, groupBy, orderBy);
         }
         catch (Exception e)
         {
@@ -134,6 +152,11 @@ public class Course extends Entity<Course>
         crs.name = entityObject.getAttributeValue("crs_name", ESQLDataType.STRING, String.class);
         crs.symbol = entityObject.getAttributeValue("crs_symbol", ESQLDataType.STRING, String.class);
         crs.description = entityObject.getAttributeValue("crs_desc", ESQLDataType.STRING, String.class);
+        Double contentSize = entityObject.getAttributeValue("content_size", ESQLDataType.DOUBLE, Double.class);
+        Double assignmentsDifficulty = entityObject.getAttributeValue("assignments_difficulty", ESQLDataType.DOUBLE, Double.class);
+        Double examsDifficulty = entityObject.getAttributeValue("exams_difficulty", ESQLDataType.DOUBLE, Double.class);
+
+        crs.evaluation = new CourseEvaluation(contentSize, assignmentsDifficulty, examsDifficulty);
 
         return crs;
     }
@@ -160,6 +183,11 @@ public class Course extends Entity<Course>
 
     public String getDescription() {
         return description;
+    }
+
+    public CourseEvaluation getEvaluation()
+    {
+        return evaluation;
     }
 
 

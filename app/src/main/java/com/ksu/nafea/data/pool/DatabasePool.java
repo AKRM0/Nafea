@@ -198,7 +198,7 @@ public class DatabasePool
     }
 
     public <EntityType extends Entity<EntityType>, ReturnType> void
-    retrieve(Class<EntityType> entityClass, QueryRequestFlag<ReturnType> requestFlag, String selectClause, String whereClause, String groupByClause, String orderByClause) throws InstantiationException, IllegalAccessException
+    retrieve(Class<EntityType> entityClass, QueryRequestFlag<ReturnType> requestFlag, String selectClause, String joinSection, String whereClause, String groupByClause, String orderByClause) throws InstantiationException, IllegalAccessException
     {
         //Output: Return type
         QueryRequest<EntityType, ReturnType> request = new QueryRequest<>(entityClass);
@@ -206,7 +206,7 @@ public class DatabasePool
 
         //Input: Queries
         EntityObject entityObject = entityClass.newInstance().toEntity();
-        request.addQuery(entityObject.createCustomSelectQuery(selectClause, whereClause, groupByClause, orderByClause));
+        request.addQuery(entityObject.createCustomSelectQuery(selectClause, joinSection, whereClause, groupByClause, orderByClause));
 
         NafeaAPIPool.executeGetQuery(request);
     }

@@ -6,7 +6,7 @@ import com.ksu.nafea.data.sql.Attribute;
 import com.ksu.nafea.data.sql.EAttributeConstraint;
 import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.data.sql.EntityObject;
-import com.ksu.nafea.ui.nviews.IconData;
+import com.ksu.nafea.ui.nafea_views.IconData;
 
 import java.util.ArrayList;
 

@@ -76,6 +76,12 @@ public class Student extends UserAccount<Student>
         return "student.s_email = " + email + " AND student.password = " + password;
     }
 
+    @Override
+    protected String getEmailAttribute()
+    {
+        return "s_email";
+    }
+
     //-----------------------------------------------[Entity Override Methods]-----------------------------------------------
     @Override
     public EntityObject toEntity()
@@ -124,6 +130,24 @@ public class Student extends UserAccount<Student>
     @Override
     public Class<Student> getEntityClass() {
         return Student.class;
+    }
+
+
+    //-----------------------------------------------[Getters & Setters]-----------------------------------------------
+
+    public University getUniversity()
+    {
+        return university;
+    }
+
+    public College getCollege()
+    {
+        return college;
+    }
+
+    public Major getMajor()
+    {
+        return major;
     }
 
 

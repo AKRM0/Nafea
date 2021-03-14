@@ -30,7 +30,18 @@ public class CourseEvaluation extends Entity<CourseEvaluation>
 
     public Integer getOverallCourseDifficulty()
     {
-        return 0;
+        if(contentSize == null && assignmentsDifficulty == null && examsDifficulty == null)
+            return null;
+
+        if(contentSize == null)
+            contentSize = 0.0;
+        if(assignmentsDifficulty == null)
+            assignmentsDifficulty = 0.0;
+        if(examsDifficulty == null)
+            examsDifficulty = 0.0;
+
+        Double overallEvaluation = (contentSize + assignmentsDifficulty + examsDifficulty) / 3;
+        return overallEvaluation.intValue();
     }
 
 

@@ -1,5 +1,8 @@
 package com.ksu.nafea.logic.material;
 
+import android.util.Log;
+
+import com.ksu.nafea.data.request.FailureResponse;
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.data.sql.EAttributeConstraint;
 import com.ksu.nafea.data.sql.ESQLDataType;
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 public class ElectronicMaterial extends Material<ElectronicMaterial>
 {
     private String type, extension, url;
+    private ArrayList<String> likes, dislikes;
 
     public ElectronicMaterial()
     {
@@ -19,6 +23,9 @@ public class ElectronicMaterial extends Material<ElectronicMaterial>
         type = "";
         extension = "";
         url = "";
+
+        likes = new ArrayList<String>();
+        dislikes = new ArrayList<String>();
     }
     public ElectronicMaterial(Integer id, String name, String type, String url, String extension)
     {
@@ -26,7 +33,11 @@ public class ElectronicMaterial extends Material<ElectronicMaterial>
         this.type = type;
         this.url = url;
         this.extension = extension;
+
+        likes = new ArrayList<String>();
+        dislikes = new ArrayList<String>();
     }
+
 
     @Override
     public String toString()
@@ -39,15 +50,107 @@ public class ElectronicMaterial extends Material<ElectronicMaterial>
     }
 
 
+    public static ArrayList<ElectronicMaterial> getEMaterialsByType(ArrayList<ElectronicMaterial> eMats, String type)
+    {
+        ArrayList<ElectronicMaterial> targetEMats = new ArrayList<ElectronicMaterial>();
+
+        for(int i = 0; i < eMats.size(); i++)
+        {
+            if(eMats.get(i).type.equalsIgnoreCase(type))
+                targetEMats.add(eMats.get(i));
+        }
+
+        return targetEMats;
+    }
+
+
+    private boolean resetEvaluator(ArrayList<String> firstEvaluation, ArrayList<String> secondEvaluation, String evaluator)
+    {
+        if(firstEvaluation.contains(evaluator))
+            return false;
+        secondEvaluation.remove(evaluator);
+        return true;
+    }
+
+    public boolean addLike(String email)
+    {
+        if(!resetEvaluator(likes, dislikes, email))
+            return false;
+
+        likes.add(email);
+        return true;
+    }
+    public boolean addDislike(String email)
+    {
+        if(!resetEvaluator(dislikes, likes, email))
+            return false;
+
+        dislikes.add(email);
+        return true;
+    }
+
+    public int getLikes()
+    {
+        return likes.size();
+    }
+    public int getDislikes()
+    {
+        return dislikes.size();
+    }
+
     //-----------------------------------------------[Queries]-----------------------------------------------
 
-    public static void retrieveAllEMatsInCourse(Course course, final QueryRequestFlag<ArrayList<ElectronicMaterial>> requestFlag)
+    public static void retrieveAllEMatsInCourse(final Course course, final QueryRequestFlag<ArrayList<ElectronicMaterial>> requestFlag)
     {
         String condition = "crs_id = " + course.getId();
 
         try
         {
-            getPool().retrieve(ElectronicMaterial.class, requestFlag, "*", condition);
+            getPool().retrieve(ElectronicMaterial.class, new QueryRequestFlag<ArrayList<ElectronicMaterial>>()
+            {
+                @Override
+                public void onQuerySuccess(ArrayList<ElectronicMaterial> resultObject)
+                {
+                    if(resultObject != null)
+                    {
+                        EMaterialEvaluation.retrieveAllEvaluationsInCourse(course, resultObject, new QueryRequestFlag<ArrayList<ElectronicMaterial>>()
+                        {
+                            @Override
+                            public void onQuerySuccess(ArrayList<ElectronicMaterial> resultObject)
+                            {
+                                if(resultObject != null && requestFlag != null)
+                                {
+                                    requestFlag.onQuerySuccess(resultObject);
+
+                                    for(int i = 0; i < resultObject.size(); i++)
+                                    {
+                                        ArrayList<String> eva = resultObject.get(i).likes;
+                                        for(int j = 0; j < eva.size(); j++)
+                                            Log.d(TAG, eva.get(j) + ", " + resultObject.get(i).id);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onQueryFailure(FailureResponse failure)
+                            {
+
+                            }
+                        });
+                    }
+
+                    if(requestFlag != null)
+                        requestFlag.onQuerySuccess(resultObject);
+                }
+
+                @Override
+                public void onQueryFailure(FailureResponse failure)
+                {
+                    Log.d(TAG, failure.getMsg() + "\n" + failure.toString());
+                    if(requestFlag != null)
+                        Entity.sendFailureResponse(requestFlag, TAG, failure.getMsg());
+                }
+            }, "*", condition);
         }
         catch (Exception e)
         {

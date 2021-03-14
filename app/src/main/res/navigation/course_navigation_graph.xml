@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/course_navigation_graph"
+    app:startDestination="@id/crsNav_aboutCourse">
+
+    <fragment
+        android:id="@+id/crsNav_aboutCourse"
+        android:name="com.ksu.nafea.ui.fragments.course.AboutCourseFragment"
+        tools:layout="@layout/fragment_about_course" />
+
+    <fragment
+        android:id="@+id/crsNav_documents"
+        android:name="com.ksu.nafea.ui.fragments.course.ematerial.document.DocumentsListPage"
+        tools:layout="@layout/fragment_content_list" >
+        <action
+            android:id="@+id/action_documents_to_downloadDoucmentPage"
+            app:destination="@id/crsNav_downloadDoucmentPage" />
+        <action
+            android:id="@+id/action_documents_to_uploadEMaterialPage"
+            app:destination="@id/crsNav_uploadEMaterialPage" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/crsNav_videos"
+        android:name="com.ksu.nafea.ui.fragments.course.ematerial.video.VideosListPage"
+        tools:layout="@layout/fragment_content_list" >
+        <action
+            android:id="@+id/action_videos_to_uploadEMaterialPage"
+            app:destination="@id/crsNav_uploadEMaterialPage" />
+        <action
+            android:id="@+id/action_videos_to_videoPage"
+            app:destination="@id/crsNav_videoPage" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/crsNav_physMats"
+        android:name="com.ksu.nafea.ui.fragments.course.pmateerial.PhysicalMaterialsListPage"
+        tools:layout="@layout/fragment_content_list" >
+        <action
+            android:id="@+id/action_physMats_to_uploadPhysMatPage"
+            app:destination="@id/crsNav_uploadPhysMatPage" />
+        <action
+            android:id="@+id/action_physMats_to_physicalMaterialPage"
+            app:destination="@id/crsNav_physicalMaterialPage" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/crsNav_comments"
+        android:name="com.ksu.nafea.ui.fragments.course.comment.CourseCommentsListPage"
+        tools:layout="@layout/fragment_content_list" />
+
+
+
+    <fragment
+        android:id="@+id/crsNav_downloadDoucmentPage"
+        android:name="com.ksu.nafea.ui.fragments.course.ematerial.document.DownloadDoucmentPage"
+        tools:layout="@layout/fragment_download_doucment_page" >
+        <action
+            android:id="@+id/action_downloadDoucmentPage_to_EMatReportPage"
+            app:destination="@id/crsNav_EMatReportPage" />
+        <action
+            android:id="@+id/action_downloadDoucmentPage_to_uploadEMaterialPage"
+            app:destination="@id/crsNav_uploadEMaterialPage" />
+    </fragment>
+    <fragment
+        android:id="@+id/crsNav_EMatReportPage"
+        android:name="com.ksu.nafea.ui.fragments.course.ematerial.EMatReportPage"
+        tools:layout="@layout/fragment_e_mat_report_page" />
+    <fragment
+        android:id="@+id/crsNav_physReportPage"
+        android:name="com.ksu.nafea.ui.fragments.course.pmateerial.PhysReportPage"
+        tools:layout="@layout/fragment_phys_report_page" />
+    <fragment
+        android:id="@+id/crsNav_uploadEMaterialPage"
+        android:name="com.ksu.nafea.ui.fragments.course.ematerial.UploadEMaterialPage"
+        tools:layout="@layout/fragment_upload_e_material_page" />
+    <fragment
+        android:id="@+id/crsNav_uploadPhysMatPage"
+        android:name="com.ksu.nafea.ui.fragments.course.pmateerial.UploadPhysMatPage"
+        tools:layout="@layout/fragment_upload_phys_mat_page" />
+    <fragment
+        android:id="@+id/crsNav_videoPage"
+        android:name="com.ksu.nafea.ui.fragments.course.ematerial.video.VideoPage"
+        tools:layout="@layout/fragment_video_page" >
+        <action
+            android:id="@+id/action_videoPage_to_EMatReportPage"
+            app:destination="@id/crsNav_EMatReportPage" />
+        <action
+            android:id="@+id/action_videoPage_to_uploadEMaterialPage"
+            app:destination="@id/crsNav_uploadEMaterialPage" />
+    </fragment>
+    <fragment
+        android:id="@+id/crsNav_physicalMaterialPage"
+        android:name="com.ksu.nafea.ui.fragments.course.pmateerial.PhysicalMaterialPage"
+        tools:layout="@layout/fragment_physical_material_page" >
+        <action
+            android:id="@+id/action_physicalMaterialPage_to_physReportPage"
+            app:destination="@id/crsNav_physReportPage" />
+        <action
+            android:id="@+id/action_physicalMaterialPage_to_uploadPhysMatPage"
+            app:destination="@id/crsNav_uploadPhysMatPage" />
+    </fragment>
+
+
+</navigation>

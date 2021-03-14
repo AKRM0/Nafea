@@ -5,6 +5,8 @@ import android.util.Patterns;
 
 import com.ksu.nafea.data.request.FailureResponse;
 import com.ksu.nafea.data.request.QueryRequestFlag;
+import com.ksu.nafea.data.sql.Attribute;
+import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.logic.Entity;
 import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.utilities.InvalidFieldException;
@@ -45,7 +47,8 @@ public abstract class UserAccount<AccountType> extends Entity<AccountType>
 
 
     //-------------------------------------------------------[Queries]-------------------------------------------------------
-    public static <UserAccountType extends UserAccount<UserAccountType>> void register(UserAccount<UserAccountType> userAccount, final QueryRequestFlag<QueryPostStatus> requestFlag)
+    public static <UserAccountType extends UserAccount<UserAccountType>>
+    void register(UserAccount<UserAccountType> userAccount, final QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         try
         {
@@ -59,7 +62,8 @@ public abstract class UserAccount<AccountType> extends Entity<AccountType>
     }
 
 
-    public static <UserAccountType extends UserAccount<UserAccountType>> void login(UserAccount<UserAccountType> userAccount, final QueryRequestFlag<UserAccountType> requestFlag)
+    public static <UserAccountType extends UserAccount<UserAccountType>>
+    void login(UserAccount<UserAccountType> userAccount, final QueryRequestFlag<UserAccountType> requestFlag)
     {
         String selectData = userAccount.getLoginSelectData();
         String joinData = userAccount.getLoginJoinData();
@@ -98,55 +102,55 @@ public abstract class UserAccount<AccountType> extends Entity<AccountType>
     }
 
 
+    public static <UserAccountType extends UserAccount<UserAccountType>>
+    void isEmailExist(final UserAccount<UserAccountType> userAccount, final QueryRequestFlag<Boolean> requestFlag)
+    {
+        String condition = userAccount.getEmailAttribute() + " = " + Attribute.getSQLValue(userAccount.email, ESQLDataType.STRING);
+
+        try
+        {
+            getPool().retrieve(userAccount.getEntityClass(), new QueryRequestFlag<ArrayList<UserAccountType>>()
+            {
+                @Override
+                public void onQuerySuccess(ArrayList<UserAccountType> resultObject)
+                {
+                    if(resultObject != null)
+                    {
+                        if(!resultObject.isEmpty())
+                        {
+                            requestFlag.onQuerySuccess(true);
+                            return;
+                        }
+                    }
+
+                    requestFlag.onQuerySuccess(false);
+                }
+
+                @Override
+                public void onQueryFailure(FailureResponse failure)
+                {
+                    requestFlag.onQuerySuccess(false);
+                }
+            }, "*", condition);
+        }
+        catch (Exception e)
+        {
+            requestFlag.onQuerySuccess(false);
+        }
+
+    }
+
+
     //-------------------------------------------------------[abstracted Methods]-------------------------------------------------------
 
     protected abstract String getLoginSelectData();
     protected abstract String getLoginJoinData();
     protected abstract String getLoginCondition();
 
+    protected abstract String getEmailAttribute();
+
 
     //-------------------------------------------------------[Checking Methods]-------------------------------------------------------
-
-    /*
-    checks if the email is already in the database,
-    returns true if the email in the database,
-    otherwise throws an InvalidFieldException.
-    */
-    public static boolean isEmailExist(String email, String fieldLabel) throws InvalidFieldException
-    {
-        String errorMsg = "Not Exist";
-        boolean isEmailExist = true;
-
-        //To-Do Checking the existence of the email in the database(for Student & Admin).
-
-        //UserAccount.isValidEmail(fieldLabel, email);
-        return true;
-        //if(!isEmailExist)
-            //throw new InvalidFieldException(fieldLabel, errorMsg);
-
-        //return true;
-    }
-
-    /*
-    checks if the password is correct,
-    returns true if the password is correct,
-    otherwise throws an InvalidFieldException.
-    */
-    public static boolean isPassMatch(String email, String password, String fieldLabel) throws InvalidFieldException
-    {
-        String errorMsg = "Pass Not Match";
-        boolean isPassMatch = true;
-
-        //To-Do Checking is the password correct of the given email(for Student & Admin).
-
-        //UserAccount.isValidPassword(fieldLabel, password);
-        return true;
-        //if(!isPassMatch)
-            //throw new InvalidFieldException(fieldLabel, errorMsg);
-
-        //return true;
-    }
-
 
     /*
     checks if the email has valid syntax,
@@ -161,14 +165,14 @@ public abstract class UserAccount<AccountType> extends Entity<AccountType>
 
         if(email.isEmpty())
         {
-            errorMsg += "- field is empty.\n";
+            errorMsg += "- الخانة فارغة.\n";
             isValidEmail = false;
         }
         else
         {
             if(!Patterns.EMAIL_ADDRESS.matcher(email).matches())
             {
-                errorMsg += "- the Email is incorrect.\n";
+                errorMsg += "- الإيميل غير صحيح.\n";
                 isValidEmail = false;
             }
         }
@@ -192,14 +196,14 @@ public abstract class UserAccount<AccountType> extends Entity<AccountType>
 
         if(password.isEmpty())
         {
-            errorMsg += "- field is empty.\n";
+            errorMsg += "- الخانة فارغة.\n";
             isValidPass = false;
         }
         else
         {
             if(password.length() <= minLength)
             {
-                errorMsg += "- Password must be more than " + minLength + " characters.\n";
+                errorMsg += "- الرمز السري يجب أن يكون أعلى من " + minLength + " حرف.\n";
                 isValidPass = false;
             }
         }
@@ -226,14 +230,14 @@ public abstract class UserAccount<AccountType> extends Entity<AccountType>
 
         if(confirmedField.isEmpty())
         {
-            errorMsg += "- field is empty.\n";
+            errorMsg += "- الخانة فارغة.\n";
             isValidConfirmField = false;
         }
         else
         {
             if(!confirmedField.equals(originalField))
             {
-                errorMsg += "- the " + confirmedLabel + " doesn't match the " + originalLabel + ".\n";
+                errorMsg += "- " + confirmedLabel + " لا يطابق " + originalLabel + ".\n";
                 isValidConfirmField = false;
             }
         }
@@ -256,7 +260,7 @@ public abstract class UserAccount<AccountType> extends Entity<AccountType>
 
         if(inputText.isEmpty())
         {
-            errorMsg += "- field is empty.\n";
+            errorMsg += "- الخانة فارغة.\n";
             isValidInput = false;
         }
         else
@@ -272,12 +276,12 @@ public abstract class UserAccount<AccountType> extends Entity<AccountType>
 
             if(isNumberDetected && !allowNumbers)
             {
-                errorMsg += "- this field must haven't any number.\n";
+                errorMsg += "- هذه الخانة يجب أن لا تحتوي على ارقام.\n";
                 isValidInput = false;
             }
             if(isSymbolDetected && !allowSymbols)
             {
-                errorMsg += "- this field must haven't special characters (@, _, #, ...).\n";
+                errorMsg += "- هذه الخانة يجب أن لا تحتوي على رموز خاصة(@، #، _، ...).\n";
                 isValidInput = false;
             }
         }

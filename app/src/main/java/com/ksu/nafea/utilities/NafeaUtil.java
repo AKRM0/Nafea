@@ -6,7 +6,11 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -14,9 +18,14 @@ import java.util.Random;
 public class NafeaUtil
 {
 
-    public static void showToastMsg(Context context, String msg, int msgLength)
+    public static void showToastMsg(Context context, String msg)
     {
-        Toast.makeText(context, msg, msgLength).show();
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+    }
+
+    public static void setBarTitle(FragmentActivity fragmentActivity, String title)
+    {
+        ((AppCompatActivity) fragmentActivity).getSupportActionBar().setTitle(title);
     }
 
     public static void clearFields(ArrayList<EditText> field)
@@ -41,6 +50,19 @@ public class NafeaUtil
             field.setError(errorMsg);
             field.setTextColor(Color.RED);
         }
+    }
+
+    public static String validateEmptyField(TextView label, EditText field) throws Exception
+    {
+        String fieldText = field.getText().toString();
+        if(fieldText.isEmpty())
+        {
+            String msg = "خانة " + label.getText().toString().replace(":", "") + " فارغة!";
+            field.setError(msg);
+            throw new Exception(msg);
+        }
+
+        return fieldText;
     }
 
     public static int getRandomColor(int alpha)

@@ -1,29 +1,83 @@
 <resources>
     <string name="app_name">Nafea</string>
 
+    <!-- Static Values -->
+    <string name="allOption">الكل</string>
 
     <!-- Views Strings -->
-    <string name="label_email">Email:</string>
-    <string name="label_confirmEmail">Confirm Email:</string>
-    <string name="label_password">Password:</string>
-    <string name="label_rePassword">Re-Password:</string>
-    <string name="buttonText_next">Next</string>
-    <string name="buttonText_cancel">Cancel</string>
-    <string name="checkboxLabel_remember_me">Remember Me</string>
-    <string name="clickableText_createAccount"><u>Create an account</u></string>
-    <string name="buttonText_login">Login</string>
+    <string name="label_email">الإيميل:</string>
+    <string name="label_confirmEmail">تأكيد الإيميل:</string>
+    <string name="label_password">الرمز السري:</string>
+    <string name="label_rePassword">تأكيد الرمز السري:</string>
+    <string name="label_firstName">الأسم الأول</string>
+    <string name="label_lastName">الأسم الأخير</string>
+    <string name="buttonText_next">التالي</string>
+    <string name="buttonText_cancel">إلغاء</string>
+    <string name="checkboxLabel_remember_me">تذكرني</string>
+    <string name="clickableText_createAccount"><u>إنشاء حساب جديد</u></string>
+    <string name="buttonText_login">تسجيل الدخول</string>
     <string name="label_city">المدينة</string>
     <string name="label_university">الجامعة</string>
     <string name="label_collegeCategory">تصنيف الكلية (المسار)</string>
     <string name="label_college">الكلية</string>
     <string name="label_major">التخصص</string>
-    <string name="clickableText_downloadDepPlan">Download Plan</string>
-    <string name="clickableText_showDepPlan">Show Department Plan</string>
-    <string name="buttonText_addCourse">Add Course</string>
-    <string name="buttonText_removeCourse">Remove Course</string>
+    <string name="clickableText_downloadDepPlan">تحميل خطة القسم</string>
+    <string name="clickableText_showDepPlan">إظهار خطة القسم</string>
+    <string name="buttonText_addCourse">إضافة المقرر</string>
+    <string name="buttonText_removeCourse">إزالة المقرر</string>
     <string name="label_courseName">اسم المقرر:</string>
     <string name="label_courseSymbol">رمز المقرر:</string>
     <string name="label_courseLevel">مستوى المقرر:</string>
     <string name="label_courseDesc">وصف المقرر:</string>
+    <string name="label_courseNumber">رقم المقرر:</string>
+    <string name="fieldHint_courseName">اخلاقيات المهنة</string>
+    <string name="fieldHint_courseNumber">107</string>
+    <string name="fieldHint_courseSymbol">سلم</string>
+    <string name="fieldHint_courseLevel">الثالث</string>
+    <string name="fieldHint_courseDescription">اخلاقيات المهنة مقرر يحتوي على موضوعات عن الاخلاقيات المهمة في أي مهنة تمارس ومن هذي الموضوعات…</string>
+    <string name="buttonText_delete">حذف المقررات</string>
+    <string name="textButton_details">التفاصيل</string>
+    <string name="textButton_login">تسجيل الدخول</string>
+    <string name="label_courseEase">سهولة المقرر</string>
+
+
+    <!-- Course -->
+    <string name="crsNav_label_aboutCrs">عن المقرر</string>
+    <string name="crsNav_label_documents">الملفات</string>
+    <string name="crsNav_label_videos">الفيدديو</string>
+    <string name="crsNav_label_physMats">المصادر الورقية</string>
+    <string name="crsNav_label_comments">التعليقات</string>
+    <string name="EMaterial_addContent">إضافة محتوى</string>
+    <string name="PMaterial_addContent">إضافة عملية بيع</string>
+
+
+    <!-- Titles -->
+    <string name="actionBarTitle_home">الرئيسية</string>
+    <string name="actionBarTitle_login">تسجيل الدخول</string>
+    <string name="actionBarTitle_register">إنشاء حساب جديد</string>
+    <string name="actionBarTitle_selectUniversity">إختر الجامعة</string>
+    <string name="actionBarTitle_selectCollege">إختر الكلية</string>
+    <string name="actionBarTitle_selectMajor">إختر التخصص</string>
+
+    <!-- Navigation Values -->
+    <string name="navMenu_home">الرئيسية</string>
+    <string name="navMenu_browse">تصفح</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="title_activity_drawer">DrawerActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_course">CourseActivity</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
 
 </resources>

@@ -1,11 +1,12 @@
 package com.ksu.nafea.logic;
 
+
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.data.sql.EAttributeConstraint;
 import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.data.sql.EntityObject;
 import com.ksu.nafea.logic.course.Course;
-import com.ksu.nafea.ui.nviews.IconData;
+import com.ksu.nafea.ui.nafea_views.IconData;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,7 @@ public class Major extends Entity<Major> implements IconData
     private Integer id;
     private String name;
     private ArrayList<Course> courses;
+    private ArrayList<String> levels;
 
 
     public Major()
@@ -22,12 +24,14 @@ public class Major extends Entity<Major> implements IconData
         this.id = 0;
         this.name = "";
         courses = new ArrayList<Course>();
+        levels = new ArrayList<String>();
     }
     public Major(Integer id, String name)
     {
         this.id = id;
         this.name = name;
         courses = new ArrayList<Course>();
+        levels = new ArrayList<String>();
     }
 
 
@@ -132,6 +136,16 @@ public class Major extends Entity<Major> implements IconData
     public void setCourses(ArrayList<Course> courses)
     {
         this.courses = courses;
+    }
+
+    public ArrayList<String> getLevels() {
+        return levels;
+    }
+
+    public void setLevels(String allLevels, ArrayList<String> levels)
+    {
+        this.levels = levels;
+        this.levels.add(0, allLevels);
     }
 
 

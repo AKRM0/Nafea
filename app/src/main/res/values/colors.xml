@@ -3,4 +3,11 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <!-- Drawable Values -->
+    <color name="courseEvaluation_progressBar_backgroundColor">#838383</color>
+    <color name="courseEvaluation_progressBar_startProgressColor">#49B0FF</color>
+    <color name="courseEvaluation_progressBar_centerProgressColor">#499BFF</color>
+    <color name="courseEvaluation_progressBar_endProgressColor">#497DFF</color>
+
 </resources>

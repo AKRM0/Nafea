@@ -62,7 +62,8 @@ public class QueryRequest<EntityType extends Entity<EntityType>, ReturnType>
         EntityObject entityObject = result.getRecord(0);
         EntityType record = entityClass.newInstance().toObject(entityObject);
 
-        requestFlag.onQuerySuccess((ReturnType) record);
+        if(requestFlag != null)
+            requestFlag.onQuerySuccess((ReturnType) record);
     }
     @SuppressWarnings("unchecked")
     public <E> void sendSuccessListResponse(E body, ERequestResultType resultType) throws InstantiationException, IllegalAccessException, ClassCastException
@@ -78,18 +79,21 @@ public class QueryRequest<EntityType extends Entity<EntityType>, ReturnType>
             table.add(record);
         }
 
-        requestFlag.onQuerySuccess((ReturnType)table);
+        if(requestFlag != null)
+            requestFlag.onQuerySuccess((ReturnType)table);
     }
 
     public void sendFailureResponse(String starterNode, String msg)
     {
         FailureResponse failure = new FailureResponse(mainQueries, attachedQueries, starterNode, msg);
-        requestFlag.onQueryFailure(failure);
+        if(requestFlag != null)
+           requestFlag.onQueryFailure(failure);
     }
     public void sendFailureResponse(FailureResponse failure, String node)
     {
         failure.addNode(node);
-        requestFlag.onQueryFailure(failure);
+        if(requestFlag != null)
+            requestFlag.onQueryFailure(failure);
     }
 
 

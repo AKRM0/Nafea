@@ -4,22 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.AddCourseActivity">
+    tools:context=".ui.activities.AddCourseActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="390dp"
-        android:layout_height="468dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.909"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.06">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/addCrs_txt_crsName"
@@ -37,25 +34,74 @@
             android:layout_height="wrap_content"
             android:autofillHints=""
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:hint="@string/fieldHint_courseName"
+            android:inputType="textAutoCorrect"
+            android:maxLength="50" />
 
-        <TextView
-            android:id="@+id/addCrs_txt_crsSymbol"
-            style="@style/Nafea_DefaultTextView"
+        <LinearLayout
+            android:id="@+id/courseSymbole_horBox"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/label_courseSymbol"
-            android:textColor="#000000"
-            android:textSize="18sp" />
+            android:layout_height="120dp"
+            android:clipToPadding="false"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/addCrs_edt_crsSymbol"
-            style="@style/Nafea_DefaultTextField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:autofillHints=""
-            android:ems="10"
-            android:inputType="textPersonName" />
+            <LinearLayout
+                android:id="@+id/Left"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:layout_marginRight="0dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/addCrs_txt_crsNum"
+                    style="@style/Nafea_DefaultTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_courseNumber"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/addCrs_edt_crsNum"
+                    style="@style/Nafea_DefaultTextField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:hint="@string/fieldHint_courseNumber"
+                    android:inputType="number"
+                    android:maxLength="3" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Right"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/addCrs_txt_crsSymbol"
+                    style="@style/Nafea_DefaultTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_courseSymbol"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/addCrs_edt_crsSymbol"
+                    style="@style/Nafea_DefaultTextField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:hint="@string/fieldHint_courseSymbol"
+                    android:inputType="text"
+                    android:maxLength="5" />
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/addCrs_txt_crsLevel"
@@ -73,7 +119,9 @@
             android:layout_height="wrap_content"
             android:autofillHints=""
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:hint="@string/fieldHint_courseLevel"
+            android:inputType="textShortMessage"
+            android:maxLength="10" />
 
         <TextView
             android:id="@+id/addCrs_txt_crsDesc"
@@ -92,21 +140,21 @@
             android:autofillHints=""
             android:ems="10"
             android:gravity="start|top"
-            android:inputType="textMultiLine" />
+            android:hint="@string/fieldHint_courseDescription"
+            android:inputType="textMultiLine"
+            android:maxLength="255" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="417dp"
-        android:layout_height="107dp"
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:gravity="bottom"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/addCrs_b_add"

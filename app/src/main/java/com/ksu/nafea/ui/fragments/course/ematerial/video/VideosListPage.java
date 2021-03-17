@@ -44,6 +44,8 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
         String type = "Video";
         ArrayList<ElectronicMaterial> documents = ElectronicMaterial.getEMaterialsByType(User.course.getEMats(), type);
         this.data = documents;
+
+        super.setData();
     }
 
 
@@ -112,12 +114,12 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
     private void onVideoClicked(int position)
     {
         User.material = getData().get(position);
-        openPage(R.id.action_videos_to_videoPage, false);
+        openPage(R.id.action_videos_to_videoPage, R.id.action_videoPage_to_videos, false);
     }
 
     private void onAddContentClicked()
     {
-        openPage(R.id.action_videos_to_uploadEMaterialPage, false);
+        openPage(R.id.action_videos_to_uploadEMaterialPage, R.id.action_uploadEMaterialPage_to_videos, false);
     }
 
     //--------------------------------------------------------[Evaluation methods]--------------------------------------------------------

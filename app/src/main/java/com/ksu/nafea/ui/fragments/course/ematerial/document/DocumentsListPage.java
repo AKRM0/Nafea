@@ -44,6 +44,8 @@ public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
         String type = "Document";
         ArrayList<ElectronicMaterial> documents = ElectronicMaterial.getEMaterialsByType(User.course.getEMats(), type);
         this.data = documents;
+
+        super.setData();
     }
 
 
@@ -105,12 +107,12 @@ public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
     private void onDocumentClicked(int position)
     {
         User.material = getData().get(position);
-        openPage(R.id.action_documents_to_downloadDoucmentPage, false);
+        openPage(R.id.action_documents_to_downloadDoucmentPage, R.id.action_downloadDoucmentPage_to_documents, false);
     }
 
     private void onAddContentClicked()
     {
-        openPage(R.id.action_documents_to_uploadEMaterialPage, false);
+        openPage(R.id.action_documents_to_uploadEMaterialPage, R.id.action_uploadEMaterialPage_to_documents, false);
     }
 
     //--------------------------------------------------------[Evaluation methods]--------------------------------------------------------

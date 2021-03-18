@@ -2,20 +2,38 @@ package com.ksu.nafea.ui.fragments.course.ematerial;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ksu.nafea.R;
+import com.ksu.nafea.logic.course.Course;
+import com.ksu.nafea.ui.fragments.browse.SelectFragment;
+
+import static com.ksu.nafea.utilities.NafeaUtil.showToastMsg;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link EMatReportPage#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EMatReportPage extends Fragment {
+public class EMatReportPage extends SelectFragment<Course>  {
+
+
+
+    private Spinner spinnerType;
+    private Button report;
+    private Button cancle ;
+    private TextView reportText;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -57,10 +75,46 @@ public class EMatReportPage extends Fragment {
         }
     }
 
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_e_mat_report_page, container, false);
+        View main = inflater.inflate(R.layout.fragment_e_mat_report_page, container, false);
+
+        spinnerType = (Spinner) main.findViewById(R.id.reportSpinner);
+        report =(Button) main.findViewById(R.id.reportBTN2);
+        cancle = (Button)main.findViewById(R.id.cancelBTN);
+        reportText = (TextView) main.findViewById(R.id.reportText);
+
+        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                if (position == 2) {
+                    reportText.setVisibility(View.VISIBLE);
+
+                } else if(position == 1) {
+                    reportText.setVisibility(View.INVISIBLE);
+                    showToastMsg( "  تم إختيار " + spinnerType.getSelectedItem().toString());
+                }   else {
+                    reportText.setVisibility(View.INVISIBLE);
+                    showToastMsg("  تم إختيار " + spinnerType.getSelectedItem().toString());
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        return main;
     }
+
 }

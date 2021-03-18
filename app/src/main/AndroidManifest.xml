@@ -14,7 +14,7 @@
         <activity
             android:name=".ui.fragments.course.CoursePageActivity"
             android:label="@string/title_activity_course"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.activities.MainActivity"
             android:label="@string/title_activity_drawer"

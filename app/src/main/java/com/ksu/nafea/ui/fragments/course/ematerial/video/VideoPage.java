@@ -1,5 +1,7 @@
 package com.ksu.nafea.ui.fragments.course.ematerial.video;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.ksu.nafea.R;
 
@@ -17,6 +21,11 @@ import com.ksu.nafea.R;
  */
 public class VideoPage extends Fragment {
 
+    private String urlFromDB="https://www.youtube.com";
+    private Button watch;
+    private Button report;
+    private TextView docNameFromDB;
+    private  String UpdatedDocNameFromDB="Math 244 past exam";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -57,10 +66,44 @@ public class VideoPage extends Fragment {
         }
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_video_page, container, false);
+        View main = inflater.inflate(R.layout.fragment_video_page, container, false);
+
+
+       watch= main.findViewById(R.id.WatchBTN);
+       report= main.findViewById(R.id.reportBTN);
+       docNameFromDB= main.findViewById(R.id.docNameFromDB);
+
+
+        //here we change the text to the docName we stored in the DB
+        docNameFromDB.setText(UpdatedDocNameFromDB);
+
+
+        watch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //Get the url from DB and put it in the next line;;
+                gotoUrl(urlFromDB) ;
+            }
+        });
+
+        report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //here we should have the code will make trans to report page
+            }
+        });
+        return main ;
+    }
+    private void gotoUrl(String urlFromDB) {
+        Uri uri=Uri.parse(urlFromDB);
+        startActivity(new Intent(Intent.ACTION_VIEW,uri));
+
     }
 }

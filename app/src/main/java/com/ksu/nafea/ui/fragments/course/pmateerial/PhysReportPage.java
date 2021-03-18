@@ -7,8 +7,16 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.ksu.nafea.R;
+import com.ksu.nafea.utilities.NafeaUtil;
+
+import static com.ksu.nafea.utilities.NafeaUtil.showToastMsg;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,6 +25,10 @@ import com.ksu.nafea.R;
  */
 public class PhysReportPage extends Fragment {
 
+    private Spinner spinnerType;
+    private Button report;
+    private Button cancle ;
+    private TextView reportText;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -61,6 +73,39 @@ public class PhysReportPage extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_phys_report_page, container, false);
-    }
+        View main = inflater.inflate(R.layout.fragment_phys_report_page, container, false);
+        spinnerType = (Spinner) main.findViewById(R.id.physreportSpinner);
+        report =(Button) main.findViewById(R.id.physreportBTN2);
+        cancle = (Button)main.findViewById(R.id.physcancelBTN);
+        reportText = (TextView) main.findViewById(R.id.physreportText);
+
+        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                if (position == 2) {
+                    reportText.setVisibility(View.VISIBLE);
+
+                } else if(position == 1) {
+                    reportText.setVisibility(View.INVISIBLE);
+                    showToastMsg(getContext(), "  تم إختيار " + spinnerType.getSelectedItem().toString());
+                }   else {
+                    reportText.setVisibility(View.INVISIBLE);
+                    showToastMsg(getContext(),"  تم إختيار " + spinnerType.getSelectedItem().toString());
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+       return main;
+        }
+
+
 }

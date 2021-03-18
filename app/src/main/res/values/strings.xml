@@ -81,4 +81,21 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="toastMsg_loginFirst">يجب أن تسجل دخولك اولاً</string>
 
+
+    <string-array name="Types">
+        <item>ملف</item>
+        <item>رابط</item>
+    </string-array>
+
+    <string-array name="reportTypes">
+        <item>من الصعب قراءة هذا المستند بسبب سوء الكتابة أو ضعف الجودة</item>
+        <item>تم رفع هذا المستند في مكان خاطئ</item>
+        <item>غير ذلك</item>
+    </string-array>
+
+    <string-array name="physreportTypes">
+        <item>الإعلان غير واضح</item>
+        <item>تم رفع هذا الإعلان في مكان خاطئ</item>
+        <item>غير ذلك</item>
+    </string-array>
 </resources>

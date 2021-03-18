@@ -1,5 +1,6 @@
 package com.ksu.nafea.logic.course;
 
+import com.ksu.nafea.data.request.FailureResponse;
 import com.ksu.nafea.data.request.QueryRequest;
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.data.sql.Attribute;
@@ -9,10 +10,13 @@ import com.ksu.nafea.logic.Entity;
 import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.logic.account.Student;
 
+import java.util.ArrayList;
+
 public class CourseEvaluation extends Entity<CourseEvaluation>
 {
     public static final String TAG = "CourseEvaluation";
     private Double contentSize, assignmentsDifficulty, examsDifficulty;
+    public static final int EVALUATION_MAX = 10;
 
     public CourseEvaluation()
     {
@@ -41,7 +45,9 @@ public class CourseEvaluation extends Entity<CourseEvaluation>
             examsDifficulty = 0.0;
 
         Double overallEvaluation = (contentSize + assignmentsDifficulty + examsDifficulty) / 3;
-        return overallEvaluation.intValue();
+
+        double percentage = (overallEvaluation / EVALUATION_MAX) * 100;
+        return (int) percentage;
     }
 
 
@@ -85,6 +91,63 @@ public class CourseEvaluation extends Entity<CourseEvaluation>
         }
     }
 
+    public static void update(Student student, Course course, CourseEvaluation evaluation, QueryRequestFlag<QueryPostStatus> requestFlag)
+    {
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
+
+
+        //Input: Queries
+        String studentEmail = Attribute.getSQLValue(student.getEmail(), ESQLDataType.STRING);
+
+        String newValues = "content_size = " + evaluation.contentSize
+                + ", assignments_difficulty = " + evaluation.assignmentsDifficulty
+                + ", exams_difficulty = " + evaluation.examsDifficulty;
+        String condition = " WHERE s_email = " + studentEmail + " AND crs_id = " + course.getId();
+        String updateQuery = "UPDATE evaluate_course SET " + newValues + condition;
+
+        request.addQuery(updateQuery);
+
+        getPool().executeUpdateQuery(request);
+    }
+
+
+
+    public static void retrieveStudentEvaluation(Student student, Course course, final QueryRequestFlag<CourseEvaluation> requestFlag)
+    {
+        String studentEmail = Attribute.getSQLValue(student.getEmail(), ESQLDataType.STRING);
+        String condition = "s_email = " + studentEmail + " AND crs_id = " + course.getId();
+
+        try
+        {
+            getPool().retrieve(CourseEvaluation.class, new QueryRequestFlag<ArrayList<CourseEvaluation>>()
+            {
+                @Override
+                public void onQuerySuccess(ArrayList<CourseEvaluation> resultObject)
+                {
+                    if(resultObject != null)
+                    {
+                        requestFlag.onQuerySuccess(resultObject.get(0));
+                        return;
+                    }
+
+                    requestFlag.onQuerySuccess(null);
+                }
+
+                @Override
+                public void onQueryFailure(FailureResponse failure)
+                {
+                    Entity.sendFailureResponse(requestFlag, TAG, failure.getMsg());
+                }
+            }, "*", condition);
+        }
+        catch (Exception e)
+        {
+            String msg = "Failed to retrieve \"" + student.getFullName() + "\" evaluation for \"" + course.getName() + "\" course: " + e.getMessage();
+            Entity.sendFailureResponse(requestFlag, TAG, msg);
+        }
+    }
 
     //-----------------------------------------------[Entity Override Methods]-----------------------------------------------
 
@@ -134,6 +197,33 @@ public class CourseEvaluation extends Entity<CourseEvaluation>
     public Double getExamsDifficulty()
     {
         return examsDifficulty;
+    }
+
+    public int getContentSizePercentage()
+    {
+        if(contentSize == null)
+            return 0;
+
+        double percentage = (contentSize / EVALUATION_MAX) * 100;
+        return (int) percentage;
+    }
+
+    public int getAssignmentsDifficultyPercentage()
+    {
+        if(assignmentsDifficulty == null)
+            return 0;
+
+        double percentage = (assignmentsDifficulty / EVALUATION_MAX) * 100;
+        return (int) percentage;
+    }
+
+    public int getExamsDifficultyPercentage()
+    {
+        if(examsDifficulty == null)
+            return 0;
+
+        double percentage = (examsDifficulty / EVALUATION_MAX) * 100;
+        return (int) percentage;
     }
 
 

@@ -61,4 +61,9 @@
         <item name="android:text">""</item>
     </style>
 
+    <style name="Nafea_DefaultRatingStars" parent="Theme.AppCompat">
+        <item name="colorControlNormal">#8E8E8E</item>
+        <item name="colorControlActivated">#FFC107</item>
+    </style>
+
 </resources>

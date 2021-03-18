@@ -22,6 +22,7 @@ import com.ksu.nafea.logic.course.Course;
 import com.ksu.nafea.logic.material.ElectronicMaterial;
 import com.ksu.nafea.logic.material.Material;
 import com.ksu.nafea.logic.material.PhysicalMaterial;
+import com.ksu.nafea.ui.activities.MainActivity;
 import com.ksu.nafea.ui.fragments.course.CoursePageActivity;
 import com.ksu.nafea.ui.nafea_views.dialogs.PopupDetailsDialog;
 

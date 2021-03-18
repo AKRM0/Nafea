@@ -15,11 +15,15 @@ import android.view.View;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.ksu.nafea.R;
 
+import java.util.Stack;
+
 public class CoursePageActivity extends AppCompatActivity
 {
     private Toolbar toolbar;
     private AppBarConfiguration appBarConfiguration;
     public BottomNavigationView bottomNav;
+
+    private Stack<Integer> pagesStack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -27,6 +31,7 @@ public class CoursePageActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_page);
 
+        pagesStack = new Stack<Integer>();
 
         toolbar = (Toolbar) findViewById(R.id.crs_toolbar);
         setSupportActionBar(toolbar);
@@ -49,15 +54,60 @@ public class CoursePageActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                finish();
+                onBackClicked();
             }
         });
         return true;
     }
 
-    @Override
-    public boolean onSupportNavigateUp()
+   @Override
+   public boolean onSupportNavigateUp()
+   {
+       return super.onSupportNavigateUp();
+   }
+
+
+   private void onBackClicked()
+   {
+       if(pagesStack.isEmpty())
+           finish();
+       else
+       {
+           openPage(pagesStack.pop());
+
+           if(pagesStack.isEmpty())
+               bottomNav.setVisibility(View.VISIBLE);
+           else
+               bottomNav.setVisibility(View.GONE);
+       }
+
+       toolbar.setNavigationIcon(R.drawable.ic_arrow);
+   }
+
+    private void openPage(int pageID)
     {
-        return super.onSupportNavigateUp();
+        Navigation.findNavController(this, R.id.crs_navHost).navigate(pageID);
     }
+
+
+
+    public void pushPage(int pageID)
+    {
+        pagesStack.push(pageID);
+    }
+
+    protected void setBottomNavigationVisibility(boolean visibility)
+    {
+        int visibilityValue = visibility ? View.VISIBLE : View.GONE;
+        bottomNav.setVisibility(visibilityValue);
+    }
+
+    public void openPage(int targetPageID, int backPageID, boolean visibility)
+    {
+        setBottomNavigationVisibility(visibility);
+        Navigation.findNavController(this, R.id.crs_navHost).navigate(targetPageID);
+        pushPage(backPageID);
+    }
+
+
 }

@@ -12,22 +12,22 @@ import java.util.ArrayList;
 public class PhysicalMaterial extends Material<PhysicalMaterial>
 {
     private Integer sellerPhone;
-    private String image, city;
+    private String imageUrl, city;
     private Double price;
 
     public PhysicalMaterial()
     {
         super();
         sellerPhone = 0;
-        image = "";
+        imageUrl = "";
         city = "";
         price = 0.0;
     }
-    public PhysicalMaterial(Integer id, String name, Integer sellerPhone, String image, String city, Double price)
+    public PhysicalMaterial(Integer id, String name, Integer sellerPhone, String imageUrl, String city, Double price)
     {
         super(id, name);
         this.sellerPhone = sellerPhone;
-        this.image = image;
+        this.imageUrl = imageUrl;
         this.city = city;
         this.price = price;
     }
@@ -37,7 +37,7 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
     {
         return super.toString() + "PhysicalMaterial{" +
                 "sellerPhone='" + sellerPhone + '\'' +
-                ", image='" + image + '\'' +
+                ", image='" + imageUrl + '\'' +
                 ", city='" + city + '\'' +
                 ", price=" + price +
                 '}';
@@ -72,7 +72,7 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
         //entityObject.addAttribute("buyer_email", ESQLDataType.STRING, null);
         entityObject.addAttribute("pmat_name", ESQLDataType.STRING, name);
         entityObject.addAttribute("phone", ESQLDataType.INT, sellerPhone);
-        entityObject.addAttribute("pmat_photo", ESQLDataType.STRING, image);
+        entityObject.addAttribute("pmat_photo", ESQLDataType.STRING, imageUrl);
         entityObject.addAttribute("pmat_id", ESQLDataType.INT, id, EAttributeConstraint.PRIMARY_KEY);
         entityObject.addAttribute("pmat_city", ESQLDataType.STRING, city);
         entityObject.addAttribute("pmat_price", ESQLDataType.DOUBLE, price);
@@ -89,7 +89,7 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
         material.id = entityObject.getAttributeValue("pmat_id", ESQLDataType.INT, Integer.class);
         material.name = entityObject.getAttributeValue("pmat_name", ESQLDataType.STRING, String.class);
         material.sellerPhone = entityObject.getAttributeValue("phone", ESQLDataType.INT, Integer.class);
-        material.image = entityObject.getAttributeValue("pmat_photo", ESQLDataType.STRING, String.class);
+        material.imageUrl = entityObject.getAttributeValue("pmat_photo", ESQLDataType.STRING, String.class);
         material.city = entityObject.getAttributeValue("pmat_city", ESQLDataType.STRING, String.class);
         material.price = entityObject.getAttributeValue("pmat_price", ESQLDataType.DOUBLE, Double.class);
 
@@ -110,9 +110,9 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
         return sellerPhone;
     }
 
-    public String getImage()
+    public String getImageUrl()
     {
-        return image;
+        return imageUrl;
     }
 
     public String getCity()

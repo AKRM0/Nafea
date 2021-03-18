@@ -61,6 +61,7 @@ public class AboutCourseFragment extends Fragment
 
     public AboutCourseFragment()
     {
+
         // Required empty public constructor
     }
 

@@ -95,6 +95,7 @@ public class Student extends UserAccount<Student>
 
         Integer majorID = major != null ? major.getId() : null;
         entityObject.addAttribute("major_id", ESQLDataType.INT, majorID, EAttributeConstraint.FOREIGN_KEY);
+        entityObject.addAttribute("assigned_major", ESQLDataType.INT, null);
 
         return entityObject;
     }

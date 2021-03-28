@@ -36,16 +36,13 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
     }
 
     @Override
-    protected void setData()
+    protected void updateData()
     {
-        if(!data.isEmpty())
-            return;
-
         String type = "Video";
         ArrayList<ElectronicMaterial> documents = ElectronicMaterial.getEMaterialsByType(User.course.getEMats(), type);
         this.data = documents;
 
-        super.setData();
+        super.updateData();
     }
 
 

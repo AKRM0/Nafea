@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.ksu.nafea.R;
+import com.ksu.nafea.logic.User;
+import com.ksu.nafea.logic.material.ElectronicMaterial;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,6 +75,7 @@ public class VideoPage extends Fragment {
     {
         // Inflate the layout for this fragment
         View main = inflater.inflate(R.layout.fragment_video_page, container, false);
+
 
 
        watch= main.findViewById(R.id.WatchBTN);

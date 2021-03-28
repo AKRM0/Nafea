@@ -15,7 +15,6 @@ import com.ksu.nafea.logic.account.Student;
 import com.ksu.nafea.logic.material.EMaterialEvaluation;
 import com.ksu.nafea.logic.material.ElectronicMaterial;
 import com.ksu.nafea.ui.fragments.course.ContentListFragment;
-import com.ksu.nafea.ui.fragments.course.CoursePageActivity;
 
 import java.util.ArrayList;
 
@@ -36,16 +35,13 @@ public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
     }
 
     @Override
-    protected void setData()
+    protected void updateData()
     {
-        if(!data.isEmpty())
-            return;
-
         String type = "Document";
         ArrayList<ElectronicMaterial> documents = ElectronicMaterial.getEMaterialsByType(User.course.getEMats(), type);
         this.data = documents;
 
-        super.setData();
+        super.updateData();
     }
 
 

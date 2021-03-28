@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,7 +102,7 @@ public class ContentListFragment<T> extends Fragment
         initListeners();
         setBarTitle(User.course.getSymbol());
         onContentListCreated(main);
-        setData();
+        updateData();
         updateRecyclerView();
 
         return main;
@@ -161,7 +160,7 @@ public class ContentListFragment<T> extends Fragment
             @Override
             public int getItemCount()
             {
-                return pageData.size();
+                return getData().size();
             }
 
             @Override
@@ -294,7 +293,7 @@ public class ContentListFragment<T> extends Fragment
 
     }
 
-    protected void setData()
+    protected void updateData()
     {
         updatePageData();
     }

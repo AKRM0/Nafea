@@ -80,15 +80,12 @@ public class CourseCommentsListPage extends ContentListFragment<Comment>
     }
 
     @Override
-    protected void setData()
+    protected void updateData()
     {
-        if(!data.isEmpty())
-            return;
-
         ArrayList<Comment> comments = User.course.getComments();
         this.data = comments;
 
-        super.setData();
+        super.updateData();
     }
 
 
@@ -156,13 +153,13 @@ public class CourseCommentsListPage extends ContentListFragment<Comment>
                 progressDialog.dismiss();
                 if(resultObject != null)
                 {
-                    User.course.getComments().add(newComment);
-                    setData();
+                    User.course.getComments().add(0, newComment);
+                    updateData();
+                    updateRecyclerView();
 
                     commentField.setText("");
                     addCommentButton.setVisibility(View.GONE);
                     showToastMsg("تم إضافة تعليقك");
-                    updateRecyclerView();
                 }
             }
 

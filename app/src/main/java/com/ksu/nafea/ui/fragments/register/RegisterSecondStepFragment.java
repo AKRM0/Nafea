@@ -207,7 +207,7 @@ public class RegisterSecondStepFragment extends Fragment
         String fieldLabel = label.getText().toString();
         String fieldText = field.getText().toString();
 
-        UserAccount.isValidInput(fieldLabel, fieldText, false, false);
+        UserAccount.isValidInput(fieldLabel, fieldText, true, true);
     }
 
 

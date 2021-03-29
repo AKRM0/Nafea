@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.ksu.nafea.R;
+import com.ksu.nafea.logic.User;
 //TEST
 //TEST
 //TEST
@@ -33,7 +34,7 @@ import com.ksu.nafea.R;
  * create an instance of this fragment.
  */
 public class UploadEMaterialPage extends Fragment  {
-    Uri PDFUri;
+
     private TextView DocView;
     private Spinner spinnerType;
     private TextView LinkText;
@@ -92,7 +93,6 @@ public class UploadEMaterialPage extends Fragment  {
         // Inflate the layout for this fragment
         View main = inflater.inflate(R.layout.fragment_upload_e_material_page, container, false);
 
-
         spinnerType = main.findViewById(R.id.spinnerType);
         DocView = main.findViewById(R.id.DocView);
         Link = main.findViewById(R.id.vLink);
@@ -103,11 +103,11 @@ public class UploadEMaterialPage extends Fragment  {
         choose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myFileIntent=new Intent(Intent.ACTION_GET_CONTENT);
-                myFileIntent.setType("*/*");
-                startActivityForResult(myFileIntent,10);
-
-            }
+                    myFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    myFileIntent.setType("*/*");
+                    startActivityForResult(myFileIntent, 10);
+                }
+            
         });
 
         cancel.setOnClickListener(new View.OnClickListener() {

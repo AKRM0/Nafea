@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.ksu.nafea.R;
+import com.ksu.nafea.logic.User;
+import com.ksu.nafea.logic.material.ElectronicMaterial;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,9 +77,10 @@ public class VideoPage extends Fragment {
         View main = inflater.inflate(R.layout.fragment_video_page, container, false);
 
 
-       watch= main.findViewById(R.id.WatchBTN);
-       report= main.findViewById(R.id.reportBTN);
-       docNameFromDB= main.findViewById(R.id.docNameFromDB);
+
+        watch= main.findViewById(R.id.WatchBTN);
+        report= main.findViewById(R.id.reportBTN);
+        docNameFromDB= main.findViewById(R.id.docNameFromDB);
 
 
         //here we change the text to the docName we stored in the DB

@@ -61,6 +61,9 @@ public class UploadPhysMatPage extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_upload_phys_mat_page, container, false);
+        View main = inflater.inflate(R.layout.fragment_upload_phys_mat_page, container, false);
+
+
+        return main;
     }
 }

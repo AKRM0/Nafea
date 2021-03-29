@@ -1,8 +1,5 @@
 package com.ksu.nafea.ui.fragments.course.pmateerial;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,9 +12,6 @@ import com.ksu.nafea.logic.material.PhysicalMaterial;
 import com.ksu.nafea.ui.fragments.course.ContentListFragment;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class PhysicalMaterialsListPage extends ContentListFragment<PhysicalMaterial>
@@ -42,15 +36,12 @@ public class PhysicalMaterialsListPage extends ContentListFragment<PhysicalMater
     }
 
     @Override
-    protected void setData()
+    protected void updateData()
     {
-        if(!data.isEmpty())
-            return;
-
         ArrayList<PhysicalMaterial> physMats = User.course.getPMats();
         this.data = physMats;
 
-        super.setData();
+        super.updateData();
     }
 
 

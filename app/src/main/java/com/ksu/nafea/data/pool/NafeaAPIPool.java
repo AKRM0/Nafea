@@ -17,7 +17,7 @@ public class NafeaAPIPool
 {
     public final static String TAG = "NafeaAPIPool";
     private static Retrofit retrofit = null;
-    private static final String BASE_URL = "http://10.0.2.2:5000";
+    private static final String BASE_URL = "https://nafea-database-backend.herokuapp.com";
 
     private static NafeaApiRequest getNafeaAPI()
     {

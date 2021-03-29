@@ -103,11 +103,15 @@ public class UploadEMaterialPage extends Fragment  {
         choose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (User.userAccount != null) {
                     myFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
                     myFileIntent.setType("*/*");
                     startActivityForResult(myFileIntent, 10);
                 }
-            
+                else
+                    Toast.makeText(getContext(), getString(R.string.toastMsg_loginFirst), Toast.LENGTH_SHORT).show();
+
+            }
         });
 
         cancel.setOnClickListener(new View.OnClickListener() {

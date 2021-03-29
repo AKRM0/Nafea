@@ -78,9 +78,9 @@ public class VideoPage extends Fragment {
 
 
 
-        watch= main.findViewById(R.id.WatchBTN);
-        report= main.findViewById(R.id.reportBTN);
-        docNameFromDB= main.findViewById(R.id.docNameFromDB);
+       watch= main.findViewById(R.id.WatchBTN);
+       report= main.findViewById(R.id.reportBTN);
+       docNameFromDB= main.findViewById(R.id.docNameFromDB);
 
 
         //here we change the text to the docName we stored in the DB

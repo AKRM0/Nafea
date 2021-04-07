@@ -9,9 +9,16 @@ import com.ksu.nafea.logic.Entity;
 import com.ksu.nafea.logic.QueryPostStatus;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class DatabasePool
 {
+
+    public static Stack<String> getQueryStack()
+    {
+        return NafeaAPIPool.requestsStack;
+    }
+
 
     //-----------------------------------------------------------[Update Queries]-----------------------------------------------------------
     public <EntityType extends Entity<EntityType>> void

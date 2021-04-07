@@ -1,20 +1,29 @@
 package com.ksu.nafea.ui.fragments.course.ematerial.document;
 
+import android.content.DialogInterface;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.ksu.nafea.R;
 import com.ksu.nafea.data.request.FailureResponse;
 import com.ksu.nafea.data.request.QueryRequestFlag;
+import com.ksu.nafea.logic.FilesStorage;
 import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.logic.User;
 import com.ksu.nafea.logic.account.Student;
 import com.ksu.nafea.logic.material.EMaterialEvaluation;
 import com.ksu.nafea.logic.material.ElectronicMaterial;
+import com.ksu.nafea.logic.material.Material;
 import com.ksu.nafea.ui.fragments.course.ContentListFragment;
+import com.ksu.nafea.ui.nafea_views.dialogs.PopupConfirmDialog;
+import com.ksu.nafea.ui.nafea_views.dialogs.PopupDetailsDialog;
 
 import java.util.ArrayList;
 
@@ -37,12 +46,13 @@ public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
     @Override
     protected void updateData()
     {
-        String type = "Document";
+        String type = getString(R.string.ematType_DocumentType);
         ArrayList<ElectronicMaterial> documents = ElectronicMaterial.getEMaterialsByType(User.course.getEMats(), type);
         this.data = documents;
 
         super.updateData();
     }
+
 
 
 
@@ -62,6 +72,7 @@ public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
         final TextView likeText = (TextView) itemView.findViewById(R.id.doc_txt_like);
         final TextView dislikeText = (TextView) itemView.findViewById(R.id.doc_txt_dislike);
         TextView documentExt = (TextView) itemView.findViewById(R.id.doc_txt_ext);
+        TextView reportButton = (TextView) itemView.findViewById(R.id.doc_txtb_report);
 
         final ElectronicMaterial document = getData().get(position);
 
@@ -69,6 +80,19 @@ public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
         documentExt.setText(document.getExtension());
         updateEvaluationsOnScreen(likeText, dislikeText, document);
 
+
+        ImageView trash = (ImageView) itemView.findViewById(R.id.doc_img_trash);
+        assignDeleteProcess(trash, document.getOwner(), document, document.getName());
+
+
+        reportButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                onReportClicked(position);
+            }
+        });
 
         likeLayout.setOnClickListener(new View.OnClickListener()
         {
@@ -99,17 +123,52 @@ public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
         });
     }
 
-
-    private void onDocumentClicked(int position)
+    private void onReportClicked(int position)
     {
         User.material = getData().get(position);
-        openPage(R.id.action_documents_to_downloadDoucmentPage, R.id.action_downloadDoucmentPage_to_documents, false);
+        if(User.userAccount != null)
+            openPage(R.id.action_documents_to_EMatReportPage, R.id.action_EMatReportPage_to_documents, false);
+        else
+            showToastMsg(getString(R.string.toastMsg_loginFirst));
     }
 
     private void onAddContentClicked()
     {
-        openPage(R.id.action_documents_to_uploadEMaterialPage, R.id.action_uploadEMaterialPage_to_documents, false);
+        if(User.userAccount != null)
+            openPage(R.id.action_documents_to_uploadEMaterialPage, R.id.action_uploadEMaterialPage_to_documents, false);
+        else
+            showToastMsg(getString(R.string.toastMsg_loginFirst));
     }
+
+    private void onDocumentClicked(int position)
+    {
+        User.material = getData().get(position);
+        FilesStorage.downloadFile(getActivity(), getData().get(position));
+    }
+
+    @Override
+    protected void onDeletionPerform(ElectronicMaterial targetData)
+    {
+        User.course.getEMats().remove(targetData);
+    }
+
+    @Override
+    protected void onConfirmDeleteClicked(ElectronicMaterial targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
+    {
+        ElectronicMaterial.delete(User.userAccount, targetData, onDeleteRequest);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        if(FilesStorage.isPermissionProved(requestCode, grantResults))
+        {
+            FilesStorage.downloadFile(getActivity(), (ElectronicMaterial)User.material);
+        }
+        else
+            showToastMsg("Permission denied...!");
+    }
+
 
     //--------------------------------------------------------[Evaluation methods]--------------------------------------------------------
 

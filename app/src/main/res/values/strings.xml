@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Nafea</string>
+    <string name="app_name">نافع</string>
 
     <!-- Static Values -->
     <string name="allOption">الكل</string>
@@ -65,7 +65,7 @@
 
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="title_activity_drawer">DrawerActivity</string>
+    <string name="title_activity_drawer">نافع</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -80,6 +80,14 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="toastMsg_loginFirst">يجب أن تسجل دخولك اولاً</string>
+    <string name="ematType_DocumentOption">ملف</string>
+    <string name="ematType_VideoOption">فيديو</string>
+    <string name="ematType_DocumentType">Document</string>
+    <string name="ematType_VideoType">Video</string>
+    <string name="material_deleted">تم إزالة المحتوى</string>
+    <string name="matReport_illegalType">هذا المحتوى غير قانوني</string>
+    <string name="matReport_similarType">هذا المحتوى مكرر</string>
+    <string name="matReport_otherType">غير ذلك</string>
 
 
     <string-array name="Types">

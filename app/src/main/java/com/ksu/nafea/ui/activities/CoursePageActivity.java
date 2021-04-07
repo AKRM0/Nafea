@@ -1,4 +1,4 @@
-package com.ksu.nafea.ui.fragments.course;
+package com.ksu.nafea.ui.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -46,6 +46,12 @@ public class CoursePageActivity extends AppCompatActivity
 
 
     @Override
+    public void onBackPressed()
+    {
+        onBackClicked();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         toolbar.setNavigationIcon(R.drawable.ic_arrow);
@@ -67,7 +73,7 @@ public class CoursePageActivity extends AppCompatActivity
    }
 
 
-   private void onBackClicked()
+   public void onBackClicked()
    {
        if(pagesStack.isEmpty())
            finish();
@@ -90,6 +96,10 @@ public class CoursePageActivity extends AppCompatActivity
     }
 
 
+    public boolean isPageStackEmpty()
+    {
+        return pagesStack.isEmpty();
+    }
 
     public void pushPage(int pageID)
     {

@@ -1,6 +1,7 @@
 package com.ksu.nafea.ui.fragments.course.ematerial.video;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -9,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.ksu.nafea.R;
 import com.ksu.nafea.data.request.FailureResponse;
 import com.ksu.nafea.data.request.QueryRequestFlag;
+import com.ksu.nafea.logic.FilesStorage;
 import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.logic.User;
 import com.ksu.nafea.logic.account.Student;
@@ -38,7 +40,7 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
     @Override
     protected void updateData()
     {
-        String type = "Video";
+        String type = getString(R.string.ematType_VideoType);
         ArrayList<ElectronicMaterial> documents = ElectronicMaterial.getEMaterialsByType(User.course.getEMats(), type);
         this.data = documents;
 
@@ -63,8 +65,12 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
         final TextView likeText = (TextView) itemView.findViewById(R.id.video_txt_like);
         final TextView dislikeText = (TextView) itemView.findViewById(R.id.video_txt_dislike);
         TextView videoUrl = (TextView) itemView.findViewById(R.id.video_txt_url);
+        TextView reportButton = (TextView) itemView.findViewById(R.id.video_txtb_report);
 
         final ElectronicMaterial video = getData().get(position);
+
+        ImageView trash = (ImageView) itemView.findViewById(R.id.video_img_trash);
+        assignDeleteProcess(trash, video.getOwner(), video, video.getName());
 
         String url = video.getUrl();
         if(url != null)
@@ -77,6 +83,15 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
         videoUrl.setText(url);
         updateEvaluationsOnScreen(likeText, dislikeText, video);
 
+
+        reportButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                onReportClicked(position);
+            }
+        });
 
         likeLayout.setOnClickListener(new View.OnClickListener()
         {
@@ -107,17 +122,41 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
         });
     }
 
+    private void onReportClicked(int position)
+    {
+        User.material = getData().get(position);
+        if(User.userAccount != null)
+            openPage(R.id.action_videos_to_EMatReportPage, R.id.action_EMatReportPage_to_videos, false);
+        else
+            showToastMsg(getString(R.string.toastMsg_loginFirst));
+    }
 
     private void onVideoClicked(int position)
     {
         User.material = getData().get(position);
-        openPage(R.id.action_videos_to_videoPage, R.id.action_videoPage_to_videos, false);
+        FilesStorage.watchVideo(getActivity(), getData().get(position).getUrl());
     }
 
     private void onAddContentClicked()
     {
-        openPage(R.id.action_videos_to_uploadEMaterialPage, R.id.action_uploadEMaterialPage_to_videos, false);
+        if(User.userAccount != null)
+            openPage(R.id.action_videos_to_uploadEMaterialPage, R.id.action_uploadEMaterialPage_to_videos, false);
+        else
+            showToastMsg(getString(R.string.toastMsg_loginFirst));
     }
+
+    @Override
+    protected void onDeletionPerform(ElectronicMaterial targetData)
+    {
+        User.course.getEMats().remove(targetData);
+    }
+
+    @Override
+    protected void onConfirmDeleteClicked(ElectronicMaterial targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
+    {
+        ElectronicMaterial.delete(User.userAccount, targetData, onDeleteRequest);
+    }
+
 
     //--------------------------------------------------------[Evaluation methods]--------------------------------------------------------
 

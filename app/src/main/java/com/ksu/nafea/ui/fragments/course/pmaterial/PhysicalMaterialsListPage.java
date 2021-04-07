@@ -1,4 +1,4 @@
-package com.ksu.nafea.ui.fragments.course.pmateerial;
+package com.ksu.nafea.ui.fragments.course.pmaterial;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -7,6 +7,8 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.ksu.nafea.R;
+import com.ksu.nafea.data.request.QueryRequestFlag;
+import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.logic.User;
 import com.ksu.nafea.logic.material.PhysicalMaterial;
 import com.ksu.nafea.ui.fragments.course.ContentListFragment;
@@ -18,8 +20,8 @@ public class PhysicalMaterialsListPage extends ContentListFragment<PhysicalMater
 {
     private static final int MAX_URL_LENGTH = 45;
     private static final String PMAT_NAME_PREFIX = "";
-    private static final String PMAT_CITY_PREFIX = "المدينة: ";
-    private static final String PMAT_PRICE_PREFIX = "السعر: ";
+    private static final String PMAT_CITY_PREFIX = "";
+    private static final String PMAT_PRICE_PREFIX = "";
     private static final String PMAT_PRICE_POSTFIX = " ريال";
 
     @Override
@@ -60,6 +62,7 @@ public class PhysicalMaterialsListPage extends ContentListFragment<PhysicalMater
         TextView matName = (TextView) itemView.findViewById(R.id.physMat_txt_matName);
         TextView matCity = (TextView) itemView.findViewById(R.id.physMat_txt_matCity);
         TextView matPrice = (TextView) itemView.findViewById(R.id.physMat_txt_matPrice);
+        TextView reportButton = (TextView) itemView.findViewById(R.id.physMat_txtb_report);
 
         final PhysicalMaterial mat = getData().get(position);
 
@@ -70,10 +73,14 @@ public class PhysicalMaterialsListPage extends ContentListFragment<PhysicalMater
                 name = name.substring(0, MAX_URL_LENGTH - 1) + "...";
         }
 
+        ImageView trash = (ImageView) itemView.findViewById(R.id.physMat_img_trash);
+        assignDeleteProcess(trash, mat.getOwner(), mat, mat.getName());
 
         if(mat.getImageUrl() != null)
         {
-            Picasso.with(getContext()).load(mat.getImageUrl()).resize(128, 128).into(matImg);
+            //matImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            //Picasso.with(getContext()).load(mat.getImageUrl()).fit().centerInside().into(matImg);//.resize(128, 128).into(matImg);
+            Picasso.with(getContext()).load(mat.getImageUrl()).into(matImg);
 
             if(matImg.getDrawable() == null)
                 matImg.setImageResource(R.drawable.no_picture);
@@ -83,6 +90,15 @@ public class PhysicalMaterialsListPage extends ContentListFragment<PhysicalMater
         matCity.setText(PMAT_CITY_PREFIX +  mat.getCity());
         matPrice.setText(PMAT_PRICE_PREFIX + String.valueOf(mat.getPrice()) + PMAT_PRICE_POSTFIX);
 
+
+        reportButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                onReportClicked(position);
+            }
+        });
 
         mainLayout.setOnClickListener(new View.OnClickListener()
         {
@@ -95,15 +111,41 @@ public class PhysicalMaterialsListPage extends ContentListFragment<PhysicalMater
     }
 
 
+    @Override
+    protected void onDeletionPerform(PhysicalMaterial targetData)
+    {
+        User.course.getPMats().remove(targetData);
+    }
+
+    @Override
+    protected void onConfirmDeleteClicked(PhysicalMaterial targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
+    {
+        PhysicalMaterial.delete(User.userAccount, targetData, onDeleteRequest);
+    }
+
+
     private void onPMatClicked(int position)
     {
         User.material = getData().get(position);
         openPage(R.id.action_physMats_to_physicalMaterialPage, R.id.action_physicalMaterialPage_to_physMats, false);
     }
 
+
+    private  void onReportClicked(int position)
+    {
+        User.material = getData().get(position);
+        if(User.userAccount != null)
+            openPage(R.id.action_physMats_to_physReportPage, R.id.action_physReportPage_to_physMats, false);
+        else
+            showToastMsg(getString(R.string.toastMsg_loginFirst));
+    }
+
     private void onSellContentClicked()
     {
-        openPage(R.id.action_physMats_to_uploadPhysMatPage, R.id.action_uploadPhysMatPage_to_physMats, false);
+        if(User.userAccount != null)
+            openPage(R.id.action_physMats_to_uploadPhysMatPage, R.id.action_uploadPhysMatPage_to_physMats, false);
+        else
+            showToastMsg(getString(R.string.toastMsg_loginFirst));
     }
 
 

@@ -7,6 +7,7 @@ import com.ksu.nafea.data.sql.Attribute;
 import com.ksu.nafea.data.sql.EAttributeConstraint;
 import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.data.sql.EntityObject;
+import com.ksu.nafea.logic.account.UserAccount;
 import com.ksu.nafea.logic.course.Course;
 import com.ksu.nafea.logic.Entity;
 import com.ksu.nafea.logic.QueryPostStatus;

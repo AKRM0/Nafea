@@ -20,7 +20,7 @@ public class NafeaUtil
 
     public static void showToastMsg(Context context, String msg)
     {
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 
     public static void setBarTitle(FragmentActivity fragmentActivity, String title)

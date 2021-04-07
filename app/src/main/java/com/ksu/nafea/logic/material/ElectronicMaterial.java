@@ -3,10 +3,14 @@ package com.ksu.nafea.logic.material;
 import android.util.Log;
 
 import com.ksu.nafea.data.request.FailureResponse;
+import com.ksu.nafea.data.request.QueryRequest;
 import com.ksu.nafea.data.request.QueryRequestFlag;
+import com.ksu.nafea.data.sql.Attribute;
 import com.ksu.nafea.data.sql.EAttributeConstraint;
 import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.data.sql.EntityObject;
+import com.ksu.nafea.logic.QueryPostStatus;
+import com.ksu.nafea.logic.account.UserAccount;
 import com.ksu.nafea.logic.course.Course;
 import com.ksu.nafea.logic.Entity;
 
@@ -14,12 +18,13 @@ import java.util.ArrayList;
 
 public class ElectronicMaterial extends Material<ElectronicMaterial>
 {
-    private String type, extension, url;
+    private String owner, type, extension, url;
     private ArrayList<String> likes, dislikes;
 
     public ElectronicMaterial()
     {
         super();
+        owner = "";
         type = "";
         extension = "";
         url = "";
@@ -30,6 +35,7 @@ public class ElectronicMaterial extends Material<ElectronicMaterial>
     public ElectronicMaterial(Integer id, String name, String type, String url, String extension)
     {
         super(id, name);
+        owner = "";
         this.type = type;
         this.url = url;
         this.extension = extension;
@@ -42,13 +48,15 @@ public class ElectronicMaterial extends Material<ElectronicMaterial>
     @Override
     public String toString()
     {
-        return super.toString() + "ElectronicMaterial{" +
-                "url='" + url + '\'' +
-                ", type=" + type +
+        return "ElectronicMaterial{" +
+                "owner='" + owner + '\'' +
+                ", type='" + type + '\'' +
                 ", extension='" + extension + '\'' +
+                ", url='" + url + '\'' +
+                ", id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
-
 
     public static ArrayList<ElectronicMaterial> getEMaterialsByType(ArrayList<ElectronicMaterial> eMats, String type)
     {
@@ -99,6 +107,33 @@ public class ElectronicMaterial extends Material<ElectronicMaterial>
     }
 
     //-----------------------------------------------[Queries]-----------------------------------------------
+
+    public static void delete(UserAccount userAccount, ElectronicMaterial material, QueryRequestFlag<QueryPostStatus> requestFlag)
+    {
+        try
+        {
+            //Output: Return type
+            QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+            request.setRequestFlag(requestFlag);
+
+            //delete from e_material where emat_id = 4;
+            //Input: Queries
+            String email = Attribute.getSQLValue(userAccount.getEmail(), ESQLDataType.STRING);
+            String condition = "emat_id = " + material.getId() + " AND s_email = " + email;
+
+            String deleteQuery = material.toEntity().createDeleteQuery(condition);
+            request.addQuery(deleteQuery);
+
+
+            getPool().executeUpdateQuery(request);
+        }
+        catch (Exception e)
+        {
+            String msg = "Failed to delete " + material.getName() + " material: " + e.getMessage();
+            Entity.sendFailureResponse(requestFlag, TAG, msg);
+        }
+    }
+
 
     public static void retrieveAllEMatsInCourse(final Course course, final QueryRequestFlag<ArrayList<ElectronicMaterial>> requestFlag)
     {
@@ -181,6 +216,7 @@ public class ElectronicMaterial extends Material<ElectronicMaterial>
     {
         ElectronicMaterial material = new ElectronicMaterial();
 
+        material.owner = entityObject.getAttributeValue("s_email", ESQLDataType.STRING, String.class);
         material.id = entityObject.getAttributeValue("emat_id", ESQLDataType.INT, Integer.class);
         material.name = entityObject.getAttributeValue("emat_name", ESQLDataType.STRING, String.class);
         material.type = entityObject.getAttributeValue("emat_type", ESQLDataType.STRING, String.class);
@@ -198,6 +234,11 @@ public class ElectronicMaterial extends Material<ElectronicMaterial>
 
 
     //-----------------------------------------------[Getters & Setters]-----------------------------------------------
+    public String getOwner()
+    {
+        return owner;
+    }
+
     public String getType()
     {
         return type;

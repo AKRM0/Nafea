@@ -1,11 +1,14 @@
 package com.ksu.nafea.data.pool;
 
+import android.util.Log;
+
 import com.ksu.nafea.api.NafeaApiRequest;
 import com.ksu.nafea.data.request_result.ERequestResultType;
 import com.ksu.nafea.data.request.QueryRequest;
 import com.ksu.nafea.logic.Entity;
 
 import java.util.List;
+import java.util.Stack;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,6 +21,8 @@ public class NafeaAPIPool
     public final static String TAG = "NafeaAPIPool";
     private static Retrofit retrofit = null;
     private static final String BASE_URL = "https://nafea-database-backend.herokuapp.com";
+
+    protected static final Stack<String> requestsStack = new Stack<String>();
 
     private static NafeaApiRequest getNafeaAPI()
     {
@@ -38,6 +43,8 @@ public class NafeaAPIPool
     private static <T, EntityType extends Entity<EntityType>, ReturnType>
     void sendRequest(Call<T> requestCall, final QueryRequest<EntityType, ReturnType> queryRequest, final boolean singleResponse)
     {
+        requestsStack.push(queryRequest.toString() + "\n");
+
         requestCall.enqueue(new Callback<T>()
         {
             @Override

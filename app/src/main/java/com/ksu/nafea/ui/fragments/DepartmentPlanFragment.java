@@ -11,9 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ksu.nafea.R;
+import com.ksu.nafea.logic.FilesStorage;
 import com.ksu.nafea.logic.Major;
 import com.ksu.nafea.logic.User;
 import com.ksu.nafea.utilities.NafeaUtil;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +61,7 @@ public class DepartmentPlanFragment extends Fragment
         NafeaUtil.setBarTitle(getActivity(), title);
 
         viewsInit(main);
+        loadPlan();
 
         download.setOnClickListener(new View.OnClickListener()
         {
@@ -80,10 +83,23 @@ public class DepartmentPlanFragment extends Fragment
         download = (TextView) main.findViewById(R.id.depPlan_txtb_download);
     }
 
+    private void loadPlan()
+    {
+        String url = User.major.getPlanUrl();
+        if(url != null)
+        {
+            Picasso.with(getContext()).load(url).into(planImage);
+
+            if(planImage.getDrawable() == null)
+                planImage.setImageResource(R.drawable.no_picture);
+        }
+    }
+
 
     private void onDownloadClicked()
     {
-        NafeaUtil.showToastMsg(getContext(), "تحميل...");
+        String title = "خطة " + User.major.getName();
+        FilesStorage.downloadFile(getActivity(), User.major.getPlanUrl(), title);
     }
 
 }

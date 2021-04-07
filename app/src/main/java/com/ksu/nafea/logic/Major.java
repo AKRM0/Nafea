@@ -14,7 +14,7 @@ public class Major extends Entity<Major> implements IconData
 {
     public static final String TAG = "Major";
     private Integer id;
-    private String name;
+    private String name, planUrl;
     private ArrayList<Course> courses;
     private ArrayList<String> levels;
 
@@ -23,6 +23,7 @@ public class Major extends Entity<Major> implements IconData
     {
         this.id = 0;
         this.name = "";
+        planUrl = "";
         courses = new ArrayList<Course>();
         levels = new ArrayList<String>();
     }
@@ -30,6 +31,7 @@ public class Major extends Entity<Major> implements IconData
     {
         this.id = id;
         this.name = name;
+        planUrl = "";
         courses = new ArrayList<Course>();
         levels = new ArrayList<String>();
     }
@@ -95,7 +97,7 @@ public class Major extends Entity<Major> implements IconData
 
         major.id = entityObject.getAttributeValue("major_id", ESQLDataType.INT, Integer.class);
         major.name = entityObject.getAttributeValue("major_name", ESQLDataType.STRING, String.class);
-        //major.plan = entityObject.getAttributeValue("major_plan", ESQLDataType.STRING, String.class);
+        major.planUrl = entityObject.getAttributeValue("major_plan", ESQLDataType.STRING, String.class);
 
         return major;
     }
@@ -126,6 +128,11 @@ public class Major extends Entity<Major> implements IconData
 
     public String getName() {
         return name;
+    }
+
+    public String getPlanUrl()
+    {
+        return planUrl;
     }
 
     public ArrayList<Course> getCourses()

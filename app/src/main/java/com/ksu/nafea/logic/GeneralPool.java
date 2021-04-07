@@ -1,16 +1,91 @@
 package com.ksu.nafea.logic;
 
+import com.ksu.nafea.data.pool.DatabasePool;
 import com.ksu.nafea.data.request.FailureResponse;
+import com.ksu.nafea.data.request.QueryRequest;
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.data.sql.Attribute;
 import com.ksu.nafea.data.sql.EAttributeConstraint;
+import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.data.sql.EntityObject;
+import com.ksu.nafea.logic.account.Student;
+import com.ksu.nafea.logic.course.Comment;
+import com.ksu.nafea.logic.course.Course;
+import com.ksu.nafea.logic.material.ElectronicMaterial;
+import com.ksu.nafea.logic.material.PhysicalMaterial;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class GeneralPool
 {
     public final static String TAG = "GeneralPool";
+
+    public static Stack<String> getQueryStack()
+    {
+        return DatabasePool.getQueryStack();
+    }
+
+
+
+    //-----------------------------------------------------------[General Queries]-----------------------------------------------------------
+
+    public static void insertEMatReport(Student student, Course course, ElectronicMaterial material,
+                                        String reportType, String userComment, Integer similarMatID,
+                                        final QueryRequestFlag<QueryPostStatus> requestFlag)
+    {
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
+
+
+        //Input: Queries
+        String studentEmail = Attribute.getSQLValue(student.getEmail(), ESQLDataType.STRING);
+        reportType = Attribute.getSQLValue(reportType, ESQLDataType.STRING);
+        userComment = Attribute.getSQLValue(userComment, ESQLDataType.STRING);
+        String similarMat = Attribute.getSQLValue(similarMatID, ESQLDataType.INT);
+
+        String table = "report_ematerial";
+        String insertQuery = "INSERT INTO " + table + " VALUES(" + studentEmail + ", "
+                + reportType + ", "
+                + userComment + ", "
+                + similarMat + ", "
+                + material.getId() + ", "
+                + course.getId() + ")";
+
+        request.addQuery(insertQuery);
+
+        Entity.getPool().executeUpdateQuery(request);
+    }
+
+    public static void insertPMatReport(Student student, Course course, PhysicalMaterial material,
+                                        String reportType, String userComment,
+                                        final QueryRequestFlag<QueryPostStatus> requestFlag)
+    {
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
+
+
+        //Input: Queries
+        String studentEmail = Attribute.getSQLValue(student.getEmail(), ESQLDataType.STRING);
+        reportType = Attribute.getSQLValue(reportType, ESQLDataType.STRING);
+        userComment = Attribute.getSQLValue(userComment, ESQLDataType.STRING);
+
+        String table = "report_pmaterial";
+        String insertQuery = "INSERT INTO " + table + " VALUES(" + studentEmail + ", "
+                + reportType + ", "
+                + userComment + ", "
+                + material.getId() + ", "
+                + course.getId() + ")";
+
+        request.addQuery(insertQuery);
+
+        Entity.getPool().executeUpdateQuery(request);
+    }
+
+
+
 
 
 

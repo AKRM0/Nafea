@@ -7,19 +7,11 @@
     tools:context=".ui.fragments.course.ematerial.UploadEMaterialPage">
 
     <Button
-        android:id="@+id/upButton"
+        android:id="@+id/updMat_b_upload"
+        style="@style/Nafea_DefaultButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="رفع"
-        app:layout_constraintBottom_toTopOf="@+id/cancelUButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/cancelUButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="إلغاء"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -27,7 +19,7 @@
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/upButton"
+        app:layout_constraintBottom_toTopOf="@+id/updMat_b_upload"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,68 +32,100 @@
             android:gravity="right"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/matView"
-                android:layout_width="173dp"
-                android:layout_height="55dp"
-                android:text="نوع المحتوى:"
-                android:textSize="24sp" />
-
-            <Spinner
-                android:id="@+id/spinnerType"
-                android:entries="@array/Types"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/DocView"
-                android:layout_width="273dp"
-                android:layout_height="68dp"
-                android:hint="Video Link"
-                android:text="اسم المحتوى:"
-                android:textSize="30sp" />
+                <TextView
+                    android:id="@+id/updMat_txt_matType"
+                    style="@style/Nafea_DefaultTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="نوع المحتوى:"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/matName"
-                android:layout_width="357dp"
-                android:layout_height="47dp"
-                android:ems="10"
-                android:hint="إختبار ريض 244"
-                android:inputType="textPersonName" />
+                <com.ksu.nafea.ui.nafea_views.NSpinner
+                    android:id="@+id/updMat_dropdown_matType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/updMat_txt_matType"
+                    app:layout_constraintTop_toBottomOf="@+id/updMat_txt_matType" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/updMat_txt_matName"
+                    style="@style/Nafea_DefaultTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="64dp"
+                    android:layout_marginEnd="8dp"
+                    android:hint="Video Link"
+                    android:text="اسم المحتوى:"
+                    android:textSize="30sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/updMat_dropdown_matType" />
 
-            </LinearLayout>
+                <EditText
+                    android:id="@+id/updMat_ed_matName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="إختبار ريض 244"
+                    android:inputType="textPersonName"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/updMat_txt_matName" />
 
-            <Button
-                android:id="@+id/choose_file_btn"
-                android:layout_width="117dp"
-                android:layout_height="45dp"
-                android:text="إختيار ملف" />
+                <Button
+                    android:id="@+id/updMat_b_chooseMat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="إختيار ملف"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/updMat_ed_matName" />
 
-            <TextView
-                android:id="@+id/path_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/updMat_txt_matPath"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/updMat_b_chooseMat" />
 
-            <TextView
-                android:id="@+id/VideoLink"
-                android:layout_width="201dp"
-                android:layout_height="49dp"
-                android:text="الرابط :"
-                android:textSize="24sp" />
+                <TextView
+                    android:id="@+id/updMat_txt_videoLink"
+                    style="@style/Nafea_DefaultTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="الرابط :"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/updMat_txt_matPath" />
 
-            <EditText
-                android:id="@+id/vLink"
-                android:layout_width="229dp"
-                android:layout_height="48dp"
-                android:ems="10"
-                android:hint="ضع الرابط هنا
-"
-                android:inputType="textPersonName" />
+                <EditText
+                    android:id="@+id/updMat_ed_videoLink"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="128dp"
+                    android:ems="10"
+                    android:hint="ضع الرابط هنا
+    "
+                    android:inputType="textPersonName"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/updMat_txt_videoLink" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </ScrollView>

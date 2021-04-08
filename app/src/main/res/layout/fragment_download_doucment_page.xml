@@ -9,7 +9,6 @@
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/donDoc_txt_name"
-        style="@style/Nafea_DefaultTextView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="@string/hello_blank_fragment"

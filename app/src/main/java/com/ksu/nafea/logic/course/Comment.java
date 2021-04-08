@@ -9,6 +9,8 @@ import com.ksu.nafea.data.sql.EntityObject;
 import com.ksu.nafea.logic.Entity;
 import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.logic.account.Student;
+import com.ksu.nafea.logic.account.UserAccount;
+import com.ksu.nafea.logic.material.ElectronicMaterial;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ public class Comment extends Entity<Comment>
 {
     public static final String TAG = "Comment";
 
+    private String owner;
     private String firstName, lastName;
     private String comment;
     private String time;
@@ -25,6 +28,7 @@ public class Comment extends Entity<Comment>
 
     public Comment()
     {
+        owner = "";
         firstName = "";
         lastName = "";
         comment = "";
@@ -33,6 +37,7 @@ public class Comment extends Entity<Comment>
 
     public Comment(String firstName, String lastName, String comment, String time)
     {
+        owner = "";
         this.firstName = firstName;
         this.lastName = lastName;
         this.comment = comment;
@@ -75,9 +80,35 @@ public class Comment extends Entity<Comment>
         getPool().executeUpdateQuery(request);
     }
 
+    public static void delete(UserAccount userAccount, Course course, Comment comment, QueryRequestFlag<QueryPostStatus> requestFlag)
+    {
+        try
+        {
+            //Output: Return type
+            QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+            request.setRequestFlag(requestFlag);
+
+            //delete from e_material where emat_id = 4;
+            //Input: Queries
+            String email = Attribute.getSQLValue(userAccount.getEmail(), ESQLDataType.STRING);
+            String condition = "crs_id = " + course.getId() + " AND s_email = " + email;
+
+            String deleteQuery = comment.toEntity().createDeleteQuery(condition);
+            request.addQuery(deleteQuery);
+
+
+            getPool().executeUpdateQuery(request);
+        }
+        catch (Exception e)
+        {
+            String msg = "Failed to delete comment on " + course.getName() + " course: " + e.getMessage();
+            Entity.sendFailureResponse(requestFlag, TAG, msg);
+        }
+    }
+
     public static void retrieveAllComments(Course course, final QueryRequestFlag<ArrayList<Comment>> requestFlag)
     {
-        String selectClause = "s.first_name, s.last_name, crs_comment ,comment_time";
+        String selectClause = "comment_on_course.s_email, s.first_name, s.last_name, crs_comment ,comment_time";
         String joinSection = "RIGHT JOIN student as s ON s.s_email = comment_on_course.s_email";
         String condition = "crs_id = " + course.getId();
         String orderBy = "comment_time desc";
@@ -114,6 +145,7 @@ public class Comment extends Entity<Comment>
     {
         Comment cmt = new Comment();
 
+        cmt.owner = entityObject.getAttributeValue("s_email", ESQLDataType.STRING, String.class);
         cmt.firstName = entityObject.getAttributeValue("first_name", ESQLDataType.STRING, String.class);
         cmt.lastName = entityObject.getAttributeValue("last_name", ESQLDataType.STRING, String.class);
         cmt.comment = entityObject.getAttributeValue("crs_comment", ESQLDataType.STRING, String.class);
@@ -133,6 +165,11 @@ public class Comment extends Entity<Comment>
 
 
     //--------------------------------------------------[Getters & Setters]--------------------------------------------------
+
+    public String getOwner()
+    {
+        return owner;
+    }
 
     public String getFullName()
     {

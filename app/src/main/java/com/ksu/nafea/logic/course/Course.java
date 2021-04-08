@@ -297,6 +297,15 @@ public class Course extends Entity<Course>
         return comments != null ? comments : new ArrayList<Comment>();
     }
 
+    public void updateEMats(ArrayList<ElectronicMaterial> eMats) {
+        this.eMats = eMats;
+    }
+
+    public void updatePMats(ArrayList<PhysicalMaterial> pMats) {
+        this.pMats = pMats;
+    }
+
+
     public void updateCommentss(ArrayList<Comment> comments)
     {
         this.comments = comments;

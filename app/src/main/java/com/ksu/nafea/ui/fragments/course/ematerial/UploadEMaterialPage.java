@@ -1,16 +1,11 @@
 package com.ksu.nafea.ui.fragments.course.ematerial;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -20,34 +15,48 @@ import android.view.ViewGroup;
 import android.content.Intent;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Spinner;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.ksu.nafea.R;
+import com.ksu.nafea.data.request.FailureResponse;
+import com.ksu.nafea.data.request.QueryRequestFlag;
+import com.ksu.nafea.logic.FilesStorage;
+import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.logic.User;
-//TEST
-//TEST
-//TEST
+import com.ksu.nafea.logic.account.Student;
+import com.ksu.nafea.logic.material.ElectronicMaterial;
+import com.ksu.nafea.ui.activities.CoursePageActivity;
+import com.ksu.nafea.ui.nafea_views.NSpinner;
+
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link UploadEMaterialPage#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UploadEMaterialPage extends Fragment {
-private Boolean cbc ;
-    private TextView DocView;
-    private Spinner spinnerType;
-    private TextView LinkText;
-    private TextView Link;
-    private Button choose;
-    private Button upload;
-    private Button cancel;
-    private TextView path_tv;
-    private String path;
-    private Intent myFileIntent;
-    private CheckBox cb;
-    private static final String TAG = "uploadMaterial";
+public class UploadEMaterialPage extends Fragment
+{
+
+    private static final String TAG = "UploadEMaterial";
+    private View main;
+    private TextView typeLabel, matPathLabel, videoLinkLabel;
+    private EditText matNameField, videoLinkField;
+    private NSpinner typeDropdown;
+    private Button uploadButton, chooseButton;
+    private ProgressDialog progressDialog;
+
+    private Uri file = null;
+    private String selectedMatType = null;
+
+
+    private String documentType = null;
+    private String videoType = null;
+    private String documentOption = null;
+    private String videoOption = null;
+
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -60,8 +69,9 @@ private Boolean cbc ;
 
     private String mParam2;
 
-    public UploadEMaterialPage() {
-        // Required empty public constructor
+    public UploadEMaterialPage()
+    {
+
     }
 
     /**
@@ -94,122 +104,259 @@ private Boolean cbc ;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         // Inflate the layout for this fragment
-        View main = inflater.inflate(R.layout.fragment_upload_e_material_page, container, false);
+        main = inflater.inflate(R.layout.fragment_upload_e_material_page, container, false);
 
-        spinnerType = main.findViewById(R.id.spinnerType);
-        DocView = main.findViewById(R.id.DocView);
-        Link = main.findViewById(R.id.vLink);
-        LinkText = main.findViewById(R.id.VideoLink);
-        cancel = main.findViewById(R.id.cancelUButton);
-        choose = (Button)main.findViewById(R.id.choose_file_btn);
-        path_tv =(TextView) main.findViewById(R.id.path_tv);
-        cbc=false;
-        cb=main.findViewById(R.id.checkBox);
-        cb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(cb.isChecked())
-                    cbc=true;
-            }
-        });
-        upload=main.findViewById(R.id.upButton);
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        documentType = getString(R.string.ematType_DocumentType);
+        videoType = getString(R.string.ematType_VideoType);
+        documentOption = getString(R.string.ematType_DocumentOption);
+        videoOption = getString(R.string.ematType_VideoOption);
 
-                if (User.userAccount != null) {
-                    // Code for Upload server
-
-
-                }
-                else  Toast.makeText(getContext(), getString(R.string.toastMsg_loginFirst), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        choose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (User.userAccount != null) {
-                   if( cbc==true) {
-                       myFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                       myFileIntent.setType("*/*");
-                       startActivityForResult(myFileIntent, 10);
-                   }else
-                        Toast.makeText(getContext(), " يرجى الموافقة على الشرط " , Toast.LENGTH_SHORT).show();
-                }
-                else
-                    Toast.makeText(getContext(), getString(R.string.toastMsg_loginFirst), Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                getActivity().finish();
-            }
-        });
-
-        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-
-                if (position == 1) {
-                    DocView.setText("اسم للرابط:");
-                    Link.setVisibility(View.VISIBLE);
-                    LinkText.setVisibility(View.VISIBLE);
-                    choose.setVisibility(View.INVISIBLE);
-                    path_tv.setVisibility(View.INVISIBLE);
-                    cb.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getContext(), "  تم إختيار " + spinnerType.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
-                } else {
-                    DocView.setText("اسم للملف:");
-                    Link.setVisibility(View.INVISIBLE);
-                    choose.setVisibility(View.VISIBLE);
-                    LinkText.setVisibility(View.INVISIBLE);
-                    path_tv.setVisibility(View.VISIBLE);
-                    cb.setVisibility(View.VISIBLE);
-                    Toast.makeText(getContext(), "  تم إختيار " + spinnerType.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        viewsInit();
+        toggleView(documentOption);
+        initButtonsListeners();
+        initDropdownListeners();
 
         return main;
     }
 
 
+    private void viewsInit()
+    {
+        typeDropdown = (NSpinner) main.findViewById(R.id.updMat_dropdown_matType);
 
+        typeLabel = (TextView) main.findViewById(R.id.updMat_txt_matName);
+        matPathLabel = (TextView) main.findViewById(R.id.updMat_txt_matPath);
+        videoLinkLabel = (TextView) main.findViewById(R.id.updMat_txt_videoLink);
 
-    public void onActivityResult(int requestCode, int resultCode,@Nullable Intent resultData) {
+        videoLinkField = (EditText) main.findViewById(R.id.updMat_ed_videoLink);
+        matNameField = (EditText) main.findViewById(R.id.updMat_ed_matName);
 
-       switch (requestCode){
-           case 10:
-               if (resultCode==Activity.RESULT_OK){
-                   path=resultData.getData().getPath();
-                   path_tv.setText("File Path:" +path);
-               }
+        chooseButton = (Button) main.findViewById(R.id.updMat_b_chooseMat);
+        uploadButton = (Button) main.findViewById(R.id.updMat_b_upload);
 
-               break;
+        typeDropdown.addOption(documentOption);
+        typeDropdown.addOption(videoOption);
 
-       }
+        progressDialog = new ProgressDialog(getContext());
     }
 
-public Boolean checkOne(View v){
-        if(cb.isChecked()) {
-            Toast.makeText(getContext(), "  تمت الموافقة ", Toast.LENGTH_SHORT).show();
+    private void initButtonsListeners()
+    {
+        chooseButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                onChooseFileClicked();
+
+            }
+        });
+
+        uploadButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                onUploadFileClicked();
+            }
+        });
+    }
+
+    private void initDropdownListeners()
+    {
+        typeDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                String selectedOption = typeDropdown.getSelectedOption();
+                toggleView(selectedOption);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+    }
+
+    private void toggleView(String matType)
+    {
+        if(matType.equalsIgnoreCase(documentOption))
+        {
+            typeLabel.setText("اسم للملف:");
+            videoLinkField.setVisibility(View.INVISIBLE);
+            chooseButton.setVisibility(View.VISIBLE);
+            videoLinkLabel.setVisibility(View.INVISIBLE);
+            matPathLabel.setVisibility(View.VISIBLE);
+
+            selectedMatType = documentType;
+        }
+        else
+        {
+            typeLabel.setText("اسم للرابط:");
+            videoLinkField.setVisibility(View.VISIBLE);
+            videoLinkLabel.setVisibility(View.VISIBLE);
+            chooseButton.setVisibility(View.INVISIBLE);
+            matPathLabel.setVisibility(View.INVISIBLE);
+
+            selectedMatType = videoType;
+        }
+    }
+
+    private void showToastMsg(String msg)
+    {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+
+
+
+
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData)
+    {
+        if(requestCode == 10)
+        {
+            if (resultCode == Activity.RESULT_OK)
+            {
+                file = resultData.getData();
+
+                String path = resultData.getData().getPath();
+                matPathLabel.setText("File Path:" + path);
+            }
+        }
+    }
+
+
+    public void onChooseFileClicked()
+    {
+        Intent selectFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        selectFileIntent.setType("*/*");
+        startActivityForResult(selectFileIntent, 10);
+    }
+
+
+    private boolean isValidInput()
+    {
+        String matName = matNameField.getText().toString();
+        if(matName.isEmpty())
+        {
+            showToastMsg("خانة الاسم خالية");
+            return false;
+        }
+
+
+        if(selectedMatType.equalsIgnoreCase(documentType))
+        {
+            if(file == null)
+            {
+                showToastMsg("اختار الملف المراد رفعه");
+                return false;
+            }
+        }
+        else if(selectedMatType.equalsIgnoreCase(videoType))
+        {
+            String videoLink = videoLinkField.getText().toString();
+            if(videoLink.isEmpty())
+            {
+                showToastMsg("ضع رابط الفيديو");
+                return false;
+            }
+        }
+
         return true;
-        }else return false;
-}
+    }
+
+    private void onUploadFileClicked()
+    {
+        if(!isValidInput())
+            return;
+
+        Student student = (Student) User.userAccount;
+        String materialName = matNameField.getText().toString();
+
+
+        progressDialog.show();
+
+        if(selectedMatType.equalsIgnoreCase(documentType))
+            FilesStorage.uploadEMatFile(student, User.course, materialName, selectedMatType, file, onUploadComplete());
+        else if(selectedMatType.equalsIgnoreCase(videoType))
+        {
+            String url = videoLinkField.getText().toString();
+            ElectronicMaterial material = new ElectronicMaterial(0, materialName, selectedMatType, url, null);
+            ElectronicMaterial.insert(student, User.course, material, onUploadComplete());
+        }
+
+    }
+
+
+    private void refreshEMats()
+    {
+        ElectronicMaterial.retrieveAllEMatsInCourse(User.course, new QueryRequestFlag<ArrayList<ElectronicMaterial>>()
+        {
+            @Override
+            public void onQuerySuccess(ArrayList<ElectronicMaterial> resultObject)
+            {
+                progressDialog.dismiss();
+
+                if(resultObject != null)
+                    User.course.updateEMats(resultObject);
+
+                showToastMsg("تم الرفع بنجاح");
+
+                CoursePageActivity activity = ((CoursePageActivity) getActivity());
+                if(!activity.isPageStackEmpty())
+                    activity.onBackClicked();
+
+            }
+
+            @Override
+            public void onQueryFailure(FailureResponse failure)
+            {
+                progressDialog.dismiss();
+                showToastMsg("تم الرفع بنجاح");
+                Log.d(TAG, failure.getMsg() + "\n" + failure.toString());
+
+                CoursePageActivity activity = ((CoursePageActivity) getActivity());
+                if(!activity.isPageStackEmpty())
+                    activity.onBackClicked();
+            }
+        });
+    }
+
+
+    private QueryRequestFlag<QueryPostStatus> onUploadComplete()
+    {
+        return new QueryRequestFlag<QueryPostStatus>()
+        {
+            @Override
+            public void onQuerySuccess(QueryPostStatus resultObject)
+            {
+                if(resultObject != null)
+                {
+                    if(resultObject.getAffectedRows() > 0)
+                        refreshEMats();
+                    else
+                        showToastMsg("فشل الرفع");
+                }
+            }
+
+            @Override
+            public void onQueryFailure(FailureResponse failure)
+            {
+                progressDialog.dismiss();
+
+                showToastMsg("فشل الرفع");
+                Log.d(TAG, failure.getMsg() + "\n" + failure.toString());
+            }
+        };
+    }
+
+
 
 }

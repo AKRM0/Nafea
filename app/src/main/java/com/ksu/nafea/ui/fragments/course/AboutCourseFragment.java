@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +23,7 @@ import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.logic.User;
 import com.ksu.nafea.logic.account.Student;
 import com.ksu.nafea.logic.course.CourseEvaluation;
+import com.ksu.nafea.ui.activities.CoursePageActivity;
 
 import java.util.ArrayList;
 

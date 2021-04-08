@@ -20,11 +20,35 @@
             android:gravity="end">
 
             <TextView
+                android:id="@+id/video_txtb_report"
+                style="@style/Nafea_TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
+                android:text="إبلاغ"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/video_txt_url"
+                app:layout_constraintEnd_toEndOf="@+id/video_txt_videoName"
+                app:layout_constraintTop_toBottomOf="@+id/video_txt_videoName" />
+
+            <ImageView
+                android:id="@+id/video_img_trash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/video_txtb_report"
+                app:layout_constraintEnd_toStartOf="@+id/video_txtb_report"
+                app:layout_constraintTop_toTopOf="@+id/video_txtb_report"
+                app:srcCompat="@drawable/ic_delete_32"
+                app:tint="#F44336" />
+
+            <TextView
                 android:id="@+id/video_txt_url"
                 style="@style/Nafea_DefaultTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:gravity="center|start"
                 android:maxLength="48"
@@ -33,7 +57,8 @@
                 android:textColor="#838383"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/video_img_trash" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/linearLayout8"
@@ -112,11 +137,12 @@
                 style="@style/Nafea_DefaultTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:gravity="center|right"
                 android:paddingBottom="10dp"
                 android:text="النص"
                 android:textSize="18sp"
-                app:layout_constraintBottom_toTopOf="@+id/video_txt_url"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/linearLayout7"
                 app:layout_constraintTop_toTopOf="parent" />

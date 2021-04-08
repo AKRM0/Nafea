@@ -1,9 +1,13 @@
 package com.ksu.nafea.logic.material;
 
+import com.ksu.nafea.data.request.QueryRequest;
 import com.ksu.nafea.data.request.QueryRequestFlag;
+import com.ksu.nafea.data.sql.Attribute;
 import com.ksu.nafea.data.sql.EAttributeConstraint;
 import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.data.sql.EntityObject;
+import com.ksu.nafea.logic.QueryPostStatus;
+import com.ksu.nafea.logic.account.UserAccount;
 import com.ksu.nafea.logic.course.Course;
 import com.ksu.nafea.logic.Entity;
 
@@ -12,12 +16,13 @@ import java.util.ArrayList;
 public class PhysicalMaterial extends Material<PhysicalMaterial>
 {
     private Integer sellerPhone;
-    private String imageUrl, city;
+    private String owner, imageUrl, city;
     private Double price;
 
     public PhysicalMaterial()
     {
         super();
+        owner = "";
         sellerPhone = 0;
         imageUrl = "";
         city = "";
@@ -26,6 +31,7 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
     public PhysicalMaterial(Integer id, String name, Integer sellerPhone, String imageUrl, String city, Double price)
     {
         super(id, name);
+        owner = "";
         this.sellerPhone = sellerPhone;
         this.imageUrl = imageUrl;
         this.city = city;
@@ -45,6 +51,33 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
 
 
     //-----------------------------------------------[Queries]-----------------------------------------------
+
+    public static void delete(UserAccount userAccount, PhysicalMaterial material, QueryRequestFlag<QueryPostStatus> requestFlag)
+    {
+        try
+        {
+            //Output: Return type
+            QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+            request.setRequestFlag(requestFlag);
+
+            //delete from e_material where emat_id = 4;
+            //Input: Queries
+            String email = Attribute.getSQLValue(userAccount.getEmail(), ESQLDataType.STRING);
+            String condition = "pmat_id = " + material.getId() + " AND s_email = " + email;
+
+            String deleteQuery = material.toEntity().createDeleteQuery(condition);
+            request.addQuery(deleteQuery);
+
+
+            getPool().executeUpdateQuery(request);
+        }
+        catch (Exception e)
+        {
+            String msg = "Failed to delete " + material.getName() + " material: " + e.getMessage();
+            Entity.sendFailureResponse(requestFlag, TAG, msg);
+        }
+    }
+
 
     public static void retrieveAllPMatsInCourse(Course course, final QueryRequestFlag<ArrayList<PhysicalMaterial>> requestFlag)
     {
@@ -86,6 +119,7 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
     {
         PhysicalMaterial material = new PhysicalMaterial();
 
+        material.owner = entityObject.getAttributeValue("s_email", ESQLDataType.STRING, String.class);
         material.id = entityObject.getAttributeValue("pmat_id", ESQLDataType.INT, Integer.class);
         material.name = entityObject.getAttributeValue("pmat_name", ESQLDataType.STRING, String.class);
         material.sellerPhone = entityObject.getAttributeValue("phone", ESQLDataType.INT, Integer.class);
@@ -105,9 +139,20 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
 
     //-----------------------------------------------[Getters & Setters]-----------------------------------------------
 
+    public String getOwner()
+    {
+        return owner;
+    }
+
+
     public Integer getSellerPhone()
     {
         return sellerPhone;
+    }
+
+    public String getPhone()
+    {
+        return "0" + sellerPhone;
     }
 
     public String getImageUrl()

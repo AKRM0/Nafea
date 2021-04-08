@@ -1,4 +1,4 @@
-package com.ksu.nafea.ui.fragments.course.pmateerial;
+package com.ksu.nafea.ui.fragments.course.pmaterial;
 
 import android.os.Bundle;
 

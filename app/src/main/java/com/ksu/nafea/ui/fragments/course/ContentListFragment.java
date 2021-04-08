@@ -1,6 +1,7 @@
 package com.ksu.nafea.ui.fragments.course;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ksu.nafea.R;
+import com.ksu.nafea.data.request.FailureResponse;
+import com.ksu.nafea.data.request.QueryRequestFlag;
+import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.logic.User;
+import com.ksu.nafea.logic.material.ElectronicMaterial;
+import com.ksu.nafea.ui.activities.CoursePageActivity;
+import com.ksu.nafea.ui.nafea_views.dialogs.PopupConfirmDialog;
 import com.ksu.nafea.ui.nafea_views.recycler_view.GeneralRecyclerAdapter;
 import com.ksu.nafea.ui.nafea_views.recycler_view.ListAdapter;
 
@@ -180,7 +188,7 @@ public class ContentListFragment<T> extends Fragment
 
     protected void showToastMsg(String msg)
     {
-        Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -237,6 +245,126 @@ public class ContentListFragment<T> extends Fragment
         return field;
     }
 
+
+    //-------------------------------------------------[Other methods]-------------------------------------------------
+
+    protected void assignDeleteProcess(View view, String owner, final T targetData, final String title)
+    {
+        boolean hasPrivilege = false;
+        if(User.userAccount != null)
+            hasPrivilege = User.userAccount.getEmail().equalsIgnoreCase(owner);
+
+        if(!hasPrivilege)
+        {
+            view.setVisibility(View.GONE);
+            return;
+        }
+
+        view.setVisibility(View.VISIBLE);
+        view.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                String msg = "هل أنت متأكد تريد أن تحذف هذا المحتوى؟";
+                showConfirmPopup(targetData, title, msg);
+            }
+        });
+    }
+    protected void assignDeleteProcess(View view, String owner, final T targetData, final String title, final String msg)
+    {
+        boolean hasPrivilege = false;
+        if(User.userAccount != null)
+            hasPrivilege = User.userAccount.getEmail().equalsIgnoreCase(owner);
+
+        if(!hasPrivilege)
+        {
+            view.setVisibility(View.GONE);
+            return;
+        }
+
+        view.setVisibility(View.VISIBLE);
+        view.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                showConfirmPopup(targetData, title, msg);
+            }
+        });
+    }
+
+    private void showConfirmPopup(final T targetData, String title, String msg)
+    {
+        String positive = "نعم";
+        String negative = "لا";
+        PopupConfirmDialog detailsDialog = new PopupConfirmDialog(title, msg, positive, negative, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                QueryRequestFlag<QueryPostStatus> onDelRequest = onDeleteRequest(targetData);
+                progressDialog.show();
+                onConfirmDeleteClicked(targetData, onDelRequest);
+            }
+        }, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                onDeleteCancelClicked(targetData);
+            }
+        });
+        detailsDialog.show(getActivity().getSupportFragmentManager(), User.course.getSymbol());
+    }
+
+    private QueryRequestFlag<QueryPostStatus> onDeleteRequest(final T targetData)
+    {
+        return new QueryRequestFlag<QueryPostStatus>()
+        {
+            @Override
+            public void onQuerySuccess(QueryPostStatus resultObject)
+            {
+                progressDialog.dismiss();
+
+                if(resultObject != null)
+                {
+                    if(resultObject.getAffectedRows() > 0)
+                    {
+                        onDeletionPerform(targetData);
+                        refreshPage();
+
+                        showToastMsg(getString(R.string.material_deleted));
+                    }
+                }
+            }
+
+            @Override
+            public void onQueryFailure(FailureResponse failure)
+            {
+                progressDialog.dismiss();
+
+                showToastMsg("فشل إزالة المحتوى");
+                Log.d(TAG, failure.getMsg() + "\n" + failure.toString());
+            }
+        };
+    }
+
+    protected  void onDeletionPerform(final T targetData)
+    {
+
+    }
+
+    protected void onConfirmDeleteClicked(final T targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
+    {
+
+    }
+
+    protected void onDeleteCancelClicked(final T targetData)
+    {
+
+    }
+
+
     //-------------------------------------------------[Data methods]-------------------------------------------------
 
     protected ArrayList<T> getFullData()
@@ -247,6 +375,13 @@ public class ContentListFragment<T> extends Fragment
     {
         return pageData;
     }
+
+    public void refreshPage()
+    {
+        updateData();
+        updateRecyclerView();
+    }
+
 
     private void updatePageData()
     {
@@ -307,6 +442,9 @@ public class ContentListFragment<T> extends Fragment
     {
 
     }
+
+
+    
 
 
 

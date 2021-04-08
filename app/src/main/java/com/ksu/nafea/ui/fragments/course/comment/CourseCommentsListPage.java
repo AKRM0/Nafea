@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -106,6 +107,11 @@ public class CourseCommentsListPage extends ContentListFragment<Comment>
 
         final Comment comment = getData().get(position);
 
+        ImageView trash = (ImageView) itemView.findViewById(R.id.crsComment_img_trash);
+        String title = "";
+        String msg = "هل أنت متأكد تريد أن تحذف هذا التعليق؟";
+        assignDeleteProcess(trash, comment.getOwner(), comment, title, msg);
+
         nameText.setText(comment.getFullName());
         commentText.setText(comment.getComment());
         dateText.setText(comment.getTime());
@@ -121,6 +127,18 @@ public class CourseCommentsListPage extends ContentListFragment<Comment>
         });
     }
 
+
+    @Override
+    protected void onDeletionPerform(Comment targetData)
+    {
+        User.course.getComments().remove(targetData);
+    }
+
+    @Override
+    protected void onConfirmDeleteClicked(Comment targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
+    {
+        Comment.delete(User.userAccount, User.course, targetData, onDeleteRequest);
+    }
 
     private void onCommentClicked(int position)
     {

@@ -19,14 +19,8 @@ import com.ksu.nafea.logic.Major;
 import com.ksu.nafea.logic.University;
 import com.ksu.nafea.logic.User;
 import com.ksu.nafea.logic.course.Course;
-import com.ksu.nafea.logic.material.ElectronicMaterial;
-import com.ksu.nafea.logic.material.Material;
-import com.ksu.nafea.logic.material.PhysicalMaterial;
-import com.ksu.nafea.ui.activities.MainActivity;
-import com.ksu.nafea.ui.fragments.course.CoursePageActivity;
+import com.ksu.nafea.ui.activities.CoursePageActivity;
 import com.ksu.nafea.ui.nafea_views.dialogs.PopupDetailsDialog;
-
-import java.util.ArrayList;
 
 public class MajorPageFragment extends SelectFragment<Course>
 {

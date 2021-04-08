@@ -24,6 +24,7 @@
 
             <TextView
                 android:id="@+id/nameTview"
+                style="@style/Nafea_DefaultTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="44dp"
                 android:text="اسم المادة:"
@@ -31,6 +32,7 @@
 
             <EditText
                 android:id="@+id/namePview"
+                style="@style/Nafea_DefaultTextField"
                 android:layout_width="239dp"
                 android:layout_height="44dp"
                 android:ems="10"
@@ -42,17 +44,19 @@
                 android:layout_width="189dp"
                 android:layout_height="142dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_baseline_image_24" />
+                android:src="@drawable/ic_baseline_image_24"
+                android:paddingBottom="20dp"/>
 
             <Button
                 android:id="@+id/choose_image_btn"
-                style="@style/Base.Widget.AppCompat.Button.Colored"
-                android:layout_width="226dp"
-                android:layout_height="41dp"
-                android:text="Choose Image" />
+                style="@style/Nafea_DefaultButton"
+                android:layout_width="117dp"
+                android:layout_height="45dp"
+                android:text="إختيار صوره"/>
 
             <TextView
                 android:id="@+id/priceTview"
+                style="@style/Nafea_DefaultTextView"
                 android:layout_width="272dp"
                 android:layout_height="44dp"
                 android:text="السعر:"
@@ -60,6 +64,7 @@
 
             <EditText
                 android:id="@+id/pricePview"
+                style="@style/Nafea_DefaultTextField"
                 android:layout_width="239dp"
                 android:layout_height="44dp"
                 android:ems="10"
@@ -68,6 +73,7 @@
 
             <TextView
                 android:id="@+id/numberTview"
+                style="@style/Nafea_DefaultTextView"
                 android:layout_width="272dp"
                 android:layout_height="44dp"
                 android:text="رقم الجوال:"
@@ -75,6 +81,7 @@
 
             <EditText
                 android:id="@+id/numberPview"
+                style="@style/Nafea_DefaultTextField"
                 android:layout_width="239dp"
                 android:layout_height="44dp"
                 android:ems="10"
@@ -83,6 +90,7 @@
 
             <TextView
                 android:id="@+id/cityTview"
+                style="@style/Nafea_DefaultTextView"
                 android:layout_width="272dp"
                 android:layout_height="44dp"
                 android:text="المدينة:"
@@ -90,6 +98,7 @@
 
             <EditText
                 android:id="@+id/cityPview"
+                style="@style/Nafea_DefaultTextField"
                 android:layout_width="239dp"
                 android:layout_height="44dp"
                 android:ems="10"
@@ -110,15 +119,20 @@
 
         <Button
             android:id="@+id/addUpB"
+            style="@style/Nafea_DefaultButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="AddUpdate offer" />
+            android:text="رفع أو تحديث العرض" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
 
         <Button
             android:id="@+id/cancelPButton"
+            style="@style/Nafea_DefaultButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cancel" />
+            android:text="إلغاء" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

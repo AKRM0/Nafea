@@ -74,7 +74,7 @@
                     android:gravity="center"
                     android:paddingBottom="25dp"
                     android:text="تقييم المقرر"
-                    android:textColor="#E2FF8C00"
+                    android:textColor="#FF000000"
                     android:textSize="36sp" />
 
                 <TextView
@@ -327,8 +327,8 @@
                 <Button
                     android:id="@+id/aboutCrs_b_confirmEvaluation"
                     style="@style/Nafea_DefaultButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="117dp"
+                    android:layout_height="45dp"
                     android:layout_marginTop="24dp"
                     android:text="حدث تقييمك"
                     app:layout_constraintBottom_toBottomOf="parent"

@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.content.Intent;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,17 +34,19 @@ import com.ksu.nafea.logic.User;
  * Use the {@link UploadEMaterialPage#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UploadEMaterialPage extends Fragment  {
-
+public class UploadEMaterialPage extends Fragment {
+private Boolean cbc ;
     private TextView DocView;
     private Spinner spinnerType;
     private TextView LinkText;
     private TextView Link;
     private Button choose;
+    private Button upload;
     private Button cancel;
     private TextView path_tv;
     private String path;
-    Intent myFileIntent;
+    private Intent myFileIntent;
+    private CheckBox cb;
     private static final String TAG = "uploadMaterial";
 
 
@@ -102,13 +105,39 @@ public class UploadEMaterialPage extends Fragment  {
         cancel = main.findViewById(R.id.cancelUButton);
         choose = (Button)main.findViewById(R.id.choose_file_btn);
         path_tv =(TextView) main.findViewById(R.id.path_tv);
+        cbc=false;
+        cb=main.findViewById(R.id.checkBox);
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cb.isChecked())
+                    cbc=true;
+            }
+        });
+        upload=main.findViewById(R.id.upButton);
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (User.userAccount != null) {
+                    // Code for Upload server
+
+
+                }
+                else  Toast.makeText(getContext(), getString(R.string.toastMsg_loginFirst), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         choose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (User.userAccount != null) {
-                    myFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                    myFileIntent.setType("*/*");
-                    startActivityForResult(myFileIntent, 10);
+                   if( cbc==true) {
+                       myFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                       myFileIntent.setType("*/*");
+                       startActivityForResult(myFileIntent, 10);
+                   }else
+                        Toast.makeText(getContext(), " يرجى الموافقة على الشرط " , Toast.LENGTH_SHORT).show();
                 }
                 else
                     Toast.makeText(getContext(), getString(R.string.toastMsg_loginFirst), Toast.LENGTH_SHORT).show();
@@ -120,7 +149,7 @@ public class UploadEMaterialPage extends Fragment  {
             @Override
             public void onClick(View v) {
 
-                finish();
+                getActivity().finish();
             }
         });
 
@@ -135,6 +164,7 @@ public class UploadEMaterialPage extends Fragment  {
                     LinkText.setVisibility(View.VISIBLE);
                     choose.setVisibility(View.INVISIBLE);
                     path_tv.setVisibility(View.INVISIBLE);
+                    cb.setVisibility(View.INVISIBLE);
                     Toast.makeText(getContext(), "  تم إختيار " + spinnerType.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
                 } else {
                     DocView.setText("اسم للملف:");
@@ -142,6 +172,7 @@ public class UploadEMaterialPage extends Fragment  {
                     choose.setVisibility(View.VISIBLE);
                     LinkText.setVisibility(View.INVISIBLE);
                     path_tv.setVisibility(View.VISIBLE);
+                    cb.setVisibility(View.VISIBLE);
                     Toast.makeText(getContext(), "  تم إختيار " + spinnerType.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
                 }
 
@@ -158,10 +189,6 @@ public class UploadEMaterialPage extends Fragment  {
     }
 
 
-    private void finish() {
-        // go back to page before report
-
-    }
 
 
     public void onActivityResult(int requestCode, int resultCode,@Nullable Intent resultData) {
@@ -178,6 +205,11 @@ public class UploadEMaterialPage extends Fragment  {
        }
     }
 
-
+public Boolean checkOne(View v){
+        if(cb.isChecked()) {
+            Toast.makeText(getContext(), "  تمت الموافقة ", Toast.LENGTH_SHORT).show();
+        return true;
+        }else return false;
+}
 
 }

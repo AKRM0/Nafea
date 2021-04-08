@@ -87,6 +87,20 @@
         <item>رابط</item>
     </string-array>
 
+    <string-array name="Levels">
+        <item>المستوى الأول </item>
+        <item>المستوى الثاني</item>
+        <item>المستوى الثالث</item>
+        <item>المستوى الرابع</item>
+        <item>المستوى الخامس</item>
+        <item>المستوى السادس</item>
+        <item>المستوى السابع</item>
+        <item>المستوى الثامن</item>
+        <item>المستوى التاسع</item>
+        <item>المستوى العاشر</item>
+
+    </string-array>
+
     <string-array name="reportTypes">
         <item>من الصعب قراءة هذا المستند بسبب سوء الكتابة أو ضعف الجودة</item>
         <item>تم رفع هذا المستند في مكان خاطئ</item>

@@ -32,6 +32,7 @@
 
                 <TextView
                     android:id="@+id/crsComment_txt_name"
+                    style="@style/Nafea_DefaultTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="الاسم"
@@ -41,6 +42,7 @@
 
                 <TextView
                     android:id="@+id/crsComment_txt_comment"
+                    style="@style/Nafea_DefaultTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -56,6 +58,7 @@
 
                 <TextView
                     android:id="@+id/crsComment_txt_date"
+                    style="@style/Nafea_DefaultTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"

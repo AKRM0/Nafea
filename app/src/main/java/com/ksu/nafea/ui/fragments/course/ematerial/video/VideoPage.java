@@ -87,6 +87,7 @@ public class VideoPage extends Fragment {
         docNameFromDB.setText(UpdatedDocNameFromDB);
 
 
+
         watch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

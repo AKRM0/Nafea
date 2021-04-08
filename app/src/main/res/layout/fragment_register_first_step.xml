@@ -28,6 +28,7 @@
 
         <EditText
             android:id="@+id/regFirst_et_email"
+            style="@style/Nafea_DefaultTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autofillHints=""
@@ -43,6 +44,7 @@
 
         <EditText
             android:id="@+id/regFirst_et_confirmEmail"
+            style="@style/Nafea_DefaultTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -58,6 +60,7 @@
 
         <EditText
             android:id="@+id/regFirst_et_pass"
+            style="@style/Nafea_DefaultTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -73,6 +76,7 @@
 
         <EditText
             android:id="@+id/regFirst_et_rePass"
+            style="@style/Nafea_DefaultTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -99,7 +103,9 @@
             android:background="#03A9F4"
             android:text="@string/buttonText_next"
             android:textColor="#FFFFFF" />
-
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
         <Button
             android:id="@+id/regFirst_b_cancel"
             style="@style/Nafea_DefaultButton"

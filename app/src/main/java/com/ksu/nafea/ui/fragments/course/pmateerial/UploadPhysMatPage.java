@@ -33,6 +33,7 @@ public class UploadPhysMatPage extends Fragment {
     private Button mChooseBtn;
     private Button cancel;
     protected View main;
+    private Button upload;
 
     private static final int IMAGE_PICK_CODE = 1000;
     private static final int PERMISSION_CODE = 1001;
@@ -92,7 +93,19 @@ public class UploadPhysMatPage extends Fragment {
         });
 
 
+        upload=main.findViewById(R.id.addUpB);
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                if (User.userAccount != null) {
+                    // Code for Upload server
+
+
+                }
+                else  Toast.makeText(getContext(), getString(R.string.toastMsg_loginFirst), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //handle button click
         mChooseBtn.setOnClickListener(new View.OnClickListener() {

@@ -28,6 +28,7 @@
 
         <EditText
             android:id="@+id/regSecond_et_firstName"
+            style="@style/Nafea_DefaultTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autofillHints=""
@@ -43,6 +44,7 @@
 
         <EditText
             android:id="@+id/regSecond_et_lastName"
+            style="@style/Nafea_DefaultTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -70,6 +72,10 @@
             android:background="#03A9F4"
             android:text="@string/buttonText_next"
             android:textColor="#FFFFFF" />
+        <Space
+            android:layout_height="2dp">
+
+        </Space>
 
         <Button
             android:id="@+id/regSecond_b_cancel"

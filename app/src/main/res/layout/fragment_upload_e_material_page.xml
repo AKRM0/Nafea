@@ -8,15 +8,22 @@
 
     <Button
         android:id="@+id/upButton"
+        style="@style/Nafea_DefaultButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
         android:text="رفع"
         app:layout_constraintBottom_toTopOf="@+id/cancelUButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
     <Button
         android:id="@+id/cancelUButton"
+        style="@style/Nafea_DefaultButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="إلغاء"
@@ -29,7 +36,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/upButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
@@ -42,6 +49,7 @@
 
             <TextView
                 android:id="@+id/matView"
+                style="@style/Nafea_DefaultTextView"
                 android:layout_width="173dp"
                 android:layout_height="55dp"
                 android:text="نوع المحتوى:"
@@ -49,12 +57,13 @@
 
             <Spinner
                 android:id="@+id/spinnerType"
-                android:entries="@array/Types"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:entries="@array/Types" />
 
             <TextView
                 android:id="@+id/DocView"
+                style="@style/Nafea_DefaultTextView"
                 android:layout_width="273dp"
                 android:layout_height="68dp"
                 android:hint="Video Link"
@@ -63,6 +72,7 @@
 
             <EditText
                 android:id="@+id/matName"
+                style="@style/Nafea_DefaultTextField"
                 android:layout_width="357dp"
                 android:layout_height="47dp"
                 android:ems="10"
@@ -78,17 +88,20 @@
 
             <Button
                 android:id="@+id/choose_file_btn"
+                style="@style/Nafea_DefaultButton"
                 android:layout_width="117dp"
                 android:layout_height="45dp"
                 android:text="إختيار ملف" />
 
             <TextView
                 android:id="@+id/path_tv"
+                style="@style/Nafea_DefaultTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/VideoLink"
+                style="@style/Nafea_DefaultTextView"
                 android:layout_width="201dp"
                 android:layout_height="49dp"
                 android:text="الرابط :"
@@ -96,12 +109,22 @@
 
             <EditText
                 android:id="@+id/vLink"
+                style="@style/Nafea_DefaultTextField"
                 android:layout_width="229dp"
                 android:layout_height="48dp"
                 android:ems="10"
                 android:hint="ضع الرابط هنا
 "
                 android:inputType="textPersonName" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="أنا أتحمل المسؤلية الكاملة للملف المرفوع"
+                android:onClick="checkOne"
+                android:checked="false"
+                android:shadowColor="#FF2B80FF"/>
 
         </LinearLayout>
     </ScrollView>

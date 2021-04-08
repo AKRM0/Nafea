@@ -8,11 +8,14 @@ import com.ksu.nafea.logic.College;
 import com.ksu.nafea.logic.Major;
 import com.ksu.nafea.logic.University;
 
+import java.util.logging.Level;
+
 public class Student extends UserAccount<Student>
 {
     private University university;
     private College college;
     private Major major;
+  //  private Level level;
 
     public Student()
     {
@@ -20,6 +23,7 @@ public class Student extends UserAccount<Student>
         university = null;
         college = null;
         major = null;
+       // level=null;
     }
     public Student(String email, String password)
     {
@@ -27,6 +31,7 @@ public class Student extends UserAccount<Student>
         university = null;
         college = null;
         major = null;
+    //    level=null;
     }
     public Student(String email, String password, String firstName, String lastName, Integer majorID)
     {
@@ -34,6 +39,7 @@ public class Student extends UserAccount<Student>
         university = null;
         college = null;
         this.major = new Major(majorID, "");
+      //  level=null;
     }
 
 
@@ -43,7 +49,8 @@ public class Student extends UserAccount<Student>
         return "Student:\n" + super.toString() + "\n" +
                 "[" + university.toString() + "]\n" +
                 "[" + college.toString() + "]\n" +
-                "[" + major.toString() + "]";
+                "[" + major.toString() + "]\n";
+        //        "[" + level.toString() + "]" ;
     }
 
     //-----------------------------------------------[UserAccount Override Methods]-----------------------------------------------
@@ -54,7 +61,8 @@ public class Student extends UserAccount<Student>
         return "student.s_email, student.password, student.first_name, student.last_name,\n" +
                 " major.major_id, major.major_name, major.major_plan,\n" +
                 " college.coll_id, college.coll_name, college.coll_category,\n" +
-                " university.univ_id, university.univ_name, university.univ_city";
+                " university.univ_id, university.univ_name, university.univ_city\n";
+            //    " level.level_num, level.level_written";
     }
 
     @Override
@@ -150,6 +158,9 @@ public class Student extends UserAccount<Student>
     {
         return major;
     }
+
+  //  public level getLevel(){return level;}
+
 
 
 }

@@ -1,24 +1,21 @@
-package com.ksu.nafea.logic.course;
+package com.ksu.nafea.logic.material;
 
 import com.ksu.nafea.data.request.QueryRequest;
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.data.sql.Attribute;
-import com.ksu.nafea.data.sql.EAttributeConstraint;
 import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.data.sql.EntityObject;
 import com.ksu.nafea.logic.Entity;
 import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.logic.account.Student;
-import com.ksu.nafea.logic.account.UserAccount;
-import com.ksu.nafea.logic.material.ElectronicMaterial;
+import com.ksu.nafea.logic.course.Comment;
+import com.ksu.nafea.logic.course.Course;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-public class Comment extends Entity<Comment>
+public class PMatComment extends Entity<PMatComment>
 {
-    public static final String TAG = "Comment";
+    public static final String TAG = "PMatComment";
 
     private String owner;
     private String firstName, lastName;
@@ -26,7 +23,7 @@ public class Comment extends Entity<Comment>
     private String time;
 
 
-    public Comment()
+    public PMatComment()
     {
         owner = "";
         firstName = "";
@@ -35,7 +32,7 @@ public class Comment extends Entity<Comment>
         time = "";
     }
 
-    public Comment(String firstName, String lastName, String comment, String time)
+    public PMatComment(String firstName, String lastName, String comment, String time)
     {
         owner = "";
         this.firstName = firstName;
@@ -58,7 +55,7 @@ public class Comment extends Entity<Comment>
 
     //-----------------------------------------------[Queries]-----------------------------------------------
 
-    public static void insertComment(Student student, Course course, Comment comment, final QueryRequestFlag<QueryPostStatus> requestFlag)
+    public static void insertComment(Student student, Course course, PhysicalMaterial physicalMaterial, PMatComment comment, final QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         //Output: Return type
         QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
@@ -70,8 +67,9 @@ public class Comment extends Entity<Comment>
         String commentString = Attribute.getSQLValue(comment.getComment(), ESQLDataType.STRING);
         String time = Attribute.getSQLValue(comment.getTime(), ESQLDataType.STRING);
 
-        String insertQuery = "INSERT INTO comment_on_course VALUES(" + studentEmail + ", "
+        String insertQuery = "INSERT INTO comment_on_pmaterial VALUES(" + studentEmail + ", "
                 + commentString + ", "
+                + physicalMaterial.getId()
                 + course.getId() + ", "
                 + time + ")";
 
@@ -80,7 +78,7 @@ public class Comment extends Entity<Comment>
         getPool().executeUpdateQuery(request);
     }
 
-    public static void delete(Course course, Comment comment, QueryRequestFlag<QueryPostStatus> requestFlag)
+    public static void delete(PhysicalMaterial physicalMaterial, PMatComment comment, QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         try
         {
@@ -88,9 +86,8 @@ public class Comment extends Entity<Comment>
             QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
             request.setRequestFlag(requestFlag);
 
-
             //Input: Queries
-            String condition = "crs_id = " + course.getId();
+            String condition = "pmat_id = " + physicalMaterial.getId();
 
             String deleteQuery = comment.toEntity().createDeleteQuery(condition);
             request.addQuery(deleteQuery);
@@ -100,17 +97,17 @@ public class Comment extends Entity<Comment>
         }
         catch (Exception e)
         {
-            String msg = "Failed to delete comment on " + course.getName() + " course: " + e.getMessage();
+            String msg = "Failed to delete comment on " + physicalMaterial.getName() + " physical material: " + e.getMessage();
             Entity.sendFailureResponse(requestFlag, TAG, msg);
         }
     }
 
-    public static void retrieveAllComments(Course course, final QueryRequestFlag<ArrayList<Comment>> requestFlag)
+    public static void retrieveAllComments(PhysicalMaterial physicalMaterial, final QueryRequestFlag<ArrayList<Comment>> requestFlag)
     {
-        String selectClause = "comment_on_course.s_email, s.first_name, s.last_name, crs_comment ,comment_time";
-        String joinSection = "RIGHT JOIN student as s ON s.s_email = comment_on_course.s_email";
-        String condition = "crs_id = " + course.getId();
-        String orderBy = "comment_time desc";
+        String selectClause = "comment_on_pmaterial.s_email, s.first_name, s.last_name, pmat_comment ,pcomment_time";
+        String joinSection = "RIGHT JOIN student as s ON s.s_email = comment_on_pmaterial.s_email";
+        String condition = "comment_on_pmaterial.crs_id = " + physicalMaterial.getId();
+        String orderBy = "pcomment_time desc";
 
         try
         {
@@ -118,7 +115,7 @@ public class Comment extends Entity<Comment>
         }
         catch (Exception e)
         {
-            String msg = "Failed to retrieve comments in \"" + course.getName() + "\" course: " + e.getMessage();
+            String msg = "Failed to retrieve comments in \"" + physicalMaterial.getName() + "\" physical material: " + e.getMessage();
             Entity.sendFailureResponse(requestFlag, TAG, msg);
         }
     }
@@ -129,26 +126,26 @@ public class Comment extends Entity<Comment>
     @Override
     public EntityObject toEntity()
     {
-        EntityObject entityObject = new EntityObject("comment_on_course");
+        EntityObject entityObject = new EntityObject("comment_on_pmaterial");
 
         entityObject.addAttribute("first_name", ESQLDataType.STRING, firstName);
         entityObject.addAttribute("last_name", ESQLDataType.STRING, lastName);
-        entityObject.addAttribute("crs_comment", ESQLDataType.STRING, comment);
-        entityObject.addAttribute("comment_time", ESQLDataType.STRING, time);
+        entityObject.addAttribute("pmat_comment", ESQLDataType.STRING, comment);
+        entityObject.addAttribute("pcomment_time", ESQLDataType.STRING, time);
 
         return entityObject;
     }
 
     @Override
-    public Comment toObject(EntityObject entityObject) throws ClassCastException
+    public PMatComment toObject(EntityObject entityObject) throws ClassCastException
     {
-        Comment cmt = new Comment();
+        PMatComment cmt = new PMatComment();
 
         cmt.owner = entityObject.getAttributeValue("s_email", ESQLDataType.STRING, String.class);
         cmt.firstName = entityObject.getAttributeValue("first_name", ESQLDataType.STRING, String.class);
         cmt.lastName = entityObject.getAttributeValue("last_name", ESQLDataType.STRING, String.class);
-        cmt.comment = entityObject.getAttributeValue("crs_comment", ESQLDataType.STRING, String.class);
-        cmt.time = entityObject.getAttributeValue("comment_time", ESQLDataType.STRING, String.class)
+        cmt.comment = entityObject.getAttributeValue("pmat_comment", ESQLDataType.STRING, String.class);
+        cmt.time = entityObject.getAttributeValue("pcomment_time", ESQLDataType.STRING, String.class)
                 .replace("T", " ")
                 .replace("Z", " ")
                 .replace(".000", "");
@@ -157,9 +154,9 @@ public class Comment extends Entity<Comment>
     }
 
     @Override
-    public Class<Comment> getEntityClass()
+    public Class<PMatComment> getEntityClass()
     {
-        return Comment.class;
+        return PMatComment.class;
     }
 
 

@@ -120,7 +120,7 @@ public class PhysicalMaterialsListPage extends ContentListFragment<PhysicalMater
     @Override
     protected void onConfirmDeleteClicked(PhysicalMaterial targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
     {
-        PhysicalMaterial.delete(User.userAccount, targetData, onDeleteRequest);
+        PhysicalMaterial.delete(targetData, onDeleteRequest);
     }
 
 

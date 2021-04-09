@@ -137,7 +137,7 @@ public class CourseCommentsListPage extends ContentListFragment<Comment>
     @Override
     protected void onConfirmDeleteClicked(Comment targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
     {
-        Comment.delete(User.userAccount, User.course, targetData, onDeleteRequest);
+        Comment.delete(User.course, targetData, onDeleteRequest);
     }
 
     private void onCommentClicked(int position)
@@ -169,6 +169,7 @@ public class CourseCommentsListPage extends ContentListFragment<Comment>
             public void onQuerySuccess(QueryPostStatus resultObject)
             {
                 progressDialog.dismiss();
+
                 if(resultObject != null)
                 {
                     User.course.getComments().add(0, newComment);
@@ -184,6 +185,8 @@ public class CourseCommentsListPage extends ContentListFragment<Comment>
             @Override
             public void onQueryFailure(FailureResponse failure)
             {
+                progressDialog.dismiss();
+                showToastMsg("لا يمكنك إضافة أكثر من تعليق");
                 Log.d(TAG, failure.getMsg() + "\n" + failure.toString());
             }
         });

@@ -62,6 +62,8 @@
     <!-- Navigation Values -->
     <string name="navMenu_home">الرئيسية</string>
     <string name="navMenu_browse">تصفح</string>
+    <string name="navMenu_addCourse">إضافة مقرر</string>
+    <string name="navMenu_removeCourse">إزالة مقرر</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

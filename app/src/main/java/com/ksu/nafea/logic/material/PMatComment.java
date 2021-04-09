@@ -78,7 +78,7 @@ public class PMatComment extends Entity<PMatComment>
         getPool().executeUpdateQuery(request);
     }
 
-    public static void delete(PhysicalMaterial physicalMaterial, PMatComment comment, QueryRequestFlag<QueryPostStatus> requestFlag)
+    public static void delete(Course course, PhysicalMaterial physicalMaterial, PMatComment comment, QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         try
         {
@@ -87,7 +87,7 @@ public class PMatComment extends Entity<PMatComment>
             request.setRequestFlag(requestFlag);
 
             //Input: Queries
-            String condition = "pmat_id = " + physicalMaterial.getId();
+            String condition = "pmat_id = " + physicalMaterial.getId() + " AND crs_id = " + course.getId();
 
             String deleteQuery = comment.toEntity().createDeleteQuery(condition);
             request.addQuery(deleteQuery);
@@ -102,16 +102,16 @@ public class PMatComment extends Entity<PMatComment>
         }
     }
 
-    public static void retrieveAllComments(PhysicalMaterial physicalMaterial, final QueryRequestFlag<ArrayList<Comment>> requestFlag)
+    public static void retrieveAllComments(Course course, PhysicalMaterial physicalMaterial, final QueryRequestFlag<ArrayList<PMatComment>> requestFlag)
     {
         String selectClause = "comment_on_pmaterial.s_email, s.first_name, s.last_name, pmat_comment ,pcomment_time";
         String joinSection = "RIGHT JOIN student as s ON s.s_email = comment_on_pmaterial.s_email";
-        String condition = "comment_on_pmaterial.crs_id = " + physicalMaterial.getId();
+        String condition = "comment_on_pmaterial.pmat_id = " + physicalMaterial.getId() + " AND comment_on_pmaterial.crs_id = " + course.getId();
         String orderBy = "pcomment_time desc";
 
         try
         {
-            getPool().retrieve(Comment.class, requestFlag, selectClause, joinSection, condition, "", orderBy);
+            getPool().retrieve(PMatComment.class, requestFlag, selectClause, joinSection, condition, "", orderBy);
         }
         catch (Exception e)
         {

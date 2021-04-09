@@ -56,7 +56,7 @@ public class EMaterialEvaluation extends Entity<EMaterialEvaluation>
         getPool().executeUpdateQuery(request);
     }
 
-    public static void updateEvaluation(Student student, ElectronicMaterial eMaterial, boolean like, QueryRequestFlag<QueryPostStatus> requestFlag)
+    public static void updateEvaluation(Student student, Course course, ElectronicMaterial eMaterial, boolean like, QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         //Output: Return type
         QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
@@ -68,7 +68,7 @@ public class EMaterialEvaluation extends Entity<EMaterialEvaluation>
         String studentEmail = Attribute.getSQLValue(student.getEmail(), ESQLDataType.STRING);
 
         String updateQuery = "UPDATE evaluate_ematerial SET emat_like = " + newEvaluation;
-        String condition = " WHERE s_email = " + studentEmail + " AND emat_id = " + eMaterial.getId();
+        String condition = " WHERE s_email = " + studentEmail + " AND emat_id = " + eMaterial.getId() + " AND crs_id = " + course.getId();
 
         request.addQuery(updateQuery + condition);
 

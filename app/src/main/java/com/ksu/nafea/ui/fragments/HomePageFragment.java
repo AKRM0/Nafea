@@ -26,6 +26,7 @@ import com.ksu.nafea.data.request.FailureResponse;
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.logic.Contain;
 import com.ksu.nafea.logic.course.Course;
+import com.ksu.nafea.ui.activities.CoursePageActivity;
 import com.ksu.nafea.ui.activities.MainActivity;
 import com.ksu.nafea.R;
 import com.ksu.nafea.logic.User;
@@ -51,8 +52,9 @@ import static com.ksu.nafea.logic.User.college;
  */
 public class HomePageFragment extends  SelectFragment<Course>
 {
-
+private int courseDataCounter = 0;
 private TextView CurrentLevel;
+private TextView DepartmentPlan;
 private NSpinner spinnerType;
 private ArrayList<Course> courses=new ArrayList<Course> ();
 private ArrayList <Course> courses2 = new ArrayList<Course>();
@@ -117,7 +119,7 @@ private ProgressDialog progressDialog;
     {
         // Inflate the layout for this fragment
         final View main = inflater.inflate(R.layout.fragment_home_page, container, false);
-
+        DepartmentPlan=main.findViewById(R.id.DepartmentPlan);
         CurrentLevel = main.findViewById(R.id.CurrentLevel);
         spinnerType = main.findViewById(R.id.NSpinner);
         recyclerView=main.findViewById(R.id.HomeRec);
@@ -126,8 +128,6 @@ private ProgressDialog progressDialog;
 
         if(User.userAccount != null) {
             final Student student = (Student) User.userAccount;
-           // String selected =spinnerType.getSelectedOption();
-           // fillRecyclerView(selected);
             spinnerType.addOption(getString(R.string.allOption));
             Contain.retrieveAllLevels(student.getMajor(), new QueryRequestFlag<ArrayList<String>>() {
                 @Override
@@ -156,6 +156,12 @@ private ProgressDialog progressDialog;
                 }
             });
 
+            DepartmentPlan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onShowPlanClicked();
+                }
+            });
 
         }
 else
@@ -172,10 +178,11 @@ else
 
         final int itemViewLayout = R.layout.item_view_course_home;
 
-for (int i=0;i<size;i++){
-courses2.add(courses.get(i));
-courses.remove(i);
-    }
+            for (int i=0;i<size;i++)
+            {
+                courses2.add(courses.get(i));
+                courses.remove(i);
+            }
         ListAdapter listAdapter = new ListAdapter()
         {
             @Override
@@ -274,11 +281,12 @@ courses.remove(i);
     }
     protected void onItemViewBind(View itemView, final int position)
     {
-      //  CurrentLevel.setText(student.g());
+        ConstraintLayout mainLayout = (ConstraintLayout) itemView.findViewById(R.id.crsInfo_homePage);
         final Course course = courses.get(position);
         TextView crsName=itemView.findViewById(R.id.crsInfo_crsSymbol);
         crsName.setText(course.getSymbol());
         TextView courseDetails=itemView.findViewById(R.id.crsInfo_crsDetails);
+
         courseDetails.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -289,6 +297,74 @@ courses.remove(i);
             }
         });
 
+        mainLayout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                onItemClicked(course);
+            }
+        });
+    }
+
+    private void onItemClicked(Course course)
+    {
+        User.course = retrieveCourseData(course);
+    }
+
+    private void openCoursePage()
+    {
+        courseDataCounter = 0;
+
+        // To-Do open Course Page
+        Intent intent = new Intent(getContext(), CoursePageActivity.class);
+        startActivity(intent);
+    }
+
+
+    private Course retrieveCourseData(final Course course)
+    {
+        progressDialog.show();
+
+        return Course.retrieveFullCourse(course, new QueryRequestFlag<Boolean>()
+        {
+            @Override
+            public void onQuerySuccess(Boolean resultObject)
+            {
+                if(resultObject != null)
+                {
+                    if(resultObject)
+                    {
+                        if(courseDataCounter == 2)
+                        {
+                            progressDialog.dismiss();
+                            openCoursePage();
+                        }
+                        else
+                            ++courseDataCounter;
+                    }
+                    else
+                    {
+                        progressDialog.dismiss();
+                        showToastMsg("فشل إظهار البيانات");
+                    }
+                }
+            }
+
+            @Override
+            public void onQueryFailure(FailureResponse failure)
+            {
+                progressDialog.dismiss();
+                Log.d(TAG, failure.getMsg() + "\n" + failure.toString());
+                showToastMsg("فشلت العملية");
+            }
+        });
+    }
+    private void onShowPlanClicked()
+    {
+
+        // Navigation change
+        //openPage(R.id.action_majorPage_to_departmentPlan);
     }
 
 }

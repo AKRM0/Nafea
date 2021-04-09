@@ -34,7 +34,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="496dp">
 
                 <TextView
                     android:id="@+id/updMat_txt_matType"
@@ -125,8 +125,20 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/updMat_txt_videoLink" />
 
+                <CheckBox
+                    android:id="@+id/checkBox"
+                    android:layout_width="394dp"
+                    android:layout_height="35dp"
+                    android:text="أنا أتحمل مسؤلية الملف المرفوع"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/updMat_ed_videoLink" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </ScrollView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

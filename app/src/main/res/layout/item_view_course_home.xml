@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/crsInfo_mainLayout"
+            android:id="@+id/crsInfo_homePage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/course_info_item_view"

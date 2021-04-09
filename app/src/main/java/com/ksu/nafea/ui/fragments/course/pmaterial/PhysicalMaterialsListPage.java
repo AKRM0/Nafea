@@ -1,5 +1,6 @@
 package com.ksu.nafea.ui.fragments.course.pmaterial;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -117,11 +118,11 @@ public class PhysicalMaterialsListPage extends ContentListFragment<PhysicalMater
         User.course.getPMats().remove(targetData);
     }
 
-    @Override
-    protected void onConfirmDeleteClicked(PhysicalMaterial targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
-    {
-        PhysicalMaterial.delete(User.course, targetData, onDeleteRequest);
-    }
+   //@Override
+   // protected void onConfirmDeleteClicked(PhysicalMaterial targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
+   // {
+   //     PhysicalMaterial.delete(User.course, targetData, onDeleteRequest);
+   // }
 
 
     private void onPMatClicked(int position)

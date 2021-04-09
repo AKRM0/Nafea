@@ -178,10 +178,11 @@ else
 
         final int itemViewLayout = R.layout.item_view_course_home;
 
-for (int i=0;i<size;i++){
-courses2.add(courses.get(i));
-courses.remove(i);
-    }
+            for (int i=0;i<size;i++)
+            {
+                courses2.add(courses.get(i));
+                courses.remove(i);
+            }
         ListAdapter listAdapter = new ListAdapter()
         {
             @Override

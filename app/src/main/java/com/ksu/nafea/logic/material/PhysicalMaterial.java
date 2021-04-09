@@ -2,12 +2,10 @@ package com.ksu.nafea.logic.material;
 
 import com.ksu.nafea.data.request.QueryRequest;
 import com.ksu.nafea.data.request.QueryRequestFlag;
-import com.ksu.nafea.data.sql.Attribute;
 import com.ksu.nafea.data.sql.EAttributeConstraint;
 import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.data.sql.EntityObject;
 import com.ksu.nafea.logic.QueryPostStatus;
-import com.ksu.nafea.logic.account.UserAccount;
 import com.ksu.nafea.logic.course.Course;
 import com.ksu.nafea.logic.Entity;
 
@@ -15,17 +13,18 @@ import java.util.ArrayList;
 
 public class PhysicalMaterial extends Material<PhysicalMaterial>
 {
-    private String firstName, lastName;
+    private String owner;
+
+    private String firstName,lastName;
     private Integer sellerPhone;
-    private String owner, imageUrl, city;
+    private String imageUrl, city;
     private Double price;
 
     public PhysicalMaterial()
     {
         super();
-        firstName = "";
-        lastName = "";
-        owner = "";
+        firstName="";
+        lastName="";
         sellerPhone = 0;
         imageUrl = "";
         city = "";
@@ -34,9 +33,8 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
     public PhysicalMaterial(Integer id, String name, Integer sellerPhone, String imageUrl, String city, Double price)
     {
         super(id, name);
-        firstName = "";
-        lastName = "";
-        owner = "";
+        firstName="";
+        lastName="";
         this.sellerPhone = sellerPhone;
         this.imageUrl = imageUrl;
         this.city = city;
@@ -47,6 +45,8 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
     public String toString()
     {
         return super.toString() + "PhysicalMaterial{" +
+                "firstName+"+firstName +'\'' +
+                "lastName"+lastName + '\'' +
                 "sellerPhone='" + sellerPhone + '\'' +
                 ", image='" + imageUrl + '\'' +
                 ", city='" + city + '\'' +
@@ -64,15 +64,15 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
             //Output: Return type
             QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
             request.setRequestFlag(requestFlag);
-
+//
             //delete from e_material where emat_id = 4;
             //Input: Queries
             String condition = "pmat_id = " + material.getId() + " AND crs_id = " + course.getId();
-
+//
             String deleteQuery = material.toEntity().createDeleteQuery(condition);
             request.addQuery(deleteQuery);
-
-
+//
+//
             getPool().executeUpdateQuery(request);
         }
         catch (Exception e)
@@ -82,12 +82,13 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
         }
     }
 
-
     public static void retrieveAllPMatsInCourse(Course course, final QueryRequestFlag<ArrayList<PhysicalMaterial>> requestFlag)
     {
         String selectClause = "s.first_name, s.last_name, s.s_email, crs_id, pmat_name, phone, pmat_photo, pmat_id, pmat_city, pmat_price";
         String joinSection = "LEFT JOIN student as s ON s.s_email = physical_material.s_email";
+
         String condition = "crs_id = " + course.getId();
+
 
         try
         {
@@ -109,6 +110,8 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
         EntityObject entityObject = new EntityObject("physical_material");
 
         //entityObject.addAttribute("buyer_email", ESQLDataType.STRING, null);
+
+
         entityObject.addAttribute("pmat_name", ESQLDataType.STRING, name);
         entityObject.addAttribute("phone", ESQLDataType.INT, sellerPhone);
         entityObject.addAttribute("pmat_photo", ESQLDataType.STRING, imageUrl);
@@ -125,7 +128,8 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
     {
         PhysicalMaterial material = new PhysicalMaterial();
 
-        material.owner = entityObject.getAttributeValue("s_email", ESQLDataType.STRING, String.class);
+        material.firstName = entityObject.getAttributeValue("first_name", ESQLDataType.STRING, String.class);
+        material.lastName = entityObject.getAttributeValue("last_name", ESQLDataType.STRING, String.class);
         material.id = entityObject.getAttributeValue("pmat_id", ESQLDataType.INT, Integer.class);
         material.name = entityObject.getAttributeValue("pmat_name", ESQLDataType.STRING, String.class);
         material.sellerPhone = entityObject.getAttributeValue("phone", ESQLDataType.INT, Integer.class);
@@ -144,21 +148,13 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
 
 
     //-----------------------------------------------[Getters & Setters]-----------------------------------------------
-
-    public String getOwner()
-    {
+    public String getOwner(){
         return owner;
     }
-
 
     public Integer getSellerPhone()
     {
         return sellerPhone;
-    }
-
-    public String getPhone()
-    {
-        return "0" + sellerPhone;
     }
 
     public String getImageUrl()
@@ -176,6 +172,9 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
         return price;
     }
 
+    public String getFullName(){
+        return firstName+" "+lastName;
 
+    }
 
 }

@@ -78,7 +78,7 @@ public class SelectMajorFragment extends SelectFragment<Major>
                 @Override
                 public void onQuerySuccess(QueryPostStatus resultObject)
                 {
-                    showToastMsg("تم الستجيل بنجاح");
+                    showToastMsg("تم التسجيل بنجاح");
                     onRegisterComplete();
                 }
 

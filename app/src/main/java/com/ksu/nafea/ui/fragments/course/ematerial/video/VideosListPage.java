@@ -154,7 +154,7 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
     @Override
     protected void onConfirmDeleteClicked(ElectronicMaterial targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
     {
-        ElectronicMaterial.delete(User.userAccount, targetData, onDeleteRequest);
+        ElectronicMaterial.delete(targetData, onDeleteRequest);
     }
 
 

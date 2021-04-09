@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public class PhysicalMaterial extends Material<PhysicalMaterial>
 {
+    private String firstName, lastName;
     private Integer sellerPhone;
     private String owner, imageUrl, city;
     private Double price;
@@ -22,6 +23,8 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
     public PhysicalMaterial()
     {
         super();
+        firstName = "";
+        lastName = "";
         owner = "";
         sellerPhone = 0;
         imageUrl = "";
@@ -31,6 +34,8 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
     public PhysicalMaterial(Integer id, String name, Integer sellerPhone, String imageUrl, String city, Double price)
     {
         super(id, name);
+        firstName = "";
+        lastName = "";
         owner = "";
         this.sellerPhone = sellerPhone;
         this.imageUrl = imageUrl;
@@ -52,7 +57,7 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
 
     //-----------------------------------------------[Queries]-----------------------------------------------
 
-    public static void delete(UserAccount userAccount, PhysicalMaterial material, QueryRequestFlag<QueryPostStatus> requestFlag)
+    public static void delete(PhysicalMaterial material, QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         try
         {
@@ -62,8 +67,7 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
 
             //delete from e_material where emat_id = 4;
             //Input: Queries
-            String email = Attribute.getSQLValue(userAccount.getEmail(), ESQLDataType.STRING);
-            String condition = "pmat_id = " + material.getId() + " AND s_email = " + email;
+            String condition = "pmat_id = " + material.getId();
 
             String deleteQuery = material.toEntity().createDeleteQuery(condition);
             request.addQuery(deleteQuery);
@@ -81,11 +85,13 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
 
     public static void retrieveAllPMatsInCourse(Course course, final QueryRequestFlag<ArrayList<PhysicalMaterial>> requestFlag)
     {
+        String selectClause = "s.first_name, s.last_name, s.s_email, crs_id, pmat_name, phone, pmat_photo, pmat_id, pmat_city, pmat_price";
+        String joinSection = "LEFT JOIN student as s ON s.s_email = physical_material.s_email";
         String condition = "crs_id = " + course.getId();
 
         try
         {
-            getPool().retrieve(PhysicalMaterial.class, requestFlag, "*", condition);
+            getPool().retrieve(PhysicalMaterial.class, requestFlag, selectClause, joinSection, condition);
         }
         catch (Exception e)
         {

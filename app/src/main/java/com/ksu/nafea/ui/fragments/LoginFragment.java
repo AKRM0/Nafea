@@ -25,6 +25,7 @@ import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.logic.User;
 import com.ksu.nafea.logic.account.Student;
 import com.ksu.nafea.logic.account.UserAccount;
+import com.ksu.nafea.ui.activities.MainActivity;
 
 import java.util.ArrayList;
 
@@ -211,6 +212,7 @@ public class LoginFragment extends Fragment
 
     private void openHomePage()
     {
+        ((MainActivity) getActivity()).getNavMenu().findItem(R.id.navSection_logout).setVisible(true);
         Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.action_login_to_home);
     }
 

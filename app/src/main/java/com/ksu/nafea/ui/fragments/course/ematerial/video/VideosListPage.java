@@ -154,7 +154,7 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
     @Override
     protected void onConfirmDeleteClicked(ElectronicMaterial targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
     {
-        ElectronicMaterial.delete(targetData, onDeleteRequest);
+        ElectronicMaterial.delete(User.course, targetData, onDeleteRequest);
     }
 
 
@@ -197,13 +197,13 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
                         return;
                 }
 
-                EMaterialEvaluation.updateEvaluation(student, eMaterial, like, null);
+                EMaterialEvaluation.updateEvaluation(student, User.course, eMaterial, like, null);
             }
 
             @Override
             public void onQueryFailure(FailureResponse failure)
             {
-                EMaterialEvaluation.updateEvaluation(student, eMaterial, like, null);
+                EMaterialEvaluation.updateEvaluation(student, User.course, eMaterial, like, null);
             }
         });
     }

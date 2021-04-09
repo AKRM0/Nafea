@@ -83,7 +83,8 @@ public class ContentListFragment<T> extends Fragment
      * @return A new instance of fragment ContentListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ContentListFragment newInstance(String param1, String param2) {
+    public static ContentListFragment newInstance(String param1, String param2)
+    {
         ContentListFragment fragment = new ContentListFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);

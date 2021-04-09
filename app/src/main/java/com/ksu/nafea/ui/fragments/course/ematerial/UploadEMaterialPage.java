@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.content.Intent;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +58,8 @@ public class UploadEMaterialPage extends Fragment
     private String documentOption = null;
     private String videoOption = null;
 
-
+    private Boolean cbc ;
+    private CheckBox cb;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -114,10 +116,12 @@ public class UploadEMaterialPage extends Fragment
         documentOption = getString(R.string.ematType_DocumentOption);
         videoOption = getString(R.string.ematType_VideoOption);
 
+
         viewsInit();
         toggleView(documentOption);
         initButtonsListeners();
         initDropdownListeners();
+        initCheckBoxListeners();
 
         return main;
     }
@@ -140,6 +144,10 @@ public class UploadEMaterialPage extends Fragment
         typeDropdown.addOption(documentOption);
         typeDropdown.addOption(videoOption);
 
+        cb=(CheckBox)main.findViewById(R.id.checkBox);
+        cbc=false;
+
+
         progressDialog = new ProgressDialog(getContext());
     }
 
@@ -161,6 +169,17 @@ public class UploadEMaterialPage extends Fragment
             public void onClick(View v)
             {
                 onUploadFileClicked();
+            }
+        });
+    }
+
+    private void initCheckBoxListeners()
+    {
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cb.isChecked())
+                    cbc=true;
             }
         });
     }
@@ -194,7 +213,7 @@ public class UploadEMaterialPage extends Fragment
             chooseButton.setVisibility(View.VISIBLE);
             videoLinkLabel.setVisibility(View.INVISIBLE);
             matPathLabel.setVisibility(View.VISIBLE);
-
+            cb.setVisibility(View.VISIBLE);
             selectedMatType = documentType;
         }
         else
@@ -204,7 +223,7 @@ public class UploadEMaterialPage extends Fragment
             videoLinkLabel.setVisibility(View.VISIBLE);
             chooseButton.setVisibility(View.INVISIBLE);
             matPathLabel.setVisibility(View.INVISIBLE);
-
+            cb.setVisibility(View.INVISIBLE);
             selectedMatType = videoType;
         }
     }
@@ -258,6 +277,10 @@ public class UploadEMaterialPage extends Fragment
                 showToastMsg("اختار الملف المراد رفعه");
                 return false;
             }
+            if(cb.isChecked()==false) {
+                showToastMsg( "  يرجى الموافقة على الشرط ");
+                return false;
+        }
         }
         else if(selectedMatType.equalsIgnoreCase(videoType))
         {

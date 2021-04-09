@@ -213,7 +213,7 @@ public class UploadEMaterialPage extends Fragment
             chooseButton.setVisibility(View.VISIBLE);
             videoLinkLabel.setVisibility(View.INVISIBLE);
             matPathLabel.setVisibility(View.VISIBLE);
-
+            cb.setVisibility(View.VISIBLE);
             selectedMatType = documentType;
         }
         else

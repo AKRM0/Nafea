@@ -1,6 +1,9 @@
 package com.ksu.nafea.ui.activities;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
@@ -9,6 +12,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.ksu.nafea.R;
+import com.ksu.nafea.logic.User;
+import com.ksu.nafea.utilities.NafeaUtil;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -23,6 +28,7 @@ public class MainActivity extends AppCompatActivity
 
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
+    private Menu navMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -48,9 +54,8 @@ public class MainActivity extends AppCompatActivity
         NavigationUI.setupWithNavController(navigationView, navController);
 
 
-
-        setHeaderElementsVisibility(View.INVISIBLE);
-
+        navMenu = navigationView.getMenu();
+        initNavigationMenu();
 
     }
 
@@ -58,7 +63,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.drawer, menu);
+        //MenuInflater inflater = getMenuInflater();
+        //inflater.inflate(R.menu.navigation_menu, menu);
+
         return true;
     }
 
@@ -70,6 +77,40 @@ public class MainActivity extends AppCompatActivity
                 || super.onSupportNavigateUp();
     }
 
+
+
+    private void initNavigationMenu()
+    {
+        final Context context = this;
+        navMenu.findItem(R.id.nav_login).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
+        {
+            @Override
+            public boolean onMenuItemClick(MenuItem item)
+            {
+                if(User.userAccount != null)
+                {
+                    NafeaUtil.showToastMsg(context, "تم تسجيل الخروج");
+                    User.userAccount = null;
+                    setHeaderElementsVisibility(View.INVISIBLE);
+
+                    MenuItem mngItem = navMenu.findItem(R.id.navSection_manageCourses);
+                    MenuItem logoutItem = navMenu.findItem(R.id.navSection_logout);
+
+                    if(mngItem.isVisible())
+                        mngItem.setVisible(false);
+                    if(logoutItem.isVisible())
+                        logoutItem.setVisible(false);
+                }
+
+                return false;
+            }
+        });
+
+
+        setHeaderElementsVisibility(View.INVISIBLE);
+        navMenu.findItem(R.id.navSection_manageCourses).setVisible(false);
+        navMenu.findItem(R.id.navSection_logout).setVisible(false);
+    }
 
     public void setHeaderElementsVisibility(int visibility)
     {
@@ -91,6 +132,12 @@ public class MainActivity extends AppCompatActivity
         {
             textView.setText(text);
         }
+    }
+
+
+    public Menu getNavMenu()
+    {
+        return navMenu;
     }
 
 

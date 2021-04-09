@@ -108,7 +108,7 @@ public class ElectronicMaterial extends Material<ElectronicMaterial>
 
     //-----------------------------------------------[Queries]-----------------------------------------------
 
-    public static void delete(ElectronicMaterial material, QueryRequestFlag<QueryPostStatus> requestFlag)
+    public static void delete(Course course, ElectronicMaterial material, QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         try
         {
@@ -118,7 +118,7 @@ public class ElectronicMaterial extends Material<ElectronicMaterial>
 
             //delete from e_material where emat_id = 4;
             //Input: Queries
-            String condition = "emat_id = " + material.getId();
+            String condition = "emat_id = " + material.getId() + " AND crs_id = " + course.getId();
 
             String deleteQuery = material.toEntity().createDeleteQuery(condition);
             request.addQuery(deleteQuery);

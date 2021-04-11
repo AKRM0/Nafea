@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -52,16 +53,19 @@ import static com.ksu.nafea.logic.User.college;
  */
 public class HomePageFragment extends  SelectFragment<Course>
 {
-private int courseDataCounter = 0;
-private TextView CurrentLevel;
-private TextView DepartmentPlan;
-private NSpinner spinnerType;
-private ArrayList<Course> courses=new ArrayList<Course> ();
-private ArrayList <Course> courses2 = new ArrayList<Course>();
-private RecyclerView recyclerView;
-private RecyclerView recyclerView2;
+    private Menu navMenu;
 
-private ProgressDialog progressDialog;
+    private int courseDataCounter = 0;
+    private ConstraintLayout userInfoLayout;
+    private TextView noContentLabel;
+    private TextView CurrentLevel;
+    private TextView DepartmentPlan;
+    private NSpinner spinnerType;
+    private ArrayList<Course> courses=new ArrayList<Course> ();
+    private ArrayList <Course> courses2 = new ArrayList<Course>();
+    private RecyclerView recyclerView;
+    private RecyclerView recyclerView2;
+    private ProgressDialog progressDialog;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -119,6 +123,8 @@ private ProgressDialog progressDialog;
     {
         // Inflate the layout for this fragment
         final View main = inflater.inflate(R.layout.fragment_home_page, container, false);
+        userInfoLayout = (ConstraintLayout) main.findViewById(R.id.home_layout_userInfo);
+        noContentLabel = (TextView) main.findViewById(R.id.home_txt_noContent);
         DepartmentPlan=main.findViewById(R.id.DepartmentPlan);
         CurrentLevel = main.findViewById(R.id.CurrentLevel);
         spinnerType = main.findViewById(R.id.NSpinner);
@@ -126,63 +132,111 @@ private ProgressDialog progressDialog;
         recyclerView2=main.findViewById(R.id.HomeRec2);
         progressDialog=new ProgressDialog(getContext());
 
-        if(User.userAccount != null) {
-            final Student student = (Student) User.userAccount;
-            spinnerType.addOption(getString(R.string.allOption));
-            Contain.retrieveAllLevels(student.getMajor(), new QueryRequestFlag<ArrayList<String>>() {
-                @Override
-                public void onQuerySuccess(ArrayList<String> resultObject) {
-                    if(resultObject!= null){
-                        spinnerType.addOptionsList(resultObject);
-                    }
-                }
+        navMenu = ((MainActivity) getActivity()).getNavMenu();
 
-                @Override
-                public void onQueryFailure(FailureResponse failure) {
-                    Log.d(TAG,failure.getMsg()+"/n"+failure.toString());
-                }
-            });
 
-            spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    String selected =spinnerType.getSelectedOption();
-                    fillRecyclerView(selected);
-                }
+        if(User.userAccount != null)
+        {
+            Student student = (Student) User.userAccount;
+            if(student.isAdmin() || student.isCommunityManager())
+                navMenu.findItem(R.id.navSection_manageCourses).setVisible(true);
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+            MainActivity mainActivity = ((MainActivity) getActivity());
+            mainActivity.setHeaderElementsVisibility(View.VISIBLE);
+            mainActivity.setHeaderElementText(R.id.navHeader_txt_email, student.getEmail());
+            mainActivity.setHeaderElementText(R.id.navHeader_txt_fullName, student.getFullName());
 
-                }
-            });
+            if(student.getMajor() != null)
+            {
+                noContentLabel.setVisibility(View.INVISIBLE);
+                userInfoLayout.setVisibility(View.VISIBLE);
 
-            DepartmentPlan.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onShowPlanClicked();
-                }
-            });
-
+                initLevelsDropdown();
+                initListeners();
+            }
+            else
+            {
+                noContentLabel.setVisibility(View.VISIBLE);
+                userInfoLayout.setVisibility(View.INVISIBLE);
+            }
         }
-else
+        else
         {
             openLoginPage();
         }
 
+
         return main;
     }
 
+
+
+    private void initLevelsDropdown()
+    {
+        final Student student = (Student) User.userAccount;
+        spinnerType.addOption(getString(R.string.allOption));
+        Contain.retrieveAllLevels(student.getMajor(), new QueryRequestFlag<ArrayList<String>>()
+        {
+            @Override
+            public void onQuerySuccess(ArrayList<String> resultObject)
+            {
+                if(resultObject!= null)
+                {
+                    spinnerType.addOptionsList(resultObject);
+                }
+            }
+
+            @Override
+            public void onQueryFailure(FailureResponse failure)
+            {
+                Log.d(TAG,failure.getMsg()+"/n"+failure.toString());
+            }
+        });
+    }
+
+    private void initListeners()
+    {
+        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                String selected =spinnerType.getSelectedOption();
+                fillRecyclerView(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        DepartmentPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onShowPlanClicked();
+            }
+        });
+    }
+
+
     protected <T> void updateRecyclerView(final ArrayList <T> data)
     {
-        int size=data.size()/2;
+        if(!courses2.isEmpty())
+            courses2.clear();
+
+        int size=courses.size()/2;
 
         final int itemViewLayout = R.layout.item_view_course_home;
 
-            for (int i=0;i<size;i++)
-            {
-                courses2.add(courses.get(i));
-                courses.remove(i);
-            }
+        for (int i=0; i < size; i++)
+            courses2.add(courses.get(i));
+
+        for (int i=0; i < courses2.size(); i++)
+            courses.remove(courses2.get(i));
+
+
         ListAdapter listAdapter = new ListAdapter()
         {
             @Override
@@ -194,19 +248,19 @@ else
             @Override
             public int getItemCount()
             {
-                return data.size();
+                return courses.size();
             }
 
             @Override
             public void onBind(View itemView, final int position)
             {
-                onItemViewBind(itemView, position);
+                onItemViewBind(courses, itemView, position);
             }
         };
 
 
         GeneralRecyclerAdapter adapter = new GeneralRecyclerAdapter(getContext(), listAdapter);
-        recyclerView.setItemViewCacheSize(data.size());
+        recyclerView.setItemViewCacheSize(courses.size());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -227,7 +281,7 @@ else
             @Override
             public void onBind(View itemView, final int position)
             {
-                onItemViewBind(itemView, position);
+                onItemViewBind(courses2, itemView, position);
             }
         };
         GeneralRecyclerAdapter adapter2 = new GeneralRecyclerAdapter(getContext(), listAdapter2);
@@ -279,10 +333,10 @@ else
 
         return requestFlag;
     }
-    protected void onItemViewBind(View itemView, final int position)
+    protected void onItemViewBind(ArrayList<Course> coursesList, View itemView, final int position)
     {
         ConstraintLayout mainLayout = (ConstraintLayout) itemView.findViewById(R.id.crsInfo_homePage);
-        final Course course = courses.get(position);
+        final Course course = coursesList.get(position);
         TextView crsName=itemView.findViewById(R.id.crsInfo_crsSymbol);
         crsName.setText(course.getSymbol());
         TextView courseDetails=itemView.findViewById(R.id.crsInfo_crsDetails);
@@ -309,6 +363,8 @@ else
 
     private void onItemClicked(Course course)
     {
+        Student student = (Student) User.userAccount;
+        User.major = student.getMajor();
         User.course = retrieveCourseData(course);
     }
 
@@ -360,11 +416,11 @@ else
             }
         });
     }
+
     private void onShowPlanClicked()
     {
-
         // Navigation change
-        //openPage(R.id.action_majorPage_to_departmentPlan);
+        openPage(R.id.action_homePage_to_departmentPlanFragment);
     }
 
 }

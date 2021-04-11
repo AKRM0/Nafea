@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:importantForAutofill="no"
-            android:inputType="textPersonName" />
+            android:inputType="textEmailAddress" />
 
         <TextView
             android:id="@+id/login_txt_pass"

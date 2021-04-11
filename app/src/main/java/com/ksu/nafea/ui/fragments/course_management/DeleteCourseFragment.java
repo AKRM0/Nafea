@@ -1,14 +1,19 @@
-package com.ksu.nafea.ui.activities;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.ksu.nafea.ui.fragments.course_management;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -19,43 +24,84 @@ import com.ksu.nafea.R;
 import com.ksu.nafea.data.request.FailureResponse;
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.logic.QueryPostStatus;
-import com.ksu.nafea.ui.nafea_views.dialogs.PopupDetailsDialog;
-import com.ksu.nafea.ui.nafea_views.recycler_view.ListAdapter;
 import com.ksu.nafea.logic.User;
+import com.ksu.nafea.logic.account.Student;
 import com.ksu.nafea.logic.course.Course;
+import com.ksu.nafea.ui.nafea_views.dialogs.PopupDetailsDialog;
 import com.ksu.nafea.ui.nafea_views.recycler_view.GeneralRecyclerAdapter;
+import com.ksu.nafea.ui.nafea_views.recycler_view.ListAdapter;
 
 import java.util.ArrayList;
 
-public class DeleteCourseActivity extends AppCompatActivity
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link DeleteCourseFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class DeleteCourseFragment extends Fragment
 {
     public static final String TAG = "DeleteCourseActivity";
-    private final Context context = this;
+    private View main;
+    private Context context;
     private ProgressDialog progressDialog;
 
     private RecyclerView coursesListView;
-    private Button deleteButton, cancelButton;
+    private Button deleteButton;
 
     private ArrayList<Course> courses;
     private ArrayList<Course> targetCourses;
 
-
-    private void showToastMsg(String msg)
+    public DeleteCourseFragment()
     {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment DeleteCourseFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static DeleteCourseFragment newInstance(String param1, String param2)
+    {
+        DeleteCourseFragment fragment = new DeleteCourseFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_delete_course);
+        if (getArguments() != null)
+        {
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        // Inflate the layout for this fragment
+        main = inflater.inflate(R.layout.activity_delete_course, container, false);
+        context = getContext();
+
+        Student student = (Student) User.userAccount;
+        if(student.isAdmin() && User.managingMajor == null)
+        {
+            User.isRemovingCourse = true;
+            openPage(R.id.action_removeCourse_to_selectUniversity);
+        }
+        else if(student.isCommunityManager() && User.managingMajor == null)
+            User.managingMajor = student.getMajor();
+
 
         progressDialog = new ProgressDialog(context);
-
-        coursesListView = (RecyclerView) findViewById(R.id.delCrs_coursesList);
-        deleteButton = (Button) findViewById(R.id.delCrs_b_delete);
-        cancelButton = (Button) findViewById(R.id.delCrs_b_cancel);
+        coursesListView = (RecyclerView) main.findViewById(R.id.delCrs_coursesList);
+        deleteButton = (Button) main.findViewById(R.id.delCrs_b_delete);
 
 
         deleteButton.setOnClickListener(new View.OnClickListener()
@@ -66,23 +112,15 @@ public class DeleteCourseActivity extends AppCompatActivity
                 executeDelete();
             }
         });
-        cancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                executeCancel();
-            }
-        });
 
 
 
-        if(User.major != null)
+        if(User.managingMajor != null)
         {
             progressDialog.show();
 
 
-            Course.retrieveAllCoursesInMajor(User.major, new QueryRequestFlag<ArrayList<Course>>()
+            Course.retrieveAllCoursesInMajor(User.managingMajor, new QueryRequestFlag<ArrayList<Course>>()
             {
                 @Override
                 public void onQuerySuccess(final ArrayList<Course> resultObject)
@@ -109,12 +147,35 @@ public class DeleteCourseActivity extends AppCompatActivity
             });
         }
 
+        return main;
     }
 
-    private void executeCancel()
+
+    @Override
+    public void onStop()
     {
-        finish();
+        super.onStop();
+        //User.managingMajor = null;
     }
+
+
+
+    protected void setBarTitle(String title)
+    {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title);
+    }
+
+    protected void openPage(int pageID)
+    {
+        Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(pageID);
+    }
+
+    private void showToastMsg(String msg)
+    {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+
 
     private void executeDelete()
     {
@@ -123,7 +184,7 @@ public class DeleteCourseActivity extends AppCompatActivity
 
 
         progressDialog.show();
-        Course.deleteAllCourses(targetCourses, new QueryRequestFlag<QueryPostStatus>()
+        Course.deleteAllCourses(User.managingMajor, targetCourses, new QueryRequestFlag<QueryPostStatus>()
         {
             @Override
             public void onQuerySuccess(QueryPostStatus resultObject)
@@ -220,7 +281,7 @@ public class DeleteCourseActivity extends AppCompatActivity
                 Course course = courses.get(position);
 
                 PopupDetailsDialog detailsDialog = new PopupDetailsDialog(course.getName(), course.getDescription(), "حسناً");
-                detailsDialog.show(getSupportFragmentManager(), course.getSymbol());
+                detailsDialog.show(getActivity().getSupportFragmentManager(), course.getSymbol());
             }
         };
     }

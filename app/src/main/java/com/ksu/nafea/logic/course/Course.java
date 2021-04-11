@@ -56,10 +56,11 @@ public class Course extends Entity<Course>
 
 
 
-    public static EntityObject getContainEntity(Integer courseID, Integer majorID, String level)
+    public static EntityObject getContainEntity(Integer courseID, Integer majorID, String level, Integer levelIndex)
     {
         EntityObject entityObject = new EntityObject("contain");
 
+        entityObject.addAttribute("level_index", ESQLDataType.INT, levelIndex);
         entityObject.addAttribute("level", ESQLDataType.STRING, level);
         entityObject.addAttribute("major_id", ESQLDataType.INT, majorID, EAttributeConstraint.FOREIGN_KEY);
         entityObject.addAttribute("crs_id", ESQLDataType.INT, courseID, EAttributeConstraint.PRIMARY_KEY);
@@ -81,32 +82,110 @@ public class Course extends Entity<Course>
     }
 
     //-----------------------------------------------[Queries]-----------------------------------------------
-    public static void insert(Major major, String level, Course course, QueryRequestFlag<QueryPostStatus> requestFlag)
+    public static void insert(final Major major, final String level, final Integer levelIndex, final Course course, final QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         //Output: Return type
         QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
-        request.setRequestFlag(requestFlag);
+        request.setRequestFlag(new QueryRequestFlag<QueryPostStatus>()
+        {
+            @Override
+            public void onQuerySuccess(QueryPostStatus resultObject)
+            {
+                if(resultObject != null)
+                {
+                    if(resultObject.getAffectedRows() > 0)
+                    {
+                        //Output: Return type
+                        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+                        request.setRequestFlag(requestFlag);
+
+                        String majorID = Attribute.getSQLValue(major.getId(), ESQLDataType.INT);
+                        String symbol = Attribute.getSQLValue(course.getSymbol(), ESQLDataType.STRING).replace(" ", "%");
+                        String levelString = Attribute.getSQLValue(level, ESQLDataType.STRING);
+                        String levelIndexString = Attribute.getSQLValue(levelIndex, ESQLDataType.INT);
+
+                        String values = levelIndexString + ", " + levelString + ", " + majorID;
+                        String containInsertQuery = "INSERT INTO contain(level_index, level, major_id, crs_id) " +
+                                "VALUES(" + values + ", (SELECT crs_id FROM course WHERE crs_symbol LIKE " + symbol + "))";
+
+                        request.addQuery(containInsertQuery);
+                        getPool().executeUpdateQuery(request);
+                    }
+                }
+            }
+
+            @Override
+            public void onQueryFailure(FailureResponse failure)
+            {
+                Entity.sendFailureResponse(requestFlag, TAG, failure.getMsg());
+            }
+        });
 
 
         //Input: Queries
         EntityObject courseEntity = course.toEntity();
-        EntityObject containEntity = getContainEntity(0, major.getId(), level);
         Attribute coursePrimaryKey = courseEntity.getFirstAttribute(EAttributeConstraint.PRIMARY_KEY);
 
-        request.addQuery(courseEntity.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
-        request.addQuery(containEntity.createInsertQuery(EAttributeConstraint.PRIMARY_KEY, "[0]"));
+        String name = Attribute.getSQLValue(course.getName(), ESQLDataType.STRING);
+        String symbol = Attribute.getSQLValue(course.getSymbol(), ESQLDataType.STRING);
+        String description = Attribute.getSQLValue(course.getDescription(), ESQLDataType.STRING);
 
+        String values = "[0], " + name + ", " + symbol + ", " + description;
+        symbol = symbol.replace(" ", "%");
+        String courseInsertQuery = "INSERT INTO course(crs_id, crs_name, crs_symbol, crs_desc) \n" +
+                             "SELECT " + values + " FROM dual \n" +
+                             "WHERE NOT EXISTS (SELECT * FROM course WHERE crs_symbol LIKE " + symbol + ")";
+
+
+        request.addQuery(courseInsertQuery);
         request.attachQuery(courseEntity.createSelectQuery("MAX(" + coursePrimaryKey.getName() + ") + 1 as result"));
 
 
         getPool().executeUpdateQuery(request);
     }
 
-    public static void deleteAllCourses(ArrayList<Course> courses, QueryRequestFlag<QueryPostStatus> requestFlag)
+    public static void deleteAllCourses(Major major, final ArrayList<Course> courses, final QueryRequestFlag<QueryPostStatus> requestFlag)
     {
         //Output: Return type
         QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
-        request.setRequestFlag(requestFlag);
+        request.setRequestFlag(new QueryRequestFlag<QueryPostStatus>()
+        {
+            @Override
+            public void onQuerySuccess(QueryPostStatus resultObject)
+            {
+                requestFlag.onQuerySuccess(resultObject);
+
+                if(resultObject != null)
+                {
+                    if(resultObject.getAffectedRows() > 0 && courses.size() == 1)
+                    {
+                        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+                        request.setRequestFlag(new QueryRequestFlag<QueryPostStatus>() {
+                            @Override
+                            public void onQuerySuccess(QueryPostStatus resultObject) {
+
+                            }
+
+                            @Override
+                            public void onQueryFailure(FailureResponse failure) {
+
+                            }
+                        });
+
+                        Integer id = courses.get(0).getId();
+                        request.addQuery("DELETE FROM course WHERE crs_id = " + id + " AND NOT EXISTS (SELECT * FROM contain WHERE crs_id = " + id + ")");
+                        
+                        getPool().executeUpdateQuery(request);
+                    }
+                }
+            }
+
+            @Override
+            public void onQueryFailure(FailureResponse failure)
+            {
+                Entity.sendFailureResponse(requestFlag, TAG, failure.getMsg());
+            }
+        });
 
 
         //Input: Queries
@@ -119,7 +198,7 @@ public class Course extends Entity<Course>
                 condition += " OR ";
         }
 
-        request.addQuery("DELETE FROM course WHERE " + condition);
+        request.addQuery("DELETE FROM contain WHERE major_id = " + major.getId() + " AND " + condition);
 
 
         getPool().executeUpdateQuery(request);

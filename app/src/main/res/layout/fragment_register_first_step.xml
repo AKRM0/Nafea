@@ -103,9 +103,7 @@
             android:background="#03A9F4"
             android:text="@string/buttonText_next"
             android:textColor="#FFFFFF" />
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="2dp" />
+
         <Button
             android:id="@+id/regFirst_b_cancel"
             style="@style/Nafea_DefaultButton"

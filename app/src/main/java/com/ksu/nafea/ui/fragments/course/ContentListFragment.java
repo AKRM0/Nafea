@@ -27,6 +27,7 @@ import com.ksu.nafea.data.request.FailureResponse;
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.logic.User;
+import com.ksu.nafea.logic.account.Student;
 import com.ksu.nafea.logic.material.ElectronicMaterial;
 import com.ksu.nafea.ui.activities.CoursePageActivity;
 import com.ksu.nafea.ui.nafea_views.dialogs.PopupConfirmDialog;
@@ -252,8 +253,15 @@ public class ContentListFragment<T> extends Fragment
     protected void assignDeleteProcess(View view, String owner, final T targetData, final String title)
     {
         boolean hasPrivilege = false;
+
         if(User.userAccount != null)
-            hasPrivilege = User.userAccount.getEmail().equalsIgnoreCase(owner);
+        {
+            Student student = (Student) User.userAccount;
+            if(student.isAdmin() || student.hasAuthorityOnMajor(User.major.getId()))
+                hasPrivilege = true;
+            else
+                hasPrivilege = student.getEmail().equalsIgnoreCase(owner);
+        }
 
         if(!hasPrivilege)
         {
@@ -275,8 +283,15 @@ public class ContentListFragment<T> extends Fragment
     protected void assignDeleteProcess(View view, String owner, final T targetData, final String title, final String msg)
     {
         boolean hasPrivilege = false;
+
         if(User.userAccount != null)
-            hasPrivilege = User.userAccount.getEmail().equalsIgnoreCase(owner);
+        {
+            Student student = (Student) User.userAccount;
+            if(student.isAdmin() || student.hasAuthorityOnMajor(User.major.getId()))
+                hasPrivilege = true;
+            else
+                hasPrivilege = student.getEmail().equalsIgnoreCase(owner);
+        }
 
         if(!hasPrivilege)
         {

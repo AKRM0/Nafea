@@ -316,6 +316,15 @@ public class EntityObject
         return query;
     }
 
+    public static String createLeftJoinSection(String mainTable, String joinedTable, String foreignKey)
+    {
+        String mainForeignKey = mainTable + "." + foreignKey;
+        String joinedForeignKey = joinedTable + "." + foreignKey;
+
+        String query = "LEFT JOIN " + joinedTable + " ON " + mainForeignKey + " = " + joinedForeignKey;
+        return query;
+    }
+
     public static String createCustomSelectQuery(String selectClause, String fromClause, String joinSection, String whereClause, String groupByClause, String orderByClause)
     {
         String query = "SELECT " + selectClause + "\n ";

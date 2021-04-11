@@ -11,6 +11,7 @@ import com.ksu.nafea.R;
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.logic.QueryPostStatus;
 import com.ksu.nafea.logic.User;
+import com.ksu.nafea.logic.account.Student;
 import com.ksu.nafea.logic.material.PhysicalMaterial;
 import com.ksu.nafea.ui.fragments.course.ContentListFragment;
 import com.squareup.picasso.Picasso;
@@ -118,11 +119,11 @@ public class PhysicalMaterialsListPage extends ContentListFragment<PhysicalMater
         User.course.getPMats().remove(targetData);
     }
 
-   //@Override
-   // protected void onConfirmDeleteClicked(PhysicalMaterial targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
-   // {
-   //     PhysicalMaterial.delete(User.course, targetData, onDeleteRequest);
-   // }
+    @Override
+    protected void onConfirmDeleteClicked(PhysicalMaterial targetData, QueryRequestFlag<QueryPostStatus> onDeleteRequest)
+    {
+        PhysicalMaterial.delete(User.course, targetData, onDeleteRequest);
+    }
 
 
     private void onPMatClicked(int position)
@@ -134,6 +135,16 @@ public class PhysicalMaterialsListPage extends ContentListFragment<PhysicalMater
 
     private  void onReportClicked(int position)
     {
+        Student student = (Student) User.userAccount;
+        if(User.userAccount != null)
+        {
+            if(student.isAdmin())
+            {
+                showToastMsg(getString(R.string.ematReport_notAllowdReport));
+                return;
+            }
+        }
+
         User.material = getData().get(position);
         if(User.userAccount != null)
             openPage(R.id.action_physMats_to_physReportPage, R.id.action_physReportPage_to_physMats, false);

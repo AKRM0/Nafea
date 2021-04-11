@@ -1,41 +1,58 @@
 package com.ksu.nafea.logic.account;
 
+import com.ksu.nafea.data.request.FailureResponse;
+import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.data.sql.Attribute;
 import com.ksu.nafea.data.sql.EAttributeConstraint;
 import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.data.sql.EntityObject;
 import com.ksu.nafea.logic.College;
+import com.ksu.nafea.logic.Entity;
 import com.ksu.nafea.logic.Major;
 import com.ksu.nafea.logic.University;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 public class Student extends UserAccount<Student>
 {
+    private boolean hasAdminAuthority = false;
+
+    private Integer assignedMajor;
     private University university;
     private College college;
     private Major major;
-  //  private Level level;
 
     public Student()
     {
         super();
+        assignedMajor = null;
         university = null;
         college = null;
         major = null;
-       // level=null;
     }
     public Student(String email, String password)
     {
         super(email, password, "None", "None");
+        assignedMajor = null;
         university = null;
         college = null;
         major = null;
-    //    level=null;
+    }
+    public Student(String email, String password, String firstName, String lastName, boolean hasAdminAuthority)
+    {
+        super(email, password, firstName, lastName);
+        assignedMajor = null;
+        university = null;
+        college = null;
+        this.major = null;
+
+        this.hasAdminAuthority = hasAdminAuthority;
     }
     public Student(String email, String password, String firstName, String lastName, Integer majorID)
     {
         super(email, password, firstName, lastName);
+        assignedMajor = null;
         university = null;
         college = null;
         this.major = new Major(majorID, "");
@@ -53,7 +70,28 @@ public class Student extends UserAccount<Student>
         //        "[" + level.toString() + "]" ;
     }
 
-    //-----------------------------------------------[UserAccount Override Methods]-----------------------------------------------
+
+    public boolean isAdmin()
+    {
+        return hasAdminAuthority;
+    }
+
+    public boolean hasAuthorityOnMajor(Integer majorID)
+    {
+        if(assignedMajor == null)
+            return false;
+
+        return assignedMajor == majorID;
+    }
+
+    public boolean isCommunityManager()
+    {
+        return assignedMajor != null;
+    }
+
+
+
+    // -----------------------------------------------[UserAccount Override Methods]-----------------------------------------------
 
     @Override
     protected String getLoginSelectData()
@@ -61,16 +99,18 @@ public class Student extends UserAccount<Student>
         return "student.s_email, student.password, student.first_name, student.last_name,\n" +
                 " major.major_id, major.major_name, major.major_plan,\n" +
                 " college.coll_id, college.coll_name, college.coll_category,\n" +
-                " university.univ_id, university.univ_name, university.univ_city\n";
+                " university.univ_id, university.univ_name, university.univ_city,\n" +
+                " major_adminstration.major_id as community_manager\n";
             //    " level.level_num, level.level_written";
     }
 
     @Override
     protected String getLoginJoinData()
     {
-        String joinData = EntityObject.createInnerJoinSection("student", "major", "major_id") + "\n ";
-        joinData += EntityObject.createInnerJoinSection("major", "college", "coll_id") + "\n ";
-        joinData += EntityObject.createInnerJoinSection("college", "university", "univ_id");
+        String joinData = EntityObject.createLeftJoinSection("student", "major", "major_id") + "\n ";
+        joinData += EntityObject.createLeftJoinSection("major", "college", "coll_id") + "\n ";
+        joinData += EntityObject.createLeftJoinSection("college", "university", "univ_id") + "\n ";
+        joinData += EntityObject.createLeftJoinSection("student", "major_adminstration", "s_email");
 
         return joinData;
     }
@@ -118,8 +158,11 @@ public class Student extends UserAccount<Student>
         student.firstName = entityObject.getAttributeValue("first_name", ESQLDataType.STRING, String.class);
         student.lastName = entityObject.getAttributeValue("last_name", ESQLDataType.STRING, String.class);
 
+        student.assignedMajor = entityObject.getAttributeValue("community_manager", ESQLDataType.INT, Integer.class);
+
         Integer majorID = entityObject.getAttributeValue("major_id", ESQLDataType.INT, Integer.class);
         String majorName = entityObject.getAttributeValue("major_name", ESQLDataType.STRING, String.class);
+        String majorPlanUrl = entityObject.getAttributeValue("major_plan", ESQLDataType.STRING, String.class);
 
         Integer collegeID = entityObject.getAttributeValue("coll_id", ESQLDataType.INT, Integer.class);
         String collegeName = entityObject.getAttributeValue("coll_name", ESQLDataType.STRING, String.class);
@@ -131,7 +174,7 @@ public class Student extends UserAccount<Student>
 
         student.university = new University(universityID, universityName, universityCity);
         student.college = new College(collegeID, collegeName, collegeCategory);
-        student.major = new Major(majorID, majorName);
+        student.major = new Major(majorID, majorName, majorPlanUrl);
 
         return student;
     }
@@ -157,6 +200,11 @@ public class Student extends UserAccount<Student>
     public Major getMajor()
     {
         return major;
+    }
+
+    public Integer getAssignedMajor()
+    {
+        return assignedMajor;
     }
 
   //  public level getLevel(){return level;}

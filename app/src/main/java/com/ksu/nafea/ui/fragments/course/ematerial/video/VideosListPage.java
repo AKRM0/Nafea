@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class VideosListPage extends ContentListFragment<ElectronicMaterial>
 {
-    private static final int MAX_URL_LENGTH = 45;
+    private static final int MAX_URL_LENGTH = 40;
 
     @Override
     protected void onContentListCreated(View main)
@@ -124,6 +124,16 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
 
     private void onReportClicked(int position)
     {
+        Student student = (Student) User.userAccount;
+        if(User.userAccount != null)
+        {
+            if(student.isAdmin())
+            {
+                showToastMsg(getString(R.string.ematReport_notAllowdReport));
+                return;
+            }
+        }
+
         User.material = getData().get(position);
         if(User.userAccount != null)
             openPage(R.id.action_videos_to_EMatReportPage, R.id.action_EMatReportPage_to_videos, false);
@@ -172,6 +182,13 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
         if(User.userAccount == null)
         {
             showToastMsg("يجب أن يكون لديك حساب لتقيم");
+            return;
+        }
+
+        Student student = (Student) User.userAccount;
+        if(student.isAdmin())
+        {
+            showToastMsg(getString(R.string.emat_notAllowedEvaluate));
             return;
         }
 

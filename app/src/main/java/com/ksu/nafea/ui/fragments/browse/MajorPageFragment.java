@@ -97,7 +97,7 @@ public class MajorPageFragment extends SelectFragment<Course>
         {
             percentageString = "غير معروف";
             courseDifficultyBar.setVisibility(View.INVISIBLE);
-            courseDifficultyPercent.setTextColor(Color.BLACK);
+            courseDifficultyPercent.setTextColor(Color.WHITE);
         }
 
         courseSymbol.setText(course.getSymbol());

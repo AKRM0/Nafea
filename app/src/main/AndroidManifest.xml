@@ -28,8 +28,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.DeleteCourseActivity" />
-        <activity android:name=".ui.activities.AddCourseActivity" />
         <activity
             android:name=".ui.activities.TestActiv"
             android:theme="@style/AppTheme.noActionBar" />

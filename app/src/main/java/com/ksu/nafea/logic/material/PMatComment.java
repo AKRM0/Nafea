@@ -69,7 +69,7 @@ public class PMatComment extends Entity<PMatComment>
 
         String insertQuery = "INSERT INTO comment_on_pmaterial VALUES(" + studentEmail + ", "
                 + commentString + ", "
-                + physicalMaterial.getId()
+                + physicalMaterial.getId() + ", "
                 + course.getId() + ", "
                 + time + ")";
 

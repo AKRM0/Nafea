@@ -14,5 +14,9 @@ public class User
     public static Course course = null;
     public static boolean isBrowsing = true;
 
+    public static Major managingMajor = null;
+    public static boolean isAddingCourse = false;
+    public static boolean isRemovingCourse = false;
+
     public static Material material;
 }

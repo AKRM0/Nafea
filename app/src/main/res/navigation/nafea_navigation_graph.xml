@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_home_to_login"
             app:destination="@id/nav_login" />
+        <action
+            android:id="@+id/action_homePage_to_departmentPlanFragment"
+            app:destination="@id/nav_departmentPlanFragment" />
     </fragment>
 
     <fragment
@@ -27,6 +30,26 @@
         <action
             android:id="@+id/action_login_to_registerFirstStep"
             app:destination="@id/nav_registerFirstStep" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/nav_addCourse"
+        android:name="com.ksu.nafea.ui.fragments.course_management.AddCourseFragment"
+        android:label="@string/actionBarTitle_addCourse"
+        tools:layout="@layout/activity_add_course" >
+        <action
+            android:id="@+id/action_addCourse_to_selectUniversity"
+            app:destination="@id/nav_selectUniversity" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_removeCourse"
+        android:name="com.ksu.nafea.ui.fragments.course_management.DeleteCourseFragment"
+        android:label="@string/actionBarTitle_deleteCourse"
+        tools:layout="@layout/activity_delete_course" >
+        <action
+            android:id="@+id/action_removeCourse_to_selectUniversity"
+            app:destination="@id/nav_selectUniversity" />
     </fragment>
 
 
@@ -96,6 +119,12 @@
         <action
             android:id="@+id/action_selectMajor_to_login"
             app:destination="@id/nav_login" />
+        <action
+            android:id="@+id/action_selectMajor_to_addCourse"
+            app:destination="@id/nav_addCourse" />
+        <action
+            android:id="@+id/action_selectMajor_to_removeCourse"
+            app:destination="@id/nav_removeCourse" />
     </fragment>
     <fragment
         android:id="@+id/nav_majorPage"

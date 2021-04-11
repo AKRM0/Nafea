@@ -44,7 +44,7 @@
     <!-- Course -->
     <string name="crsNav_label_aboutCrs">عن المقرر</string>
     <string name="crsNav_label_documents">الملفات</string>
-    <string name="crsNav_label_videos">الفيدديو</string>
+    <string name="crsNav_label_videos">الفيديو</string>
     <string name="crsNav_label_physMats">المصادر الورقية</string>
     <string name="crsNav_label_comments">التعليقات</string>
     <string name="EMaterial_addContent">إضافة محتوى</string>
@@ -90,6 +90,11 @@
     <string name="matReport_illegalType">هذا المحتوى غير قانوني</string>
     <string name="matReport_similarType">هذا المحتوى مكرر</string>
     <string name="matReport_otherType">غير ذلك</string>
+    <string name="ematReport_notAllowdReport">غير مسموح لك بالإبلاغ</string>
+    <string name="emat_notAllowedEvaluate">غير مسموح لك التقييم</string>
+    <string name="toastMsg_notAllowedComment">غير مسموح لك التعليق</string>
+    <string name="actionBarTitle_addCourse">إضافة مقرر</string>
+    <string name="actionBarTitle_deleteCourse">إزالة مقرر</string>
 
 
     <string-array name="Types">

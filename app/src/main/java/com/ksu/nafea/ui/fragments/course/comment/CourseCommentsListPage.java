@@ -153,7 +153,14 @@ public class CourseCommentsListPage extends ContentListFragment<Comment>
             return;
         }
 
-        Student student = (Student)User.userAccount;
+        Student student = (Student) User.userAccount;
+        if(student.isAdmin())
+        {
+            showToastMsg(getString(R.string.toastMsg_notAllowedComment));
+            return;
+        }
+
+
         final String commentString = commentField.getText().toString();
 
         Date date = new Date();

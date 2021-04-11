@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.ksu.nafea.logic.material.PhysicalMaterial;
 import com.ksu.nafea.utilities.NafeaFile;
 
 import java.io.File;
+import java.net.URI;
 
 public class FilesStorage
 {
@@ -125,12 +127,20 @@ public class FilesStorage
         String fileName = title + extension;
 
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                .setDestinationInExternalPublicDir(nafeaDir + File.separator, fileName)
                 .setTitle(title)
                 .setDescription(description)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .allowScanningByMediaScanner();
 
+
+        try
+        {
+            request.setDestinationInExternalPublicDir(nafeaDir + File.separator, fileName);
+        }
+        catch(Exception e)
+        {
+            request.setDestinationInExternalFilesDir(activity, nafeaDir + File.separator, fileName);
+        }
 
         DownloadManager manager = (DownloadManager)activity.getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
@@ -174,6 +184,7 @@ public class FilesStorage
             }
         }
 
+
         String description = "Downloading file...";
         startNormalDownloading(activity, url, title, description);
     }
@@ -191,12 +202,19 @@ public class FilesStorage
         String fileName = title + extension;
 
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                .setDestinationInExternalPublicDir(nafeaDir + File.separator, fileName)
                 .setTitle(title)
                 .setDescription(description)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .allowScanningByMediaScanner();
 
+        try
+        {
+            request.setDestinationInExternalPublicDir(nafeaDir + File.separator, fileName);
+        }
+        catch(Exception e)
+        {
+            request.setDestinationInExternalFilesDir(activity, nafeaDir + File.separator, fileName);
+        }
 
         DownloadManager manager = (DownloadManager)activity.getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
@@ -204,5 +222,8 @@ public class FilesStorage
         String msg = "بدء التحميل...";
         Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
     }
+
+
+
 
 }

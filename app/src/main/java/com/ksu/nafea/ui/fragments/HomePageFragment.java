@@ -420,6 +420,8 @@ public class HomePageFragment extends  SelectFragment<Course>
     private void onShowPlanClicked()
     {
         // Navigation change
+        Student student = (Student) User.userAccount;
+        User.major = student.getMajor();
         openPage(R.id.action_homePage_to_departmentPlanFragment);
     }
 

@@ -60,10 +60,25 @@ public class SelectMajorFragment extends SelectFragment<Major>
         Major major = getData().get(position);
         User.major = major;
 
-        if(User.isBrowsing)
+        if(User.isAddingCourse)
         {
-            openPage(R.id.action_selectMajor_to_majorPage);
+            User.managingMajor = major;
+            User.isAddingCourse = false;
+            openPage(R.id.action_selectMajor_to_addCourse);
+            return;
         }
+        else if(User.isRemovingCourse)
+        {
+            User.managingMajor = major;
+            User.isRemovingCourse = false;
+            openPage(R.id.action_selectMajor_to_removeCourse);
+            return;
+        }
+
+
+
+        if(User.isBrowsing)
+            openPage(R.id.action_selectMajor_to_majorPage);
         else
         {
             String email = User.userAccount.getEmail();

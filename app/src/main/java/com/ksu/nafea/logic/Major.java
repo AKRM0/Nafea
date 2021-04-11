@@ -35,6 +35,14 @@ public class Major extends Entity<Major> implements IconData
         courses = new ArrayList<Course>();
         levels = new ArrayList<String>();
     }
+    public Major(Integer id, String name, String planUrl)
+    {
+        this.id = id;
+        this.name = name;
+        this.planUrl = planUrl;
+        courses = new ArrayList<Course>();
+        levels = new ArrayList<String>();
+    }
 
 
     @Override

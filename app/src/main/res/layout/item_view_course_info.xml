@@ -9,6 +9,11 @@
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#FB8C00"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,10 +31,9 @@
                 android:id="@+id/verBox_evaluation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="@+id/crsInfo_crsSymbol"
+                app:layout_constraintEnd_toStartOf="@+id/crsInfo_crsSymbol"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -41,10 +45,10 @@
                     android:gravity="center"
                     android:paddingBottom="5dp"
                     android:text="@string/label_courseEase"
-                    android:textColor="#E1CA7001" />
+                    android:textColor="#E1FFFFFF" />
 
                 <RelativeLayout
-                    android:layout_width="250dp"
+                    android:layout_width="225dp"
                     android:layout_height="match_parent">
 
                     <ProgressBar
@@ -81,12 +85,12 @@
                 style="@style/Nafea_TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:gravity="right"
                 android:text="@string/textButton_details"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/verBox_evaluation"
+                app:layout_constraintEnd_toEndOf="@+id/crsInfo_crsSymbol"
                 app:layout_constraintTop_toBottomOf="@id/crsInfo_crsSymbol" />
 
             <TextView
@@ -94,12 +98,12 @@
                 style="@style/Nafea_DefaultTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
                 android:paddingBottom="10dp"
                 android:text="@string/label_courseName"
+                android:textColor="#FFFFFF"
                 android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>

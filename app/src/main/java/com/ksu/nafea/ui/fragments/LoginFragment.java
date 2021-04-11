@@ -23,6 +23,7 @@ import com.ksu.nafea.R;
 import com.ksu.nafea.data.request.FailureResponse;
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.logic.User;
+import com.ksu.nafea.logic.account.Admin;
 import com.ksu.nafea.logic.account.Student;
 import com.ksu.nafea.logic.account.UserAccount;
 import com.ksu.nafea.ui.activities.MainActivity;
@@ -171,10 +172,27 @@ public class LoginFragment extends Fragment
     {
         String email = fields.get(0).getText().toString();
         String password = fields.get(1).getText().toString();
-        Student student = new Student(email, password);
 
+        if(email.charAt(0) == '#')
+        {
+            email = email.substring(1);
+            Admin admin = new Admin(email, password);
+            Admin.loginAdmin(admin, onLoginRequestFlag(context));
+        }
+        else
+        {
+            Student student = new Student(email, password);
+            UserAccount.login(student, onLoginRequestFlag(context));
+        }
+
+    }
+
+
+    private  QueryRequestFlag<Student> onLoginRequestFlag(final Context context)
+    {
         progressDialog.show();
-        UserAccount.login(student, new QueryRequestFlag<Student>()
+
+        return new QueryRequestFlag<Student>()
         {
             @Override
             public void onQuerySuccess(Student resultObject)
@@ -205,8 +223,7 @@ public class LoginFragment extends Fragment
 
                 Log.d(TAG, failure.getMsg() + "\n" + failure.toString());
             }
-        });
-
+        };
     }
 
 

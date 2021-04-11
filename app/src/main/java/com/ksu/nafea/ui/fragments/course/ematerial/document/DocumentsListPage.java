@@ -125,6 +125,16 @@ public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
 
     private void onReportClicked(int position)
     {
+        Student student = (Student) User.userAccount;
+        if(User.userAccount != null)
+        {
+            if(student.isAdmin())
+            {
+                showToastMsg(getString(R.string.ematReport_notAllowdReport));
+                return;
+            }
+        }
+
         User.material = getData().get(position);
         if(User.userAccount != null)
             openPage(R.id.action_documents_to_EMatReportPage, R.id.action_EMatReportPage_to_documents, false);
@@ -186,6 +196,15 @@ public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
             showToastMsg("يجب أن يكون لديك حساب لتقيم");
             return;
         }
+
+        Student student = (Student) User.userAccount;
+        if(student.isAdmin())
+        {
+            showToastMsg(getString(R.string.emat_notAllowedEvaluate));
+            return;
+        }
+
+
 
         String email = User.userAccount.getEmail();
         boolean isSuccess = like ? eMaterial.addLike(email) : eMaterial.addDislike(email);

@@ -30,6 +30,7 @@ public class Contain extends Entity<Contain>
     {
         String selectClause = "DISTINCT level";
         String condition = "major_id = " + major.getId();
+        String orderBy = "level_index asc";
 
         try
         {
@@ -57,7 +58,7 @@ public class Contain extends Entity<Contain>
                     failure.addNode(TAG);
                     requestFlag.onQueryFailure(failure);
                 }
-            }, selectClause, condition);
+            }, selectClause, "", condition, "", orderBy);
         }
         catch (Exception e)
         {

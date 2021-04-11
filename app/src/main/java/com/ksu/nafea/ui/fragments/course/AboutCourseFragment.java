@@ -257,11 +257,18 @@ public class AboutCourseFragment extends Fragment
             return;
         }
 
+        Student student = (Student) User.userAccount;
+        if(student.isAdmin())
+        {
+            showToastMsg(getString(R.string.emat_notAllowedEvaluate));
+            return;
+        }
+
+
         double contentSize = ratingBars.get(CONTENT_SIZE).getRating() * DB_TRANS_FACTOR;
         double assignmentsDifficulty = ratingBars.get(ASSIGNMENT_DIFFICULTY).getRating() * DB_TRANS_FACTOR;
         double examsDifficulty = ratingBars.get(EXAMS_DIFFICULTY).getRating() * DB_TRANS_FACTOR;
 
-        Student student = (Student) User.userAccount;
         CourseEvaluation newEvaluation = new CourseEvaluation(contentSize, assignmentsDifficulty, examsDifficulty);
 
         if(hasEvaluatedBefore)

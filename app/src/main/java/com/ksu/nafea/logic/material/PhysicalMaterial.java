@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class PhysicalMaterial extends Material<PhysicalMaterial>
 {
     private String owner;
-
     private String firstName,lastName;
     private Integer sellerPhone;
     private String imageUrl, city;
@@ -128,6 +127,7 @@ public class PhysicalMaterial extends Material<PhysicalMaterial>
     {
         PhysicalMaterial material = new PhysicalMaterial();
 
+        material.owner = entityObject.getAttributeValue("s_email", ESQLDataType.STRING, String.class);
         material.firstName = entityObject.getAttributeValue("first_name", ESQLDataType.STRING, String.class);
         material.lastName = entityObject.getAttributeValue("last_name", ESQLDataType.STRING, String.class);
         material.id = entityObject.getAttributeValue("pmat_id", ESQLDataType.INT, Integer.class);

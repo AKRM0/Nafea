@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_homePage, R.id.nav_login, R.id.nav_browse, R.id.nav_majorPage)
+                R.id.nav_homePage, R.id.nav_login, R.id.nav_browse, R.id.nav_majorPage, R.id.nav_addCourse, R.id.nav_removeCourse)
                 .setDrawerLayout(drawer)
                 .build();
 
@@ -110,6 +110,23 @@ public class MainActivity extends AppCompatActivity
         setHeaderElementsVisibility(View.INVISIBLE);
         navMenu.findItem(R.id.navSection_manageCourses).setVisible(false);
         navMenu.findItem(R.id.navSection_logout).setVisible(false);
+
+
+
+
+        MenuItem.OnMenuItemClickListener mangingListener = new MenuItem.OnMenuItemClickListener()
+        {
+            @Override
+            public boolean onMenuItemClick(MenuItem item)
+            {
+                User.managingMajor = null;
+                return false;
+            }
+        };
+
+
+        navMenu.findItem(R.id.nav_addCourse).setOnMenuItemClickListener(mangingListener);
+        navMenu.findItem(R.id.nav_removeCourse).setOnMenuItemClickListener(mangingListener);
     }
 
     public void setHeaderElementsVisibility(int visibility)

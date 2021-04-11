@@ -2,6 +2,7 @@ package com.ksu.nafea.ui.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import com.ksu.nafea.R;
 import com.ksu.nafea.logic.FilesStorage;
 import com.ksu.nafea.logic.Major;
 import com.ksu.nafea.logic.User;
+import com.ksu.nafea.logic.material.ElectronicMaterial;
 import com.ksu.nafea.utilities.NafeaUtil;
 import com.squareup.picasso.Picasso;
 
@@ -43,7 +45,6 @@ public class DepartmentPlanFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
@@ -101,6 +102,18 @@ public class DepartmentPlanFragment extends Fragment
     {
         String title = "خطة " + User.major.getName();
         FilesStorage.downloadFile(getActivity(), User.major.getPlanUrl(), title);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        if(FilesStorage.isPermissionProved(requestCode, grantResults))
+        {
+            FilesStorage.downloadFile(getActivity(), (ElectronicMaterial)User.material);
+        }
+        else
+            NafeaUtil.showToastMsg(getContext(), "Permission denied...!");
     }
 
 }

@@ -82,7 +82,7 @@ public class FilesStorage
     }
 
 
-    public static void watchVideo(Activity activity, String url)
+    public static void watchVideo(Activity activity, String url) throws Exception
     {
         Uri uri = Uri.parse(url);
         Intent watchIntent = new Intent(Intent.ACTION_VIEW,uri);

@@ -104,6 +104,10 @@
             android:text="@string/buttonText_next"
             android:textColor="#FFFFFF" />
 
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="2dp"></Space>
+
         <Button
             android:id="@+id/regFirst_b_cancel"
             style="@style/Nafea_DefaultButton"

@@ -144,7 +144,14 @@ public class VideosListPage extends ContentListFragment<ElectronicMaterial>
     private void onVideoClicked(int position)
     {
         User.material = getData().get(position);
-        FilesStorage.watchVideo(getActivity(), getData().get(position).getUrl());
+        try
+        {
+            FilesStorage.watchVideo(getActivity(), getData().get(position).getUrl());
+        }
+        catch (Exception e)
+        {
+            showToastMsg("رابط المشاهدة لا يعمل");
+        }
     }
 
     private void onAddContentClicked()

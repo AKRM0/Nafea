@@ -17,6 +17,8 @@ public class User
     public static Major managingMajor = null;
     public static boolean isAddingCourse = false;
     public static boolean isRemovingCourse = false;
+    public static boolean isUploadDepPlan = false;;
+    public static boolean isUserInfoUpdated = false;
 
     public static Material material;
 }

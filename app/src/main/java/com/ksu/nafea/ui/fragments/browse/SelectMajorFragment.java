@@ -74,6 +74,13 @@ public class SelectMajorFragment extends SelectFragment<Major>
             openPage(R.id.action_selectMajor_to_removeCourse);
             return;
         }
+        else if(User.isUploadDepPlan)
+        {
+            User.managingMajor = major;
+            User.isUploadDepPlan = false;
+            openPage(R.id.action_selectMajor_to_uploadDepartmentPlanPage);
+            return;
+        }
 
 
 

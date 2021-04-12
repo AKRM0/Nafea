@@ -83,6 +83,31 @@ public class FilesStorage
 
     }
 
+    public static void uploadMajorPlan(final Major major, Uri fileUri, final QueryRequestFlag<QueryPostStatus> requestFlag)
+    {
+        final NafeaFile<Task<Uri>> file = NafeaStoragePool.uploadFile(fileUri, null);
+
+        if(file.getTask() == null)
+            return;
+
+
+        file.getTask().addOnCompleteListener(new OnCompleteListener<Uri>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task)
+            {
+                if(task.isSuccessful())
+                {
+                    String url = task.getResult() == null ? null : task.getResult().toString();
+                    Major.updatePlan(major, url, requestFlag);
+                }
+                else
+                    Entity.sendFailureResponse(requestFlag, TAG, "Unable to upload the selected plan to \"" + major.getName() + "\" major");
+            }
+        });
+
+    }
+
 
     public static void watchVideo(Activity activity, String url) throws Exception
     {

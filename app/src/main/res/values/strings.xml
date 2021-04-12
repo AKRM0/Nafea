@@ -95,6 +95,8 @@
     <string name="toastMsg_notAllowedComment">غير مسموح لك التعليق</string>
     <string name="actionBarTitle_addCourse">إضافة مقرر</string>
     <string name="actionBarTitle_deleteCourse">إزالة مقرر</string>
+    <string name="actionBarTitle_depPlan">إختيار خطة القسم</string>
+    <string name="navMenu_uploadDepPlan">رفع خطة تخصص</string>
 
 
     <string-array name="Types">

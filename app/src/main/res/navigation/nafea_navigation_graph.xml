@@ -20,6 +20,19 @@
     </fragment>
 
     <fragment
+        android:id="@+id/nav_uploadDepartmentPlanPage"
+        android:name="com.ksu.nafea.ui.fragments.major_management.UploadDepartmentPlanFragment"
+        android:label="@string/actionBarTitle_depPlan"
+        tools:layout="@layout/fragment_upload_department_plan" >
+        <action
+            android:id="@+id/action_uploadDepartmentPlanPage_to_browse"
+            app:destination="@id/nav_browse" />
+        <action
+            android:id="@+id/action_uploadDepartmentPlanPage_to_homePage"
+            app:destination="@id/nav_homePage" />
+    </fragment>
+
+    <fragment
         android:id="@+id/nav_login"
         android:name="com.ksu.nafea.ui.fragments.LoginFragment"
         android:label="@string/actionBarTitle_login"
@@ -35,21 +48,21 @@
 
     <fragment
         android:id="@+id/nav_addCourse"
-        android:name="com.ksu.nafea.ui.fragments.course_management.AddCourseFragment"
+        android:name="com.ksu.nafea.ui.fragments.major_management.AddCourseFragment"
         android:label="@string/actionBarTitle_addCourse"
         tools:layout="@layout/activity_add_course" >
         <action
-            android:id="@+id/action_addCourse_to_selectUniversity"
-            app:destination="@id/nav_selectUniversity" />
+            android:id="@+id/action_addCourse_to_browse"
+            app:destination="@id/nav_browse" />
     </fragment>
     <fragment
         android:id="@+id/nav_removeCourse"
-        android:name="com.ksu.nafea.ui.fragments.course_management.DeleteCourseFragment"
+        android:name="com.ksu.nafea.ui.fragments.major_management.DeleteCourseFragment"
         android:label="@string/actionBarTitle_deleteCourse"
         tools:layout="@layout/activity_delete_course" >
         <action
-            android:id="@+id/action_removeCourse_to_selectUniversity"
-            app:destination="@id/nav_selectUniversity" />
+            android:id="@+id/action_removeCourse_to_browse"
+            app:destination="@id/nav_browse" />
     </fragment>
 
 
@@ -125,6 +138,9 @@
         <action
             android:id="@+id/action_selectMajor_to_removeCourse"
             app:destination="@id/nav_removeCourse" />
+        <action
+            android:id="@+id/action_selectMajor_to_uploadDepartmentPlanPage"
+            app:destination="@id/nav_uploadDepartmentPlanPage" />
     </fragment>
     <fragment
         android:id="@+id/nav_majorPage"

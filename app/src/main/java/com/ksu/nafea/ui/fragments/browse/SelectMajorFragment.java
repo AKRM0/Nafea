@@ -78,7 +78,10 @@ public class SelectMajorFragment extends SelectFragment<Major>
 
 
         if(User.isBrowsing)
+        {
+            User.major = major;
             openPage(R.id.action_selectMajor_to_majorPage);
+        }
         else
         {
             String email = User.userAccount.getEmail();

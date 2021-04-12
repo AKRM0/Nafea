@@ -54,6 +54,9 @@ public class MajorPageFragment extends SelectFragment<Course>
     @Override
     protected void fillDropdown()
     {
+        if(User.major == null)
+            User.major = new Major(0, "");
+
         Contain.retrieveAllLevels(User.major, retrieveDropdownData());
     }
 

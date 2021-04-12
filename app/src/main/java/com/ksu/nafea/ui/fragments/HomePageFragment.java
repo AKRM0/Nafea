@@ -1,6 +1,7 @@
 package com.ksu.nafea.ui.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 import com.ksu.nafea.data.request.FailureResponse;
 import com.ksu.nafea.data.request.QueryRequestFlag;
 import com.ksu.nafea.logic.Contain;
+import com.ksu.nafea.logic.account.Admin;
+import com.ksu.nafea.logic.account.UserAccount;
 import com.ksu.nafea.logic.course.Course;
 import com.ksu.nafea.ui.activities.CoursePageActivity;
 import com.ksu.nafea.ui.activities.MainActivity;
@@ -153,6 +156,11 @@ public class HomePageFragment extends  SelectFragment<Course>
 
                 initLevelsDropdown();
                 initListeners();
+                if(User.isUserInfoUpdated)
+                {
+                    User.isUserInfoUpdated = false;
+                    refreshUserAccount();
+                }
             }
             else
             {
@@ -218,6 +226,53 @@ public class HomePageFragment extends  SelectFragment<Course>
                 onShowPlanClicked();
             }
         });
+    }
+
+    private void refreshUserAccount()
+    {
+        Student student = (Student) User.userAccount;
+
+        String email = student.getEmail();
+        String password = student.getPassword();
+
+        Context context = getContext();
+        if(email.charAt(0) == '#')
+        {
+            email = email.substring(1);
+            Admin admin = new Admin(email, password);
+            Admin.loginAdmin(admin, onLoginRequestFlag(context));
+        }
+        else
+        {
+            UserAccount.login(student, onLoginRequestFlag(context));
+        }
+    }
+
+    private  QueryRequestFlag<Student> onLoginRequestFlag(final Context context)
+    {
+        progressDialog.show();
+
+        return new QueryRequestFlag<Student>()
+        {
+            @Override
+            public void onQuerySuccess(Student resultObject)
+            {
+                progressDialog.dismiss();
+
+                if(resultObject != null)
+                {
+                    User.userAccount = resultObject;
+                }
+            }
+
+            @Override
+            public void onQueryFailure(FailureResponse failure)
+            {
+                progressDialog.dismiss();
+
+                Log.d(TAG, failure.getMsg() + "\n" + failure.toString());
+            }
+        };
     }
 
 

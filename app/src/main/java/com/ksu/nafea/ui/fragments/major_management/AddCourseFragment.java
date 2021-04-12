@@ -1,4 +1,4 @@
-package com.ksu.nafea.ui.fragments.course_management;
+package com.ksu.nafea.ui.fragments.major_management;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -39,6 +39,7 @@ public class AddCourseFragment extends Fragment
     private ProgressDialog progressDialog;
     private ArrayList<TextView> labels;
     private ArrayList<EditText> fields;
+    private TextView majorLabel;
     private Button addButton;
 
 
@@ -91,7 +92,8 @@ public class AddCourseFragment extends Fragment
         if(student.isAdmin() && User.managingMajor == null)
         {
             User.isAddingCourse = true;
-            openPage(R.id.action_addCourse_to_selectUniversity);
+            openPage(R.id.action_addCourse_to_browse);
+            return main;
         }
         else if(student.isCommunityManager() && User.managingMajor == null)
             User.managingMajor = student.getMajor();
@@ -99,6 +101,7 @@ public class AddCourseFragment extends Fragment
 
 
         initViews();
+        majorLabel.setText(User.managingMajor.getName());
 
 
         addButton.setOnClickListener(new View.OnClickListener()
@@ -137,6 +140,8 @@ public class AddCourseFragment extends Fragment
 
     private void initViews()
     {
+        majorLabel = (TextView) main.findViewById(R.id.addCrs_txt_major);
+
         labels = new ArrayList<TextView>();
         fields = new ArrayList<EditText>();
 

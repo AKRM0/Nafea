@@ -1,4 +1,4 @@
-package com.ksu.nafea.ui.fragments.course_management;
+package com.ksu.nafea.ui.fragments.major_management;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -47,6 +47,7 @@ public class DeleteCourseFragment extends Fragment
 
     private RecyclerView coursesListView;
     private Button deleteButton;
+    private TextView majorLabel;
 
     private ArrayList<Course> courses;
     private ArrayList<Course> targetCourses;
@@ -93,7 +94,8 @@ public class DeleteCourseFragment extends Fragment
         if(student.isAdmin() && User.managingMajor == null)
         {
             User.isRemovingCourse = true;
-            openPage(R.id.action_removeCourse_to_selectUniversity);
+            openPage(R.id.action_removeCourse_to_browse);
+            return main;
         }
         else if(student.isCommunityManager() && User.managingMajor == null)
             User.managingMajor = student.getMajor();
@@ -102,6 +104,9 @@ public class DeleteCourseFragment extends Fragment
         progressDialog = new ProgressDialog(context);
         coursesListView = (RecyclerView) main.findViewById(R.id.delCrs_coursesList);
         deleteButton = (Button) main.findViewById(R.id.delCrs_b_delete);
+        majorLabel = (TextView) main.findViewById(R.id.delCrs_txt_major);
+
+        majorLabel.setText(User.managingMajor.getName());
 
 
         deleteButton.setOnClickListener(new View.OnClickListener()

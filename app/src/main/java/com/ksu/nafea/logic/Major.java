@@ -1,7 +1,9 @@
 package com.ksu.nafea.logic;
 
 
+import com.ksu.nafea.data.request.QueryRequest;
 import com.ksu.nafea.data.request.QueryRequestFlag;
+import com.ksu.nafea.data.sql.Attribute;
 import com.ksu.nafea.data.sql.EAttributeConstraint;
 import com.ksu.nafea.data.sql.ESQLDataType;
 import com.ksu.nafea.data.sql.EntityObject;
@@ -14,7 +16,8 @@ public class Major extends Entity<Major> implements IconData
 {
     public static final String TAG = "Major";
     private Integer id;
-    private String name, planUrl;
+    private String name;
+    private String planUrl;
     private ArrayList<Course> courses;
     private ArrayList<String> levels;
 
@@ -53,6 +56,27 @@ public class Major extends Entity<Major> implements IconData
 
 
     //-----------------------------------------------[Queries]-----------------------------------------------
+
+
+    public static void updatePlan(Major major, String planUrl, QueryRequestFlag<QueryPostStatus> requestFlag)
+    {
+        //Output: Return type
+        QueryRequest<QueryPostStatus, QueryPostStatus> request = new QueryRequest<>(QueryPostStatus.class);
+        request.setRequestFlag(requestFlag);
+
+
+        //Input: Queries
+        String id = Attribute.getSQLValue(major.getId(), ESQLDataType.INT);
+        String plan = Attribute.getSQLValue(planUrl, ESQLDataType.STRING);
+
+
+        String insertQuery = "UPDATE major SET major_plan = " + plan + " WHERE major_id = " + id;
+
+        request.addQuery(insertQuery);
+
+        getPool().executeUpdateQuery(request);
+    }
+
 
     public static void retrieveMajorsInCollege(College college, final QueryRequestFlag<ArrayList<Major>> requestFlag)
     {
@@ -93,7 +117,7 @@ public class Major extends Entity<Major> implements IconData
 
         entityObject.addAttribute("major_id", ESQLDataType.INT, id, EAttributeConstraint.PRIMARY_KEY);
         entityObject.addAttribute("major_name", ESQLDataType.STRING, name);
-        //entityObject.addAttribute("major_plan", ESQLDataType.STRING, symbol);
+        entityObject.addAttribute("major_plan", ESQLDataType.STRING, planUrl);
 
         return entityObject;
     }
@@ -141,6 +165,11 @@ public class Major extends Entity<Major> implements IconData
     public String getPlanUrl()
     {
         return planUrl;
+    }
+
+    public void setPlanUrl(String planUrl)
+    {
+        this.planUrl = planUrl;
     }
 
     public ArrayList<Course> getCourses()

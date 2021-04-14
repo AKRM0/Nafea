@@ -23,6 +23,7 @@ import com.ksu.nafea.logic.course.Course;
 import com.ksu.nafea.logic.material.ElectronicMaterial;
 import com.ksu.nafea.logic.material.PhysicalMaterial;
 import com.ksu.nafea.utilities.NafeaFile;
+import com.ksu.nafea.utilities.NafeaUtil;
 
 import java.io.File;
 import java.net.URI;
@@ -117,7 +118,7 @@ public class FilesStorage
     }
 
 
-    public static void downloadFile(Activity activity, ElectronicMaterial material)
+    public static void downloadFile(Activity activity, ElectronicMaterial material, String errorMsg)
     {
         final int PERMISSION_CODE = 1000;
 
@@ -135,7 +136,14 @@ public class FilesStorage
         }
 
         String description = "Downloading file...";
-        startDownloading(activity, material.getUrl(), material.getName(), description);
+        try
+        {
+            startDownloading(activity, material.getUrl(), material.getName(), description);
+        }
+        catch (Exception e)
+        {
+            NafeaUtil.showToastMsg(activity, errorMsg);
+        }
     }
     private static void startDownloading(Activity activity, String url, String title, String description)
     {
@@ -192,7 +200,7 @@ public class FilesStorage
 
 
 
-    public static void downloadFile(Activity activity, String url, String title)
+    public static void downloadFile(Activity activity, String url, String title, String errorMsg)
     {
         final int PERMISSION_CODE = 1000;
 
@@ -211,7 +219,14 @@ public class FilesStorage
 
 
         String description = "Downloading file...";
-        startNormalDownloading(activity, url, title, description);
+        try
+        {
+            startNormalDownloading(activity, url, title, description);
+        }
+        catch (Exception e)
+        {
+            NafeaUtil.showToastMsg(activity, errorMsg);
+        }
     }
     private static void startNormalDownloading(Activity activity, String url, String title, String description)
     {

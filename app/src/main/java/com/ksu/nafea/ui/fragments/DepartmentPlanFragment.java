@@ -28,6 +28,7 @@ public class DepartmentPlanFragment extends Fragment
 {
     private ImageView planImage;
     private TextView download;
+    private static final String DOWNLOAD_FAILED_MSG = "لا توجد خطة للتحميل";
 
     public DepartmentPlanFragment()
     {
@@ -101,7 +102,7 @@ public class DepartmentPlanFragment extends Fragment
     private void onDownloadClicked()
     {
         String title = "خطة " + User.major.getName();
-        FilesStorage.downloadFile(getActivity(), User.major.getPlanUrl(), title);
+        FilesStorage.downloadFile(getActivity(), User.major.getPlanUrl(), title, DOWNLOAD_FAILED_MSG);
     }
 
 
@@ -110,7 +111,8 @@ public class DepartmentPlanFragment extends Fragment
     {
         if(FilesStorage.isPermissionProved(requestCode, grantResults))
         {
-            FilesStorage.downloadFile(getActivity(), (ElectronicMaterial)User.material);
+            String title = "خطة " + User.major.getName();
+            FilesStorage.downloadFile(getActivity(), User.major.getPlanUrl(), title, DOWNLOAD_FAILED_MSG);
         }
         else
             NafeaUtil.showToastMsg(getContext(), "Permission denied...!");

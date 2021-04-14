@@ -29,6 +29,8 @@ import java.util.ArrayList;
 
 public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
 {
+    private static final String DOWNLOAD_FAILED_MSG = "هناك خلل في رابط تحميل الملف";
+
 
     @Override
     protected void onContentListCreated(View main)
@@ -153,7 +155,7 @@ public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
     private void onDocumentClicked(int position)
     {
         User.material = getData().get(position);
-        FilesStorage.downloadFile(getActivity(), getData().get(position));
+        FilesStorage.downloadFile(getActivity(), getData().get(position), DOWNLOAD_FAILED_MSG);
     }
 
     @Override
@@ -173,7 +175,7 @@ public class DocumentsListPage extends ContentListFragment<ElectronicMaterial>
     {
         if(FilesStorage.isPermissionProved(requestCode, grantResults))
         {
-            FilesStorage.downloadFile(getActivity(), (ElectronicMaterial)User.material);
+            FilesStorage.downloadFile(getActivity(), (ElectronicMaterial)User.material, DOWNLOAD_FAILED_MSG);
         }
         else
             showToastMsg("Permission denied...!");
